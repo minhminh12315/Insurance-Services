@@ -1,0 +1,85 @@
+### Insurance Service API - Authentication Endpoints
+
+@baseUrl = https://localhost:7138/api
+@contentType = application/json
+# Update this token after login
+@token = your_jwt_token_here
+
+### 1. Register a new user
+POST {{baseUrl}}/Auth/register
+Content-Type: {{contentType}}
+
+{
+  "fullName": "Nguyễn Văn A",
+  "email": "nguyenvana@example.com",
+  "password": "Password123!",
+  "confirmPassword": "Password123!",
+  "phoneNumber": "0901234567",
+  "dateOfBirth": "1990-01-15",
+  "gender": "Male",
+  "address": "123 Đường ABC",
+  "city": "Hà Nội"
+}
+
+### 2. Login with registered user
+POST {{baseUrl}}/Auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "nguyenvana@example.com",
+  "password": "Password123!"
+}
+
+### 3. Register another user
+POST {{baseUrl}}/Auth/register
+Content-Type: {{contentType}}
+
+{
+  "fullName": "Trần Thị B",
+  "email": "tranthib@example.com",
+  "password": "SecurePass456!",
+  "confirmPassword": "SecurePass456!",
+  "phoneNumber": "0987654321",
+  "dateOfBirth": "1985-05-20",
+  "gender": "Female",
+  "address": "456 Đường XYZ",
+  "city": "TP. Hồ Chí Minh"
+}
+
+### 4. Login with wrong password (should fail)
+POST {{baseUrl}}/Auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "nguyenvana@example.com",
+  "password": "WrongPassword"
+}
+
+### 5. Register with existing email (should fail)
+POST {{baseUrl}}/Auth/register
+Content-Type: {{contentType}}
+
+{
+  "fullName": "Duplicate User",
+  "email": "nguyenvana@example.com",
+  "password": "Password123!",
+  "confirmPassword": "Password123!",
+  "phoneNumber": "0999999999",
+  "dateOfBirth": "1995-03-10",
+  "gender": "Male",
+  "address": "789 Đường Test",
+  "city": "Đà Nẵng"
+}
+
+### ================== PROTECTED ENDPOINTS ==================
+
+### 6. Get current user profile (requires authentication)
+GET {{baseUrl}}/UserProfile/me
+Authorization: Bearer {{token}}
+
+### 7. Access without token (should fail with 401)
+GET {{baseUrl}}/UserProfile/me
+
+### 8. Admin only endpoint (requires Admin role)
+GET {{baseUrl}}/UserProfile/admin-only
+Authorization: Bearer {{token}}
