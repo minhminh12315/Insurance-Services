@@ -144,3 +144,5 @@ node_modules/
 # Others
 .DS_Store
 Thumbs.db
+
+.appsettings.json/*
