@@ -1,6 +1,16 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
+/* Import Component Styles */
+@import './assets/styles/AdminLayout.css';
+@import './assets/styles/Sidebar.css';
+@import './assets/styles/Header.css';
+
+/* Import Page Styles */
+@import './assets/styles/layout.css';
+@import './assets/styles/table.css';
+@import './assets/styles/modal.css';
+
 :root {
   --bg-primary: #ffffff;
   --bg-secondary: #f8fafc;
@@ -332,4 +342,207 @@ body {
 .textarea:focus {
   border-color: var(--accent-primary);
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+}
+
+/* ============================================
+   RESPONSIVE STYLES
+   ============================================ */
+
+/* Tablet and below (max-width: 1024px) */
+@media (max-width: 1024px) {
+  /* Reduce padding */
+  #root {
+    padding: 1rem;
+  }
+
+  /* Table responsive */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table {
+    min-width: 800px;
+  }
+
+  .table th,
+  .table td {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  /* Button adjustments */
+  .btn {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .btn-sm {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  /* Modal adjustments */
+  .modal-content {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+}
+
+/* Mobile (max-width: 768px) */
+@media (max-width: 768px) {
+  /* Typography */
+  body {
+    font-size: 14px;
+  }
+
+  /* Reduce padding */
+  #root {
+    padding: 0.5rem;
+  }
+
+  /* Form elements */
+  .input,
+  .select,
+  .textarea {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 12px;
+  }
+
+  .label {
+    font-size: 13px;
+  }
+
+  /* Buttons stack on mobile */
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn-sm {
+    width: auto;
+  }
+
+  /* Table mobile view */
+  .table {
+    min-width: 600px;
+  }
+
+  .table th,
+  .table td {
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+
+  .table th {
+    font-size: 11px;
+  }
+
+  /* Badge */
+  .badge {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+
+  /* Cards */
+  .glass-card {
+    border-radius: 10px;
+  }
+
+  /* Stat cards grid */
+  .stat-card {
+    min-width: 100%;
+  }
+
+  /* Form groups */
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  /* Modal full screen on mobile */
+  .modal-overlay {
+    padding: 16px;
+  }
+
+  .modal-content {
+    max-width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+}
+
+/* Small mobile (max-width: 480px) */
+@media (max-width: 480px) {
+  /* Further reduce spacing */
+  .glass-card {
+    padding: 16px;
+  }
+
+  /* Smaller buttons */
+  .btn {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  /* Table ultra compact */
+  .table th,
+  .table td {
+    padding: 8px 6px;
+    font-size: 11px;
+  }
+
+  /* Hide some table columns on very small screens */
+  .table th:nth-child(n+5),
+  .table td:nth-child(n+5) {
+    display: none;
+  }
+
+  /* Stack form elements */
+  .form-group {
+    margin-bottom: 14px;
+  }
+}
+
+/* Utility classes for responsive design */
+.hide-mobile {
+  display: block;
+}
+
+.show-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+
+  .show-mobile {
+    display: block !important;
+  }
+}
+
+/* Responsive grid utilities */
+.grid-responsive {
+  display: grid;
+  gap: 24px;
+}
+
+@media (min-width: 1280px) {
+  .grid-responsive {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  .grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .grid-responsive {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }
