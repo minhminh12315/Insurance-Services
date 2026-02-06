@@ -42,6 +42,18 @@ builder.Services.AddAuthorization();
 // Add Controllers
 builder.Services.AddControllers();
 
+// Swagger services
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new()
+    {
+        Title = "My API",
+        Version = "v1",
+        Description = "ASP.NET Core Web API (.NET 10)"
+    });
+});
+
 // Add CORS
 builder.Services.AddCors(options =>
 {
@@ -57,6 +69,16 @@ builder.Services.AddCors(options =>
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API v1");
+        options.RoutePrefix = "swagger"; // URL: /swagger
+    });
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
