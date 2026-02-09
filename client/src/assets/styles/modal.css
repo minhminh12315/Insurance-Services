@@ -1,0 +1,64 @@
+/* ============================================
+   MODAL STYLES
+   Modal dialog styling
+   ============================================ */
+
+.modal-dialog {
+  width: 600px;
+  max-width: 90vw;
+  background: #fff;
+  padding: 32px;
+}
+
+.modal-dialog.modal-sm {
+  width: 500px;
+}
+
+.modal-dialog.modal-lg {
+  width: 800px;
+}
+
+.modal-header {
+  margin-bottom: 24px;
+}
+
+.modal-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+}
+
+.modal-body {
+  margin-bottom: 24px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 24px;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-dialog {
+    width: 100%;
+    max-width: 100%;
+    padding: 24px;
+    margin: 16px;
+  }
+
+  .modal-title {
+    font-size: 20px;
+  }
+
+  .modal-footer {
+    flex-direction: column-reverse;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+  }
+}

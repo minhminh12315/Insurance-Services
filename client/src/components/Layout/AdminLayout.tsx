@@ -1,14 +1,35 @@
+import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import '../../assets/styles/AdminLayout.css';
 
 const AdminLayout = () => {
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
+
+    const closeSidebar = () => {
+        setIsSidebarOpen(false);
+    };
+
     return (
-        <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-secondary)' }}>
-            <Sidebar />
-            <div style={{ flex: 1, marginLeft: '260px' }}>
-                <Header />
-                <main style={{ padding: '32px', minHeight: 'calc(100vh - 70px)', maxWidth: '1600px', margin: '0 auto' }}>
+        <div className="admin-layout">
+            <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
+
+            {/* Overlay for mobile */}
+            {isSidebarOpen && (
+                <div
+                    onClick={closeSidebar}
+                    className="mobile-overlay"
+                />
+            )}
+
+            <div className="main-content">
+                <Header onMenuClick={toggleSidebar} />
+                <main className="main-container">
                     <Outlet />
                 </main>
             </div>
