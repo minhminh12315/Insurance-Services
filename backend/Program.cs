@@ -13,6 +13,7 @@ builder.Services.AddDbContext<InsuranceDbContext>(options =>
 
 // Add Authentication Service
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<InsuranceCategoryService>();
 
 // Configure JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

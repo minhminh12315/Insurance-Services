@@ -49,10 +49,10 @@ export const fakeUsers: User[] = [
 
 // --- Insurance Products ---
 export const insuranceCategories: InsuranceCategory[] = [
-    { category_id: 1, category_name: 'Life Insurance', description: 'Financial protection for your family.' },
-    { category_id: 2, category_name: 'Health Insurance', description: 'Coverage for medical expenses.' },
-    { category_id: 3, category_name: 'Motor Insurance', description: 'Protection for your vehicles.' },
-    { category_id: 4, category_name: 'Home Insurance', description: 'Safeguard your property.' },
+    { categoryId: 1, categoryName: 'Life Insurance', description: 'Financial protection for your family.' },
+    { categoryId: 2, categoryName: 'Health Insurance', description: 'Coverage for medical expenses.' },
+    { categoryId: 3, categoryName: 'Motor Insurance', description: 'Protection for your vehicles.' },
+    { categoryId: 4, categoryName: 'Home Insurance', description: 'Safeguard your property.' },
 ];
 
 export const insuranceSchemes: InsuranceScheme[] = [
@@ -164,12 +164,11 @@ export const fakeNews: NewsAnnouncement[] = [
         author_id: 1,
     }
 ];
-
 // --- Compatibility & Helpers ---
 export const fakeProducts = insuranceSchemes.map(s => ({
     id: s.scheme_id.toString(),
     name: s.scheme_name,
-    category: insuranceCategories.find(c => c.category_id === s.category_id)?.category_name || 'General',
+    category: insuranceCategories.find(c => c.categoryId === s.category_id)?.categoryName || 'General',
     price: s.min_investment_amount || 0,
     stock: 100,
     imageUrl: '',
@@ -177,7 +176,7 @@ export const fakeProducts = insuranceSchemes.map(s => ({
     ...s
 }));
 
-export const categories = insuranceCategories.map(c => c.category_name);
+export const categories = insuranceCategories.map(c => c.categoryName);
 
 export const dashboardStats: DashboardStats = {
     totalPolicies: 1284,

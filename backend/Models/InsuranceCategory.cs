@@ -14,6 +14,10 @@ public class InsuranceCategory
     [MaxLength(500)]
     public string? Description { get; set; }
 
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
     public ICollection<InsuranceScheme> InsuranceSchemes { get; set; }
         = new List<InsuranceScheme>();
+
 }

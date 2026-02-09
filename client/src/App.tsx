@@ -5,6 +5,7 @@ import ProductList from './pages/Products/ProductList';
 import ProductDetail from './pages/Products/ProductDetail';
 import UserList from './pages/Admin/UserList';
 import CategoryList from './pages/Admin/CategoryList';
+import CategoryEdit from './pages/Admin/CategoryEdit';
 import SchemeList from './pages/Admin/SchemeList';
 import PolicyList from './pages/Admin/PolicyList';
 import PaymentList from './pages/Admin/PaymentList';
@@ -20,6 +21,8 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="users" element={<UserList />} />
           <Route path="categories" element={<CategoryList />} />
+          <Route path="categories/new" element={<CategoryEdit />} />
+          <Route path="categories/:id" element={<CategoryEdit />} />
           <Route path="schemes" element={<SchemeList />} />
           <Route path="policies" element={<PolicyList />} />
           <Route path="payments" element={<PaymentList />} />
