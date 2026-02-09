@@ -11,11 +11,13 @@ import PaymentList from './pages/Admin/PaymentList';
 import ClaimList from './pages/Admin/ClaimList';
 import LoanList from './pages/Admin/LoanList';
 import NewsList from './pages/Admin/NewsList';
+import Login from './pages/Login';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/login" element={<Login />} />
         <Route path="/" element={<AdminLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="users" element={<UserList />} />
