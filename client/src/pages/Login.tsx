@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { fakeUsers } from '../data/fakeData';
 import loginImage from '../assets/image.png';
 
@@ -7,6 +8,7 @@ type AuthMode = 'login' | 'register' | 'forgot' | 'otp';
 
 const Login = () => {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [mode, setMode] = useState<AuthMode>('login');
 
     // Form States
@@ -33,11 +35,11 @@ const Login = () => {
         setLoading(true);
 
         setTimeout(() => {
-            const user = fakeUsers.find(u => u.email === formData.email || u.email === 'admin');
+            const user = fakeUsers.find(u => u.email === formData.email);
             let isValid = false;
 
             if (user) {
-                if ((user.email === 'admin' || formData.email === 'admin') && formData.password === '123123') {
+                if (formData.email === 'admin' && formData.password === '123123') {
                     isValid = true;
                 } else if (formData.email !== 'admin') {
                     isValid = true;
@@ -45,10 +47,11 @@ const Login = () => {
             }
 
             if (isValid && user) {
+                login(user);
                 if (user.role === 'Admin') {
-                    navigate('/');
+                    navigate('/admin');
                 } else {
-                    setError('Access denied. Admin privileges required.');
+                    navigate('/user');
                 }
             } else {
                 setError('Invalid username or password');
