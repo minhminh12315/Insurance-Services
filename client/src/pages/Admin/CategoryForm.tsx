@@ -9,7 +9,7 @@ interface CategoryFormProps {
 
 const CategoryForm: React.FC<CategoryFormProps> = ({ category, onSubmit, onCancel }) => {
     const [formData, setFormData] = useState<Partial<InsuranceCategory>>({
-        categoryName: '',
+        category_name: '',
         description: '',
     });
 
@@ -35,9 +35,9 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ category, onSubmit, onCance
                 <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Category Name *</label>
                 <input
                     type="text"
-                    name="categoryName"
+                    name="category_name"
                     className="input"
-                    value={formData.categoryName || ''}
+                    value={formData.category_name}
                     onChange={handleChange}
                     required
                     placeholder="e.g. Health Insurance"

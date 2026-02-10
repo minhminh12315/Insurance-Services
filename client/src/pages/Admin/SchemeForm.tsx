@@ -12,7 +12,7 @@ interface SchemeFormProps {
 const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, onCancel }) => {
     const [formData, setFormData] = useState<Partial<InsuranceScheme>>({
         scheme_name: '',
-        category_id: categories[0]?.categoryId || 0,
+        category_id: categories[0]?.category_id || 0,
         description: '',
         min_term: 1,
         max_term: 20,
@@ -74,7 +74,7 @@ const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, o
                     >
                         <option value="">Select Category</option>
                         {categories.map(cat => (
-                            <option key={cat.categoryId} value={cat.categoryId}>{cat.categoryName}</option>
+                            <option key={cat.category_id} value={cat.category_id}>{cat.category_name}</option>
                         ))}
                     </select>
                 </div>

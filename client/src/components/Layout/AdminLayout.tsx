@@ -1,19 +1,8 @@
-import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import PublicHeader from './PublicHeader';
 
 const AdminLayout = () => {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-    const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
-    };
-
-    const closeSidebar = () => {
-        setIsSidebarOpen(false);
-    };
-
     return (
         <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-secondary)' }}>
             <Sidebar />

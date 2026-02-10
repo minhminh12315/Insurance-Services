@@ -38,7 +38,7 @@ const SchemeList = () => {
     });
 
     const getCategoryName = (id: number | null) => {
-        return categories.find(c => c.categoryId === id)?.categoryName || 'Uncategorized';
+        return categories.find(c => c.category_id === id)?.category_name || 'Uncategorized';
     };
 
     const handleDelete = (id: number) => {
@@ -105,7 +105,7 @@ const SchemeList = () => {
                         >
                             <option value="">All Categories</option>
                             {categories.map(cat => (
-                                <option key={cat.categoryId} value={cat.categoryId}>{cat.categoryName}</option>
+                                <option key={cat.category_id} value={cat.category_id}>{cat.category_name}</option>
                             ))}
                         </select>
                     </div>
