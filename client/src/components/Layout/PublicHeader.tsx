@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const PublicHeader = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isPagesDropdownOpen, setIsPagesDropdownOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
     const location = useLocation();
 
     useEffect(() => {
@@ -14,6 +15,22 @@ const PublicHeader = () => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+                setIsPagesDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    // Close dropdown on route change
+    useEffect(() => {
+        setIsPagesDropdownOpen(false);
+    }, [location.pathname]);
 
     const navLinks = [
         { name: 'Home', path: '/home' },
@@ -122,11 +139,11 @@ const PublicHeader = () => {
 
                     {/* Pages Dropdown */}
                     <div
+                        ref={dropdownRef}
                         style={{ position: 'relative' }}
-                        onMouseEnter={() => setIsPagesDropdownOpen(true)}
-                        onMouseLeave={() => setIsPagesDropdownOpen(false)}
                     >
                         <button
+                            onClick={() => setIsPagesDropdownOpen(!isPagesDropdownOpen)}
                             style={{
                                 background: 'none',
                                 border: 'none',

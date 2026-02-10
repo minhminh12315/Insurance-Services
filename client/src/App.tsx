@@ -19,6 +19,11 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
 import Contact from './pages/Contact';
+import Features from './pages/Features';
+import Appointment from './pages/Appointment';
+import TeamMembers from './pages/TeamMembers';
+import Testimonial from './pages/Testimonial';
+import NotFound from './pages/NotFound';
 import UserDashboard from './pages/User/UserDashboard';
 import MyPolicies from './pages/User/MyPolicies';
 import MyClaims from './pages/User/MyClaims';
@@ -43,6 +48,18 @@ function App() {
         </Route>
         <Route path="/contact" element={<PublicLayout />}>
           <Route index element={<Contact />} />
+        </Route>
+        <Route path="/features" element={<PublicLayout />}>
+          <Route index element={<Features />} />
+        </Route>
+        <Route path="/appointment" element={<PublicLayout />}>
+          <Route index element={<Appointment />} />
+        </Route>
+        <Route path="/team" element={<PublicLayout />}>
+          <Route index element={<TeamMembers />} />
+        </Route>
+        <Route path="/testimonial" element={<PublicLayout />}>
+          <Route index element={<Testimonial />} />
         </Route>
         <Route path="/login" element={<Login />} />
 
@@ -71,6 +88,11 @@ function App() {
             <Route path="claims" element={<MyClaims />} />
             <Route path="payments" element={<MyPayments />} />
           </Route>
+        </Route>
+
+        {/* 404 Catch-all */}
+        <Route path="*" element={<PublicLayout />}>
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </BrowserRouter>
