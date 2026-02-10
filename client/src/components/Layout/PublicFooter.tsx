@@ -14,100 +14,40 @@ const PublicFooter = () => {
         { name: 'Health Insurance', path: '/services/health' },
         { name: 'Home Insurance', path: '/services/home' },
         { name: 'Vehicle Insurance', path: '/services/vehicle' },
-        { name: 'Business Insurance', path: '/services/business' },
     ];
 
     return (
-        <footer
-            style={{
-                background: 'linear-gradient(180deg, #0a1628 0%, #0d1f3c 100%)',
-                color: '#ffffff',
-                paddingTop: '80px',
-            }}
-        >
-            <div
-                style={{
-                    maxWidth: '1200px',
-                    margin: '0 auto',
-                    padding: '0 20px',
-                }}
-            >
+        <footer className="bg-gradient-to-b from-[#0a1628] to-[#0d1f3c] text-white pt-20">
+            <div className="max-w-[1200px] mx-auto px-5">
                 {/* Main Footer Content */}
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                        gap: '40px',
-                        paddingBottom: '60px',
-                    }}
-                >
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-10 pb-[60px]">
                     {/* Company Info */}
                     <div>
                         <Link
                             to="/home"
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                textDecoration: 'none',
-                                gap: '10px',
-                                marginBottom: '25px',
-                            }}
+                            className="flex items-center no-underline gap-2.5 mb-[25px]"
                         >
-                            <div
-                                style={{
-                                    width: '45px',
-                                    height: '45px',
-                                    background: 'linear-gradient(135deg, #015fc9 0%, #007bff 100%)',
-                                    borderRadius: '8px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            >
+                            <div className="w-[45px] h-[45px] bg-gradient-to-br from-[#015fc9] to-[#007bff] rounded-lg flex items-center justify-center">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
                                     <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="white" strokeWidth="2" fill="none" />
                                 </svg>
                             </div>
-                            <span style={{ fontSize: '24px', fontWeight: 700, color: '#ffffff' }}>
+                            <span className="text-2xl font-bold text-white">
                                 INSLIFE
                             </span>
                         </Link>
-                        <p
-                            style={{
-                                color: 'rgba(255,255,255,0.7)',
-                                lineHeight: '1.8',
-                                marginBottom: '25px',
-                                fontSize: '14px',
-                            }}
-                        >
+                        <p className="text-white/70 leading-[1.8] mb-[25px] text-sm">
                             Protecting your future with comprehensive insurance solutions. We provide reliable coverage for all your insurance needs.
                         </p>
                         {/* Social Icons */}
-                        <div style={{ display: 'flex', gap: '12px' }}>
+                        <div className="flex gap-3">
                             {['facebook', 'twitter', 'instagram', 'linkedin'].map((social) => (
                                 <a
                                     key={social}
                                     href={`https://${social}.com`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    style={{
-                                        width: '40px',
-                                        height: '40px',
-                                        borderRadius: '50%',
-                                        background: 'rgba(255,255,255,0.1)',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        transition: 'all 0.3s ease',
-                                    }}
-                                    onMouseEnter={(e) => {
-                                        e.currentTarget.style.background = '#015fc9';
-                                        e.currentTarget.style.transform = 'translateY(-3px)';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                                        e.currentTarget.style.transform = 'translateY(0)';
-                                    }}
+                                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center transition-all duration-300 ease hover:bg-[#015fc9] hover:-translate-y-[3px]"
                                 >
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
                                         {social === 'facebook' && (
@@ -130,94 +70,43 @@ const PublicFooter = () => {
 
                     {/* Address */}
                     <div>
-                        <h4
-                            style={{
-                                fontSize: '20px',
-                                fontWeight: 600,
-                                marginBottom: '25px',
-                                position: 'relative',
-                                paddingBottom: '15px',
-                            }}
-                        >
+                        <h4 className="text-xl font-semibold mb-[25px] relative pb-[15px]">
                             Address
-                            <span
-                                style={{
-                                    position: 'absolute',
-                                    bottom: 0,
-                                    left: 0,
-                                    width: '50px',
-                                    height: '3px',
-                                    background: '#015fc9',
-                                    borderRadius: '2px',
-                                }}
-                            />
+                            <span className="absolute bottom-0 left-0 w-[50px] h-[3px] bg-[#015fc9] rounded-[2px]" />
                         </h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                            <div style={{ display: 'flex', gap: '15px', alignItems: 'flex-start' }}>
-                                <div
-                                    style={{
-                                        width: '40px',
-                                        height: '40px',
-                                        borderRadius: '50%',
-                                        background: 'rgba(1, 95, 201, 0.2)',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        flexShrink: 0,
-                                    }}
-                                >
+                        <div className="flex flex-col gap-5">
+                            <div className="flex gap-[15px] items-start">
+                                <div className="w-10 h-10 rounded-full bg-[#015fc9]/20 flex items-center justify-center shrink-0">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="#015fc9">
                                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                                         <circle cx="12" cy="10" r="3" fill="white" />
                                     </svg>
                                 </div>
                                 <div>
-                                    <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', lineHeight: '1.6' }}>
+                                    <p className="text-white/70 text-sm leading-[1.6]">
                                         123 Street, District 1<br />
                                         Ho Chi Minh City, Vietnam
                                     </p>
                                 </div>
                             </div>
-                            <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-                                <div
-                                    style={{
-                                        width: '40px',
-                                        height: '40px',
-                                        borderRadius: '50%',
-                                        background: 'rgba(1, 95, 201, 0.2)',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        flexShrink: 0,
-                                    }}
-                                >
+                            <div className="flex gap-[15px] items-center">
+                                <div className="w-10 h-10 rounded-full bg-[#015fc9]/20 flex items-center justify-center shrink-0">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="#015fc9">
                                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                                     </svg>
                                 </div>
-                                <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px' }}>
+                                <p className="text-white/70 text-sm">
                                     +84 123 456 789
                                 </p>
                             </div>
-                            <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-                                <div
-                                    style={{
-                                        width: '40px',
-                                        height: '40px',
-                                        borderRadius: '50%',
-                                        background: 'rgba(1, 95, 201, 0.2)',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        flexShrink: 0,
-                                    }}
-                                >
+                            <div className="flex gap-[15px] items-center">
+                                <div className="w-10 h-10 rounded-full bg-[#015fc9]/20 flex items-center justify-center shrink-0">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="#015fc9">
                                         <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                                         <polyline points="22,6 12,13 2,6" stroke="white" strokeWidth="2" fill="none" />
                                     </svg>
                                 </div>
-                                <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px' }}>
+                                <p className="text-white/70 text-sm">
                                     info@inslife.com
                                 </p>
                             </div>
@@ -226,50 +115,16 @@ const PublicFooter = () => {
 
                     {/* Quick Links */}
                     <div>
-                        <h4
-                            style={{
-                                fontSize: '20px',
-                                fontWeight: 600,
-                                marginBottom: '25px',
-                                position: 'relative',
-                                paddingBottom: '15px',
-                            }}
-                        >
+                        <h4 className="text-xl font-semibold mb-[25px] relative pb-[15px]">
                             Quick Links
-                            <span
-                                style={{
-                                    position: 'absolute',
-                                    bottom: 0,
-                                    left: 0,
-                                    width: '50px',
-                                    height: '3px',
-                                    background: '#015fc9',
-                                    borderRadius: '2px',
-                                }}
-                            />
+                            <span className="absolute bottom-0 left-0 w-[50px] h-[3px] bg-[#015fc9] rounded-[2px]" />
                         </h4>
-                        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                        <ul className="list-none p-0 m-0">
                             {quickLinks.map((link) => (
-                                <li key={link.path} style={{ marginBottom: '12px' }}>
+                                <li key={link.path} className="mb-3">
                                     <Link
                                         to={link.path}
-                                        style={{
-                                            color: 'rgba(255,255,255,0.7)',
-                                            textDecoration: 'none',
-                                            fontSize: '14px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '10px',
-                                            transition: 'all 0.3s ease',
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            e.currentTarget.style.color = '#015fc9';
-                                            e.currentTarget.style.paddingLeft = '10px';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.currentTarget.style.color = 'rgba(255,255,255,0.7)';
-                                            e.currentTarget.style.paddingLeft = '0';
-                                        }}
+                                        className="text-white/70 no-underline text-sm flex items-center gap-2.5 transition-all duration-300 ease hover:text-[#015fc9] hover:pl-2.5"
                                     >
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M9 18l6-6-6-6" />
@@ -283,50 +138,16 @@ const PublicFooter = () => {
 
                     {/* Services */}
                     <div>
-                        <h4
-                            style={{
-                                fontSize: '20px',
-                                fontWeight: 600,
-                                marginBottom: '25px',
-                                position: 'relative',
-                                paddingBottom: '15px',
-                            }}
-                        >
+                        <h4 className="text-xl font-semibold mb-[25px] relative pb-[15px]">
                             Our Services
-                            <span
-                                style={{
-                                    position: 'absolute',
-                                    bottom: 0,
-                                    left: 0,
-                                    width: '50px',
-                                    height: '3px',
-                                    background: '#015fc9',
-                                    borderRadius: '2px',
-                                }}
-                            />
+                            <span className="absolute bottom-0 left-0 w-[50px] h-[3px] bg-[#015fc9] rounded-[2px]" />
                         </h4>
-                        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                        <ul className="list-none p-0 m-0">
                             {services.map((service) => (
-                                <li key={service.path} style={{ marginBottom: '12px' }}>
+                                <li key={service.path} className="mb-3">
                                     <Link
                                         to={service.path}
-                                        style={{
-                                            color: 'rgba(255,255,255,0.7)',
-                                            textDecoration: 'none',
-                                            fontSize: '14px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '10px',
-                                            transition: 'all 0.3s ease',
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            e.currentTarget.style.color = '#015fc9';
-                                            e.currentTarget.style.paddingLeft = '10px';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.currentTarget.style.color = 'rgba(255,255,255,0.7)';
-                                            e.currentTarget.style.paddingLeft = '0';
-                                        }}
+                                        className="text-white/70 no-underline text-sm flex items-center gap-2.5 transition-all duration-300 ease hover:text-[#015fc9] hover:pl-2.5"
                                     >
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M9 18l6-6-6-6" />
@@ -340,61 +161,23 @@ const PublicFooter = () => {
                 </div>
 
                 {/* Newsletter */}
-                <div
-                    style={{
-                        borderTop: '1px solid rgba(255,255,255,0.1)',
-                        borderBottom: '1px solid rgba(255,255,255,0.1)',
-                        padding: '40px 0',
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        gap: '20px',
-                    }}
-                >
+                <div className="border-t border-b border-white/10 py-10 flex flex-wrap justify-between items-center gap-5">
                     <div>
-                        <h4 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '8px' }}>
+                        <h4 className="text-xl font-semibold mb-2">
                             Subscribe to Our Newsletter
                         </h4>
-                        <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px' }}>
+                        <p className="text-white/70 text-sm">
                             Get the latest updates and offers directly in your inbox
                         </p>
                     </div>
-                    <div style={{ display: 'flex', gap: '10px' }}>
+                    <div className="flex gap-2.5">
                         <input
                             type="email"
                             placeholder="Your email address"
-                            style={{
-                                padding: '15px 20px',
-                                borderRadius: '50px',
-                                border: 'none',
-                                background: 'rgba(255,255,255,0.1)',
-                                color: '#ffffff',
-                                fontSize: '14px',
-                                minWidth: '280px',
-                                outline: 'none',
-                            }}
+                            className="py-[15px] px-5 rounded-[50px] border-none bg-white/10 text-white text-sm min-w-[280px] outline-none placeholder:text-white/50"
                         />
                         <button
-                            style={{
-                                background: 'linear-gradient(135deg, #015fc9 0%, #007bff 100%)',
-                                color: '#ffffff',
-                                padding: '15px 30px',
-                                borderRadius: '50px',
-                                border: 'none',
-                                fontWeight: 600,
-                                fontSize: '14px',
-                                cursor: 'pointer',
-                                transition: 'all 0.3s ease',
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.transform = 'translateY(-2px)';
-                                e.currentTarget.style.boxShadow = '0 6px 20px rgba(1, 95, 201, 0.5)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.transform = 'translateY(0)';
-                                e.currentTarget.style.boxShadow = 'none';
-                            }}
+                            className="bg-gradient-to-br from-[#015fc9] to-[#007bff] text-white py-[15px] px-[30px] rounded-[50px] border-none font-semibold text-sm cursor-pointer transition-all duration-300 ease hover:-translate-y-[2px] hover:shadow-[0_6px_20px_rgba(1,95,201,0.5)]"
                         >
                             Subscribe
                         </button>
@@ -402,37 +185,20 @@ const PublicFooter = () => {
                 </div>
 
                 {/* Copyright */}
-                <div
-                    style={{
-                        padding: '25px 0',
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        gap: '15px',
-                    }}
-                >
-                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px' }}>
-                        © 2024 <span style={{ color: '#015fc9' }}>INSLIFE</span>. All Rights Reserved.
+                <div className="py-[25px] flex flex-wrap justify-between items-center gap-[15px]">
+                    <p className="text-white/60 text-sm">
+                        © 2024 <span className="text-[#015fc9]">INSLIFE</span>. All Rights Reserved.
                     </p>
-                    <div style={{ display: 'flex', gap: '20px' }}>
+                    <div className="flex gap-5">
                         <Link
                             to="/privacy"
-                            style={{
-                                color: 'rgba(255,255,255,0.6)',
-                                textDecoration: 'none',
-                                fontSize: '14px',
-                            }}
+                            className="text-white/60 no-underline text-sm hover:text-white transition-colors"
                         >
                             Privacy Policy
                         </Link>
                         <Link
                             to="/terms"
-                            style={{
-                                color: 'rgba(255,255,255,0.6)',
-                                textDecoration: 'none',
-                                fontSize: '14px',
-                            }}
+                            className="text-white/60 no-underline text-sm hover:text-white transition-colors"
                         >
                             Terms of Service
                         </Link>

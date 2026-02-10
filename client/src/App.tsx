@@ -4,8 +4,7 @@ import PublicLayout from './components/Layout/PublicLayout';
 import UserLayout from './components/Layout/UserLayout';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
-import ProductList from './pages/Products/ProductList';
-import ProductDetail from './pages/Products/ProductDetail';
+
 import UserList from './pages/Admin/UserList';
 import CategoryList from './pages/Admin/CategoryList';
 import SchemeList from './pages/Admin/SchemeList';
@@ -14,6 +13,7 @@ import PaymentList from './pages/Admin/PaymentList';
 import ClaimList from './pages/Admin/ClaimList';
 import LoanList from './pages/Admin/LoanList';
 import NewsList from './pages/Admin/NewsList';
+import Profile from './pages/Admin/Profile';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -24,10 +24,9 @@ import Appointment from './pages/Appointment';
 import TeamMembers from './pages/TeamMembers';
 import Testimonial from './pages/Testimonial';
 import NotFound from './pages/NotFound';
-import UserDashboard from './pages/User/UserDashboard';
 import MyPolicies from './pages/User/MyPolicies';
-import MyClaims from './pages/User/MyClaims';
-import MyPayments from './pages/User/MyPayments';
+import UserPolicyDetail from './pages/User/UserPolicyDetail';
+import UserProfile from './pages/User/Profile';
 
 function App() {
   return (
@@ -75,18 +74,16 @@ function App() {
             <Route path="claims" element={<ClaimList />} />
             <Route path="loans" element={<LoanList />} />
             <Route path="news" element={<NewsList />} />
-            <Route path="products" element={<ProductList />} />
-            <Route path="products/:id" element={<ProductDetail />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
         </Route>
 
-        {/* User Routes - Protected */}
         <Route path="/user" element={<ProtectedRoute requiredRole="Customer" />}>
           <Route element={<UserLayout />}>
-            <Route index element={<UserDashboard />} />
+            <Route index element={<MyPolicies />} />
             <Route path="policies" element={<MyPolicies />} />
-            <Route path="claims" element={<MyClaims />} />
-            <Route path="payments" element={<MyPayments />} />
+            <Route path="policies/:id" element={<UserPolicyDetail />} />
+            <Route path="profile" element={<UserProfile />} />
           </Route>
         </Route>
 

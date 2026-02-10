@@ -1,11 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 const PublicHeader = () => {
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isPagesDropdownOpen, setIsPagesDropdownOpen] = useState(false);
+    const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const profileDropdownRef = useRef<HTMLDivElement>(null);
     const location = useLocation();
 
     useEffect(() => {
@@ -22,15 +27,26 @@ const PublicHeader = () => {
             if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
                 setIsPagesDropdownOpen(false);
             }
+            if (profileDropdownRef.current && !profileDropdownRef.current.contains(e.target as Node)) {
+                setIsProfileDropdownOpen(false);
+            }
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // Close dropdown on route change
+    // Close dropdowns on route change
     useEffect(() => {
         setIsPagesDropdownOpen(false);
+        setIsProfileDropdownOpen(false);
     }, [location.pathname]);
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
+
+    const initials = user?.full_name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || '';
 
     const navLinks = [
         { name: 'Home', path: '/home' },
@@ -46,115 +62,56 @@ const PublicHeader = () => {
     ];
 
     const isActive = (path: string) => location.pathname === path;
+    const isHomePage = location.pathname === '/home' || location.pathname === '/';
+    const useSolidHeader = isScrolled || !isHomePage;
 
     return (
         <header
-            style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                zIndex: 1000,
-                background: isScrolled ? '#ffffff' : 'transparent',
-                boxShadow: isScrolled ? '0 2px 10px rgba(0,0,0,0.1)' : 'none',
-                transition: 'all 0.3s ease',
-            }}
+            className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-300 ease-in-out ${useSolidHeader ? 'bg-white shadow-[0_2px_10px_rgba(0,0,0,0.1)]' : 'bg-transparent shadow-none'
+                }`}
         >
-            <div
-                style={{
-                    maxWidth: '1200px',
-                    margin: '0 auto',
-                    padding: '0 20px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    height: '80px',
-                }}
-            >
+            <div className="max-w-[1200px] mx-auto px-5 flex items-center justify-between h-20">
                 {/* Logo */}
                 <Link
                     to="/home"
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        textDecoration: 'none',
-                        gap: '10px',
-                    }}
+                    className="flex items-center no-underline gap-2.5"
                 >
-                    <div
-                        style={{
-                            width: '45px',
-                            height: '45px',
-                            background: 'linear-gradient(135deg, #015fc9 0%, #007bff 100%)',
-                            borderRadius: '8px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
-                    >
+                    <div className="w-[45px] h-[45px] bg-gradient-to-br from-[#015fc9] to-[#007bff] rounded-lg flex items-center justify-center">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
                             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="white" strokeWidth="2" fill="none" />
                         </svg>
                     </div>
                     <span
-                        style={{
-                            fontSize: '28px',
-                            fontWeight: 700,
-                            color: isScrolled ? '#015fc9' : '#ffffff',
-                        }}
+                        className={`text-[28px] font-bold ${useSolidHeader ? 'text-[#015fc9]' : 'text-white'
+                            }`}
                     >
                         INSLIFE
                     </span>
                 </Link>
 
                 {/* Desktop Navigation */}
-                <nav
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '35px',
-                    }}
-                    className="desktop-nav"
-                >
+                <nav className="flex items-center gap-9 desktop-nav">
                     {navLinks.map((link) => (
                         <Link
                             key={link.path}
                             to={link.path}
-                            style={{
-                                textDecoration: 'none',
-                                color: isActive(link.path)
-                                    ? '#015fc9'
-                                    : isScrolled
-                                        ? '#333333'
-                                        : '#ffffff',
-                                fontWeight: 500,
-                                fontSize: '15px',
-                                transition: 'color 0.3s ease',
-                                position: 'relative',
-                            }}
+                            className={`no-underline font-medium text-[15px] transition-colors duration-300 ease relative ${isActive(link.path)
+                                ? 'text-[#015fc9]'
+                                : useSolidHeader
+                                    ? 'text-[#333333] hover:text-[#015fc9]'
+                                    : 'text-white hover:text-[#e0e0e0]'
+                                }`}
                         >
                             {link.name}
                         </Link>
                     ))}
 
                     {/* Pages Dropdown */}
-                    <div
-                        ref={dropdownRef}
-                        style={{ position: 'relative' }}
-                    >
+                    <div ref={dropdownRef} className="relative">
                         <button
                             onClick={() => setIsPagesDropdownOpen(!isPagesDropdownOpen)}
-                            style={{
-                                background: 'none',
-                                border: 'none',
-                                color: isScrolled ? '#333333' : '#ffffff',
-                                fontWeight: 500,
-                                fontSize: '15px',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '5px',
-                            }}
+                            className={`bg-none border-none font-medium text-[15px] cursor-pointer flex items-center gap-1.5 ${useSolidHeader ? 'text-[#333333] hover:text-[#015fc9]' : 'text-white hover:text-[#e0e0e0]'
+                                }`}
                         >
                             Pages
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
@@ -162,37 +119,12 @@ const PublicHeader = () => {
                             </svg>
                         </button>
                         {isPagesDropdownOpen && (
-                            <div
-                                style={{
-                                    position: 'absolute',
-                                    top: '100%',
-                                    left: 0,
-                                    background: '#ffffff',
-                                    borderRadius: '8px',
-                                    boxShadow: '0 10px 40px rgba(0,0,0,0.15)',
-                                    minWidth: '200px',
-                                    padding: '10px 0',
-                                    marginTop: '10px',
-                                }}
-                            >
+                            <div className="absolute top-full left-0 bg-white rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.15)] min-w-[200px] py-2.5 mt-2.5">
                                 {pagesDropdown.map((item) => (
                                     <Link
                                         key={item.path}
                                         to={item.path}
-                                        style={{
-                                            display: 'block',
-                                            padding: '10px 20px',
-                                            color: '#333333',
-                                            textDecoration: 'none',
-                                            fontSize: '14px',
-                                            transition: 'background 0.3s ease',
-                                        }}
-                                        onMouseEnter={(e) =>
-                                            (e.currentTarget.style.background = '#f5f5f5')
-                                        }
-                                        onMouseLeave={(e) =>
-                                            (e.currentTarget.style.background = 'transparent')
-                                        }
+                                        className="block px-5 py-2.5 text-[#333333] no-underline text-sm transition-colors duration-300 ease hover:bg-[#f5f5f5]"
                                     >
                                         {item.name}
                                     </Link>
@@ -203,56 +135,131 @@ const PublicHeader = () => {
 
                     <Link
                         to="/contact"
-                        style={{
-                            textDecoration: 'none',
-                            color: isScrolled ? '#333333' : '#ffffff',
-                            fontWeight: 500,
-                            fontSize: '15px',
-                        }}
+                        className={`no-underline font-medium text-[15px] ${useSolidHeader ? 'text-[#333333] hover:text-[#015fc9]' : 'text-white hover:text-[#e0e0e0]'
+                            }`}
                     >
                         Contact Us
                     </Link>
                 </nav>
 
-                {/* Get A Quote Button */}
-                <Link
-                    to="/quote"
-                    style={{
-                        background: 'linear-gradient(135deg, #015fc9 0%, #007bff 100%)',
-                        color: '#ffffff',
-                        padding: '14px 30px',
-                        borderRadius: '50px',
-                        textDecoration: 'none',
-                        fontWeight: 600,
-                        fontSize: '14px',
-                        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                        boxShadow: '0 4px 15px rgba(1, 95, 201, 0.4)',
-                    }}
-                    className="quote-btn"
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 6px 20px rgba(1, 95, 201, 0.5)';
-                    }}
-                    onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 4px 15px rgba(1, 95, 201, 0.4)';
-                    }}
-                >
-                    Get A Quote
-                </Link>
+                {/* Profile / Login */}
+                {user ? (
+                    <div ref={profileDropdownRef} className="relative">
+                        <div
+                            onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                            className={`w-[42px] h-[42px] rounded-full bg-gradient-to-br from-[#015fc9] to-[#007bff] flex items-center justify-center text-white font-semibold text-sm cursor-pointer transition-all duration-300 ease ${isProfileDropdownOpen ? 'shadow-[0_0_0_3px_rgba(1,95,201,0.3)]' : 'shadow-none'
+                                }`}
+                        >
+                            {initials || (
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                            )}
+                        </div>
+                        {isProfileDropdownOpen && (
+                            <div className="absolute top-[calc(100%+12px)] right-0 bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] min-w-[240px] p-1.5 z-[200]">
+                                {/* User info */}
+                                <div className="px-4 py-3 border-b border-slate-100 mb-1">
+                                    <p className="text-sm font-semibold text-slate-900 leading-none">{user.full_name}</p>
+                                    <p className="text-xs text-slate-500 mt-1.5">{user.email}</p>
+                                </div>
+                                {[
+                                    // Admin Menu Items
+                                    ...(user.role === 'Admin' ? [
+                                        {
+                                            label: 'My Profile',
+                                            icon: (
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                                    <circle cx="12" cy="7" r="4" />
+                                                </svg>
+                                            ),
+                                            onClick: () => navigate('/admin/profile'),
+                                        },
+                                        {
+                                            label: 'Dashboard',
+                                            icon: (
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                    <rect x="3" y="3" width="7" height="7" />
+                                                    <rect x="14" y="3" width="7" height="7" />
+                                                    <rect x="14" y="14" width="7" height="7" />
+                                                    <rect x="3" y="14" width="7" height="7" />
+                                                </svg>
+                                            ),
+                                            onClick: () => navigate('/admin'),
+                                        }
+                                    ] :
+                                        // User/Customer Menu Items
+                                        [
+                                            {
+                                                label: 'Profile Details',
+                                                icon: (
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                                    </svg>
+                                                ),
+                                                onClick: () => navigate('/user/profile'),
+                                            },
+                                            {
+                                                label: 'My Policies',
+                                                icon: (
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                                        <polyline points="14 2 14 8 20 8" />
+                                                        <line x1="16" y1="13" x2="8" y2="13" />
+                                                        <line x1="16" y1="17" x2="8" y2="17" />
+                                                        <polyline points="10 9 9 9 8 9" />
+                                                    </svg>
+                                                ),
+                                                onClick: () => navigate('/user/policies'),
+                                            }
+                                        ]),
+                                ].map((item, i) => (
+                                    <button
+                                        key={i}
+                                        onClick={item.onClick}
+                                        className="w-full flex items-center gap-3 px-4 py-2.5 border-none bg-transparent rounded-lg cursor-pointer text-slate-700 text-sm font-medium transition-colors duration-200 text-left hover:bg-slate-50"
+                                    >
+                                        <span className="text-slate-400">{item.icon}</span>
+                                        {item.label}
+                                    </button>
+                                ))}
+                                <div className="h-px bg-slate-100 my-1 mx-1" />
+                                <button
+                                    onClick={handleLogout}
+                                    className="w-full flex items-center gap-3 px-4 py-2.5 border-none bg-transparent rounded-lg cursor-pointer text-red-500 text-sm font-medium transition-colors duration-200 text-left hover:bg-red-50"
+                                >
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                        <polyline points="16 17 21 12 16 7" />
+                                        <line x1="21" y1="12" x2="9" y2="12" />
+                                    </svg>
+                                    Logout
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <Link
+                        to="/login"
+                        className="bg-gradient-to-br from-[#015fc9] to-[#007bff] text-white px-7 py-3 rounded-[50px] no-underline font-semibold text-sm transition-all duration-300 ease shadow-[0_4px_15px_rgba(1,95,201,0.4)] flex items-center gap-2 hover:-translate-y-0.5"
+                    >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                            <polyline points="10 17 15 12 10 7" />
+                            <line x1="15" y1="12" x2="3" y2="12" />
+                        </svg>
+                        Login
+                    </Link>
+                )}
 
                 {/* Mobile Menu Button */}
                 <button
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    style={{
-                        display: 'none',
-                        background: 'none',
-                        border: 'none',
-                        color: isScrolled ? '#333333' : '#ffffff',
-                        cursor: 'pointer',
-                        padding: '10px',
-                    }}
-                    className="mobile-menu-btn"
+                    className={`hidden mobile-menu-btn bg-none border-none cursor-pointer p-2.5 ${useSolidHeader ? 'text-[#333333]' : 'text-white'
+                        }`}
                 >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
@@ -262,30 +269,12 @@ const PublicHeader = () => {
 
             {/* Mobile Menu */}
             {isMobileMenuOpen && (
-                <div
-                    style={{
-                        position: 'absolute',
-                        top: '80px',
-                        left: 0,
-                        right: 0,
-                        background: '#ffffff',
-                        padding: '20px',
-                        boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
-                    }}
-                    className="mobile-menu"
-                >
+                <div className="absolute top-[80px] left-0 right-0 bg-white p-5 shadow-[0_10px_40px_rgba(0,0,0,0.1)] mobile-menu">
                     {navLinks.map((link) => (
                         <Link
                             key={link.path}
                             to={link.path}
-                            style={{
-                                display: 'block',
-                                padding: '15px 0',
-                                color: '#333333',
-                                textDecoration: 'none',
-                                fontWeight: 500,
-                                borderBottom: '1px solid #eee',
-                            }}
+                            className="block py-4 text-[#333333] no-underline font-medium border-b border-gray-100"
                             onClick={() => setIsMobileMenuOpen(false)}
                         >
                             {link.name}
@@ -295,14 +284,7 @@ const PublicHeader = () => {
                         <Link
                             key={item.path}
                             to={item.path}
-                            style={{
-                                display: 'block',
-                                padding: '15px 0',
-                                color: '#333333',
-                                textDecoration: 'none',
-                                fontWeight: 500,
-                                borderBottom: '1px solid #eee',
-                            }}
+                            className="block py-4 text-[#333333] no-underline font-medium border-b border-gray-100"
                             onClick={() => setIsMobileMenuOpen(false)}
                         >
                             {item.name}
@@ -310,13 +292,7 @@ const PublicHeader = () => {
                     ))}
                     <Link
                         to="/contact"
-                        style={{
-                            display: 'block',
-                            padding: '15px 0',
-                            color: '#333333',
-                            textDecoration: 'none',
-                            fontWeight: 500,
-                        }}
+                        className="block py-4 text-[#333333] no-underline font-medium"
                         onClick={() => setIsMobileMenuOpen(false)}
                     >
                         Contact Us

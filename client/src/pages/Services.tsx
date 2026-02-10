@@ -42,26 +42,6 @@ const Services = () => {
             title: 'Vehicle Insurance',
             description: 'Drive with confidence knowing your vehicle is fully protected against accidents, theft, and all types of damages.',
         },
-        {
-            icon: (
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#015fc9" strokeWidth="1.5">
-                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                </svg>
-            ),
-            title: 'Business Insurance',
-            description: 'Secure your business operations with comprehensive commercial insurance coverage for complete peace of mind.',
-        },
-        {
-            icon: (
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#015fc9" strokeWidth="1.5">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                    <rect x="9" y="7" width="6" height="6" rx="1" />
-                </svg>
-            ),
-            title: 'Property Insurance',
-            description: 'Protect your valuable property investments with our comprehensive property insurance plans and coverage options.',
-        },
     ];
 
     return (
@@ -113,7 +93,7 @@ const Services = () => {
                     <div
                         style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
                             gap: '30px',
                         }}
                     >

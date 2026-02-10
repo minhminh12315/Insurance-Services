@@ -52,16 +52,6 @@ const Home = () => {
             title: 'Vehicle Insurance',
             description: 'Drive with confidence knowing your vehicle is fully protected against all risks.',
         },
-        {
-            icon: '💼',
-            title: 'Business Insurance',
-            description: 'Secure your business operations with comprehensive commercial insurance coverage.',
-        },
-        {
-            icon: '🏢',
-            title: 'Property Insurance',
-            description: 'Protect your valuable property investments with our property insurance plans.',
-        },
     ];
 
     const features = [
@@ -560,7 +550,7 @@ const Home = () => {
                     <div
                         style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
                             gap: '30px',
                         }}
                     >
@@ -751,7 +741,6 @@ const Home = () => {
                                 <option value="health">Health Insurance</option>
                                 <option value="home">Home Insurance</option>
                                 <option value="vehicle">Vehicle Insurance</option>
-                                <option value="business">Business Insurance</option>
                             </select>
                             <textarea
                                 placeholder="Your Message"
