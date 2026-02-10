@@ -1,15 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace InsuranceService.API.Models;
 
-public partial class InsuranceCategory
+public class InsuranceCategory
 {
+    [Key]
     public int CategoryId { get; set; }
 
-    public string CategoryName { get; set; } = null!;
+    [Required]
+    [MaxLength(50)]
+    public string CategoryName { get; set; } = string.Empty;
 
+    [MaxLength(500)]
     public string? Description { get; set; }
 
-    public virtual ICollection<InsuranceScheme> InsuranceSchemes { get; set; } = new List<InsuranceScheme>();
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+    public ICollection<InsuranceScheme> InsuranceSchemes { get; set; }
+        = new List<InsuranceScheme>();
+
 }

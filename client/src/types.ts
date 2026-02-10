@@ -19,8 +19,8 @@ export interface User {
 
 // --- Insurance Products ---
 export interface InsuranceCategory {
-    category_id: number;
-    category_name: string;
+    categoryId: number;
+    categoryName: string;
     description: string | null;
 }
 
