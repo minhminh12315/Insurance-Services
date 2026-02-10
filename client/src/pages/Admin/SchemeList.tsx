@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { insuranceSchemes, insuranceCategories } from '../../data/fakeData';
 // import api from '../../services/api';
 import type { InsuranceScheme, InsuranceCategory } from '../../types';
@@ -6,12 +6,12 @@ import SchemeForm from './SchemeForm';
 
 const SchemeList = () => {
     const [schemes, setSchemes] = useState<InsuranceScheme[]>(insuranceSchemes);
-    const [categories, setCategories] = useState<InsuranceCategory[]>(insuranceCategories);
+    const [categories] = useState<InsuranceCategory[]>(insuranceCategories);
     const [searchTerm, setSearchTerm] = useState('');
     const [categoryFilter, setCategoryFilter] = useState<string>('');
     const [showModal, setShowModal] = useState(false);
     const [editingScheme, setEditingScheme] = useState<InsuranceScheme | null>(null);
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
 
     // useEffect(() => {
     //     const fetchData = async () => {

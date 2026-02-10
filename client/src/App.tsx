@@ -7,7 +7,7 @@ import Dashboard from './pages/Dashboard';
 
 import UserList from './pages/Admin/UserList';
 import CategoryList from './pages/Admin/CategoryList';
-import CategoryEdit from './pages/Admin/CategoryEdit';
+
 import SchemeList from './pages/Admin/SchemeList';
 import PolicyList from './pages/Admin/PolicyList';
 import PaymentList from './pages/Admin/PaymentList';

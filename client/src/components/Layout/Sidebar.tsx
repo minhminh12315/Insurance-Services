@@ -1,7 +1,14 @@
 import { NavLink, useNavigate } from 'react-router-dom';
+import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 
-const Sidebar = () => {
+
+interface SidebarProps {
+    isOpen: boolean;
+    onClose: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
 
@@ -9,6 +16,7 @@ const Sidebar = () => {
         logout();
         navigate('/login');
     };
+
     return (
         <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
             {/* Logo */}

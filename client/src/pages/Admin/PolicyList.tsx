@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { fakePolicies, insuranceSchemes, fakeUsers } from '../../data/fakeData';
 // import api from '../../services/api';
 import type { Policy, PolicyStatus, User, InsuranceScheme } from '../../types';
@@ -6,12 +6,12 @@ import PolicyForm from './PolicyForm';
 
 const PolicyList = () => {
     const [policies, setPolicies] = useState<Policy[]>(fakePolicies);
-    const [users, setUsers] = useState<User[]>(fakeUsers);
-    const [schemes, setSchemes] = useState<InsuranceScheme[]>(insuranceSchemes);
+    const [users] = useState<User[]>(fakeUsers);
+    const [schemes] = useState<InsuranceScheme[]>(insuranceSchemes);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState<string>('');
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
 
     // Modal state
     const [showModal, setShowModal] = useState(false);
