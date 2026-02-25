@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import PageHeader from '../components/PageHeader';
 
 const TeamMembers = () => {
     const team = [
@@ -13,112 +13,38 @@ const TeamMembers = () => {
     ];
 
     return (
-        <div style={{ fontFamily: 'Inter, sans-serif' }}>
-            {/* Hero Banner */}
-            <section
-                style={{
-                    background: 'linear-gradient(rgba(0, 31, 63, 0.85), rgba(0, 31, 63, 0.85)), url(https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1920&h=600&fit=crop)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    padding: '180px 0 100px',
-                    color: '#ffffff',
-                }}
-            >
-                <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
-                    <h1 style={{ fontSize: '48px', fontWeight: 700, marginBottom: '20px' }}>Team Members</h1>
-                    <nav style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '15px' }}>
-                        <Link to="/home" style={{ color: 'rgba(255,255,255,0.8)', textDecoration: 'none' }}>Home</Link>
-                        <span style={{ color: 'rgba(255,255,255,0.5)' }}>/</span>
-                        <span style={{ color: 'rgba(255,255,255,0.5)' }}>Pages</span>
-                        <span style={{ color: 'rgba(255,255,255,0.5)' }}>/</span>
-                        <span style={{ color: '#015fc9' }}>Team Members</span>
-                    </nav>
-                </div>
-            </section>
+        <div>
+            {/* Page Header */}
+            <PageHeader title="Our Team" currentPage="Our Team" />
 
             {/* Team Section */}
-            <section style={{ padding: '100px 0', background: '#ffffff' }}>
-                <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
-                    <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-                        <h2 style={{ fontSize: '42px', fontWeight: 700, color: '#0a1628', marginBottom: '20px', lineHeight: 1.3 }}>
+            <section className="py-[100px] bg-white">
+                <div className="max-w-[1200px] mx-auto px-5">
+                    <div className="text-center mb-[60px]">
+                        <h2 className="text-[42px] font-bold text-[#0a1628] mb-5 leading-[1.3]">
                             Meet Our Professional<br />Team Members
                         </h2>
                     </div>
 
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(4, 1fr)',
-                            gap: '30px',
-                        }}
-                    >
+                    <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-[30px]">
                         {team.map((member, index) => (
                             <div
                                 key={index}
-                                style={{
-                                    background: '#ffffff',
-                                    borderRadius: '15px',
-                                    overflow: 'hidden',
-                                    boxShadow: '0 5px 20px rgba(0,0,0,0.05)',
-                                    transition: 'all 0.3s ease',
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(-8px)';
-                                    e.currentTarget.style.boxShadow = '0 15px 40px rgba(0,0,0,0.1)';
-                                    const overlay = e.currentTarget.querySelector('.social-overlay') as HTMLElement;
-                                    if (overlay) overlay.style.opacity = '1';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.boxShadow = '0 5px 20px rgba(0,0,0,0.05)';
-                                    const overlay = e.currentTarget.querySelector('.social-overlay') as HTMLElement;
-                                    if (overlay) overlay.style.opacity = '0';
-                                }}
+                                className="bg-white rounded-[15px] overflow-hidden shadow-[0_5px_20px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(0,0,0,0.1)] group"
                             >
-                                <div style={{ position: 'relative', overflow: 'hidden' }}>
+                                <div className="relative overflow-hidden">
                                     <img
                                         src={member.image}
                                         alt={member.name}
-                                        style={{
-                                            width: '100%',
-                                            height: '280px',
-                                            objectFit: 'cover',
-                                            transition: 'transform 0.5s ease',
-                                        }}
+                                        className="w-full h-[280px] object-cover transition-transform duration-500 group-hover:scale-110"
                                     />
                                     {/* Social overlay */}
-                                    <div
-                                        className="social-overlay"
-                                        style={{
-                                            position: 'absolute',
-                                            bottom: '0',
-                                            left: '0',
-                                            right: '0',
-                                            background: 'linear-gradient(transparent, rgba(0,0,0,0.6))',
-                                            padding: '30px 15px 15px',
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            gap: '10px',
-                                            opacity: 0,
-                                            transition: 'opacity 0.3s ease',
-                                        }}
-                                    >
+                                    <div className="absolute bottom-0 left-0 right-0 bg-[linear-gradient(transparent,rgba(0,0,0,0.6))] p-[30px_15px_15px] flex justify-center gap-2.5 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                                         {['twitter', 'facebook', 'youtube', 'linkedin'].map((social) => (
                                             <a
                                                 key={social}
                                                 href="#"
-                                                style={{
-                                                    width: '36px',
-                                                    height: '36px',
-                                                    background: '#015fc9',
-                                                    borderRadius: '50%',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    transition: 'all 0.3s ease',
-                                                }}
-                                                onMouseEnter={e => { e.currentTarget.style.background = '#007bff'; }}
-                                                onMouseLeave={e => { e.currentTarget.style.background = '#015fc9'; }}
+                                                className="w-9 h-9 bg-[#015fc9] rounded-full flex items-center justify-center transition-all duration-300 hover:bg-[#007bff]"
                                             >
                                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
                                                     {social === 'twitter' && (
@@ -138,11 +64,11 @@ const TeamMembers = () => {
                                         ))}
                                     </div>
                                 </div>
-                                <div style={{ padding: '20px', textAlign: 'center' }}>
-                                    <h4 style={{ fontSize: '18px', fontWeight: 600, color: '#0a1628', marginBottom: '5px' }}>
+                                <div className="p-5 text-center">
+                                    <h4 className="text-lg font-semibold text-[#0a1628] mb-[5px]">
                                         {member.name}
                                     </h4>
-                                    <p style={{ color: '#666', fontSize: '14px' }}>{member.role}</p>
+                                    <p className="text-[#666] text-sm">{member.role}</p>
                                 </div>
                             </div>
                         ))}

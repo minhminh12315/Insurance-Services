@@ -5,65 +5,54 @@ const MyClaims = () => {
     const { user } = useAuth();
     const myClaims = fakeClaims.filter(c => c.user_id === user?.user_id);
 
-    const cardStyle = {
-        background: 'white',
-        borderRadius: '16px',
-        padding: '28px',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
-        border: '1px solid #e2e8f0',
-    };
-
-    const statusColors: Record<string, { bg: string; text: string }> = {
-        'Submitted': { bg: '#e0f2fe', text: '#0284c7' },
-        'Under Review': { bg: '#fef3c7', text: '#d97706' },
-        'Approved': { bg: '#dcfce7', text: '#16a34a' },
-        'Rejected': { bg: '#fee2e2', text: '#dc2626' },
+    const statusColors: Record<string, string> = {
+        'Submitted': 'bg-blue-100 text-blue-700',
+        'Under Review': 'bg-amber-100 text-amber-700',
+        'Approved': 'bg-emerald-100 text-emerald-700',
+        'Rejected': 'bg-red-100 text-red-700',
     };
 
     return (
-        <div>
-            <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#1e293b', marginBottom: '24px' }}>
+        <div className="max-w-5xl mx-auto">
+            <h1 className="text-2xl font-bold text-slate-900 mb-8 flex items-center gap-2">
                 📝 My Claims
             </h1>
 
             {myClaims.length === 0 ? (
-                <div style={{ ...cardStyle, textAlign: 'center', padding: '60px' }}>
-                    <p style={{ fontSize: '48px', marginBottom: '16px' }}>✅</p>
-                    <p style={{ color: '#64748b', fontSize: '16px' }}>No claims filed yet.</p>
+                <div className="bg-white rounded-2xl p-20 text-center border border-slate-200 shadow-sm">
+                    <p className="text-5xl mb-4">✅</p>
+                    <p className="text-slate-500 text-lg font-medium">No claims filed yet.</p>
                 </div>
             ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div className="flex flex-col gap-6">
                     {myClaims.map(claim => {
                         const policy = fakePolicies.find(p => p.policy_id === claim.policy_id);
-                        const colors = statusColors[claim.status] || { bg: '#f1f5f9', text: '#475569' };
+                        const statusClass = statusColors[claim.status] || 'bg-slate-100 text-slate-600';
                         return (
-                            <div key={claim.claim_id} style={cardStyle}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                            <div key={claim.claim_id} className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                                <div className="flex justify-between items-start flex-wrap gap-4 mb-8">
                                     <div>
-                                        <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#1e293b', marginBottom: '4px' }}>
+                                        <h3 className="text-lg font-bold text-slate-900 mb-1">
                                             Claim #{claim.claim_id}
                                         </h3>
-                                        <p style={{ color: '#64748b', fontSize: '14px' }}>Policy: {policy?.policy_number || 'N/A'}</p>
+                                        <p className="text-slate-500 text-sm font-medium">Policy: <span className="text-slate-700 font-mono">{policy?.policy_number || 'N/A'}</span></p>
                                     </div>
-                                    <span style={{
-                                        padding: '6px 16px', borderRadius: '20px', fontSize: '13px', fontWeight: 600,
-                                        background: colors.bg, color: colors.text,
-                                    }}>
+                                    <span className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide ${statusClass}`}>
                                         {claim.status}
                                     </span>
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #f1f5f9' }}>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-slate-100">
                                     <div>
-                                        <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Claim Date</div>
-                                        <div style={{ fontWeight: 600, color: '#1e293b' }}>{claim.claim_date}</div>
+                                        <div className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-1">Claim Date</div>
+                                        <div className="font-bold text-slate-900">{claim.claim_date}</div>
                                     </div>
                                     <div>
-                                        <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Amount</div>
-                                        <div style={{ fontWeight: 600, color: '#1e293b' }}>${claim.claim_amount.toLocaleString()}</div>
+                                        <div className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-1">Amount</div>
+                                        <div className="font-bold text-slate-900 text-lg">${claim.claim_amount.toLocaleString()}</div>
                                     </div>
                                     <div>
-                                        <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Reason</div>
-                                        <div style={{ fontWeight: 600, color: '#1e293b' }}>{claim.reason}</div>
+                                        <div className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-1">Reason</div>
+                                        <div className="font-bold text-slate-900">{claim.reason}</div>
                                     </div>
                                 </div>
                             </div>

@@ -31,8 +31,8 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ category, onSubmit, onCance
 
     return (
         <form onSubmit={handleSubmit}>
-            <div style={{ marginBottom: '24px' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Category Name *</label>
+            <div className="mb-6">
+                <label className="block mb-2 text-[13px] font-semibold text-slate-500">Category Name *</label>
                 <input
                     type="text"
                     name="category_name"
@@ -43,18 +43,17 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ category, onSubmit, onCance
                     placeholder="e.g. Health Insurance"
                 />
             </div>
-            <div style={{ marginBottom: '32px' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Description</label>
+            <div className="mb-8">
+                <label className="block mb-2 text-[13px] font-semibold text-slate-500">Description</label>
                 <textarea
                     name="description"
-                    className="input"
-                    style={{ height: '120px', resize: 'none' }}
+                    className="input h-[120px] resize-none"
                     value={formData.description || ''}
                     onChange={handleChange}
                     placeholder="Briefly describe what this category covers..."
                 />
             </div>
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+            <div className="flex gap-3 justify-end">
                 <button type="button" className="btn btn-secondary" onClick={onCancel}>Cancel</button>
                 <button type="submit" className="btn btn-primary">
                     {category ? 'Update Category' : 'Create Category'}

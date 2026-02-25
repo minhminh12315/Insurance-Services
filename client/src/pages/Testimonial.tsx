@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import PageHeader from '../components/PageHeader';
 
 const Testimonial = () => {
     const testimonials = [
@@ -58,40 +58,21 @@ const Testimonial = () => {
     ];
 
     return (
-        <div style={{ fontFamily: 'Inter, sans-serif' }}>
-            {/* Hero Banner */}
-            <section
-                style={{
-                    background: 'linear-gradient(rgba(0, 31, 63, 0.85), rgba(0, 31, 63, 0.85)), url(https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1920&h=600&fit=crop)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    padding: '180px 0 100px',
-                    color: '#ffffff',
-                }}
-            >
-                <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
-                    <h1 style={{ fontSize: '48px', fontWeight: 700, marginBottom: '20px' }}>Testimonial</h1>
-                    <nav style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '15px' }}>
-                        <Link to="/home" style={{ color: 'rgba(255,255,255,0.8)', textDecoration: 'none' }}>Home</Link>
-                        <span style={{ color: 'rgba(255,255,255,0.5)' }}>/</span>
-                        <span style={{ color: 'rgba(255,255,255,0.5)' }}>Pages</span>
-                        <span style={{ color: 'rgba(255,255,255,0.5)' }}>/</span>
-                        <span style={{ color: '#015fc9' }}>Testimonial</span>
-                    </nav>
-                </div>
-            </section>
+        <div>
+            {/* Page Header */}
+            <PageHeader title="Testimonial" currentPage="Testimonial" />
 
             {/* Testimonial Section */}
-            <section style={{ padding: '100px 0', background: '#ffffff' }}>
-                <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px' }}>
-                    <div style={{ textAlign: 'center', marginBottom: '50px' }}>
-                        <h2 style={{ fontSize: '42px', fontWeight: 700, color: '#0a1628', lineHeight: 1.3 }}>
+            <section className="py-[100px] bg-white">
+                <div className="max-w-[800px] mx-auto px-5">
+                    <div className="text-center mb-[50px]">
+                        <h2 className="text-[42px] font-bold text-[#0a1628] leading-[1.3]">
                             What They Say About<br />Our Insurance
                         </h2>
                     </div>
 
                     {/* Testimonial Carousel */}
-                    <div style={{ position: 'relative', minHeight: '420px' }}>
+                    <div className="relative min-h-[420px]">
                         {/* Floating avatars */}
                         {testimonials.map((t, i) => {
                             if (i === current) return null;
@@ -100,110 +81,47 @@ const Testimonial = () => {
                             return (
                                 <div
                                     key={i}
-                                    style={{
-                                        position: 'absolute',
-                                        ...pos,
-                                        transition: 'all 0.5s ease',
-                                        cursor: 'pointer',
-                                        zIndex: 1,
-                                    }}
+                                    style={pos}
+                                    className="absolute transition-all duration-500 cursor-pointer z-[1]"
                                     onClick={() => setCurrent(i)}
                                 >
                                     <img
                                         src={t.image}
                                         alt={t.name}
-                                        style={{
-                                            width: '60px',
-                                            height: '60px',
-                                            borderRadius: '50%',
-                                            objectFit: 'cover',
-                                            border: '3px solid #e8edf2',
-                                            opacity: 0.7,
-                                            transition: 'all 0.3s ease',
-                                        }}
-                                        onMouseEnter={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.borderColor = '#015fc9'; }}
-                                        onMouseLeave={e => { e.currentTarget.style.opacity = '0.7'; e.currentTarget.style.borderColor = '#e8edf2'; }}
+                                        className="w-[60px] h-[60px] rounded-full object-cover border-3 border-[#e8edf2] opacity-70 transition-all duration-300 hover:opacity-100 hover:border-[#015fc9]"
                                     />
                                 </div>
                             );
                         })}
 
                         {/* Center testimonial */}
-                        <div style={{ textAlign: 'center', position: 'relative', zIndex: 2, paddingTop: '20px' }}>
+                        <div className="text-center relative z-[2] pt-5">
                             <img
                                 src={testimonials[current].image}
                                 alt={testimonials[current].name}
-                                style={{
-                                    width: '90px',
-                                    height: '90px',
-                                    borderRadius: '50%',
-                                    objectFit: 'cover',
-                                    border: '4px solid #015fc9',
-                                    margin: '0 auto 25px',
-                                    display: 'block',
-                                    boxShadow: '0 5px 20px rgba(1, 95, 201, 0.3)',
-                                }}
+                                className="w-[90px] h-[90px] rounded-full object-cover border-4 border-[#015fc9] mx-auto mb-[25px] block shadow-[0_5px_20px_rgba(1,95,201,0.3)]"
                             />
-                            <p
-                                style={{
-                                    color: '#666',
-                                    lineHeight: 1.8,
-                                    fontSize: '16px',
-                                    maxWidth: '600px',
-                                    margin: '0 auto 25px',
-                                    fontStyle: 'italic',
-                                }}
-                            >
+                            <p className="text-[#666] leading-[1.8] text-base max-w-[600px] mx-auto mb-[25px] italic">
                                 {testimonials[current].text}
                             </p>
-                            <h4 style={{ fontSize: '20px', fontWeight: 600, color: '#0a1628', marginBottom: '5px' }}>
+                            <h4 className="text-xl font-semibold text-[#0a1628] mb-[5px]">
                                 {testimonials[current].name}
                             </h4>
-                            <p style={{ color: '#666', fontSize: '14px', marginBottom: '30px' }}>
+                            <p className="text-[#666] text-sm mb-[30px]">
                                 {testimonials[current].profession}
                             </p>
 
                             {/* Navigation Buttons */}
-                            <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                            <div className="flex justify-center gap-2.5">
                                 <button
                                     onClick={prev}
-                                    style={{
-                                        width: '42px',
-                                        height: '42px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        background: 'linear-gradient(135deg, #015fc9 0%, #007bff 100%)',
-                                        color: '#ffffff',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        transition: 'all 0.3s ease',
-                                        fontSize: '18px',
-                                    }}
-                                    onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; }}
-                                    onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                                    className="w-[42px] h-[42px] rounded-lg border-none bg-[linear-gradient(135deg,#015fc9_0%,#007bff_100%)] text-white cursor-pointer flex items-center justify-center transition-all duration-300 text-lg hover:scale-110"
                                 >
                                     ‹
                                 </button>
                                 <button
                                     onClick={next}
-                                    style={{
-                                        width: '42px',
-                                        height: '42px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        background: 'linear-gradient(135deg, #015fc9 0%, #007bff 100%)',
-                                        color: '#ffffff',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        transition: 'all 0.3s ease',
-                                        fontSize: '18px',
-                                    }}
-                                    onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; }}
-                                    onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                                    className="w-[42px] h-[42px] rounded-lg border-none bg-[linear-gradient(135deg,#015fc9_0%,#007bff_100%)] text-white cursor-pointer flex items-center justify-center transition-all duration-300 text-lg hover:scale-110"
                                 >
                                     ›
                                 </button>

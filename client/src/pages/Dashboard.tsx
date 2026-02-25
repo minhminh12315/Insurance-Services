@@ -113,56 +113,43 @@ const Dashboard = () => {
         },
     ];
 
-    if (loading) return <div style={{ padding: '40px', textAlign: 'center' }}>Loading dashboard...</div>;
+    if (loading) return <div className="p-10 text-center font-bold text-slate-500">Loading dashboard...</div>;
 
     return (
-        <div>
+        <div className="max-w-7xl mx-auto">
             {/* Page Header */}
-            <div style={{ marginBottom: '32px' }}>
-                <h1 style={{ fontSize: '28px', fontWeight: 800, marginBottom: '8px', color: '#1e293b' }}>
+            <div className="mb-10">
+                <h1 className="text-3xl font-extrabold text-slate-900 mb-2">
                     Dashboard Overview
                 </h1>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>
+                <p className="text-slate-500 text-base font-medium">
                     Welcome back, Thanh! Here's what's happening with your insurance portfolio today.
                 </p>
             </div>
 
             {/* Stats Cards */}
-            <div
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-                    gap: '24px',
-                    marginBottom: '32px',
-                }}
-            >
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                 {cards.map((stat, index) => (
                     <div
                         key={index}
-                        className="glass-card stat-card"
-                        style={{ padding: '24px', background: '#ffffff', border: '1px solid #e2e8f0' }}
+                        className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
                     >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                            <div>
-                                <p style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: 500, marginBottom: '8px' }}>
+                        <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                                <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-2">
                                     {stat.label}
                                 </p>
-                                <h2 style={{ fontSize: '28px', fontWeight: 700, color: '#1e293b' }}>{stat.value}</h2>
+                                <h2 className="text-3xl font-bold text-slate-900">{stat.value}</h2>
                                 {stat.change !== undefined && (
-                                    <p style={{ color: stat.change > 0 ? 'var(--success)' : 'var(--danger)', fontSize: '13px', fontWeight: 600, marginTop: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                        {stat.change > 0 ? '↑' : '↓'} {Math.abs(stat.change)}% <span style={{ fontWeight: 400, color: '#94a3b8' }}>vs last month</span>
+                                    <p className={`text-xs font-bold mt-3 flex items-center gap-1.5 ${stat.change > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                                        {stat.change > 0 ? '↑' : '↓'} {Math.abs(stat.change)}% <span className="font-medium text-slate-400">vs last month</span>
                                     </p>
                                 )}
                             </div>
                             <div
+                                className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ml-4 shadow-sm"
                                 style={{
-                                    width: '48px',
-                                    height: '48px',
-                                    borderRadius: '12px',
                                     background: `${stat.color}15`,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
                                     color: stat.color,
                                 }}
                             >
@@ -174,93 +161,65 @@ const Dashboard = () => {
             </div>
 
             {/* Charts and Activity Row */}
-            <div
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1.5fr 1fr',
-                    gap: '24px',
-                    alignItems: 'start',
-                }}
-            >
-                {/* Chart */}
-                <div className="glass-card" style={{ padding: '24px', background: '#ffffff' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
-                        <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1e293b' }}>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                {/* Chart Box */}
+                <div className="lg:col-span-2 bg-white rounded-2xl p-8 border border-slate-200 shadow-sm">
+                    <div className="flex justify-between items-center mb-10">
+                        <h3 className="text-xl font-bold text-slate-900">
                             New Policies Issued
                         </h3>
-                        <div style={{ display: 'flex', gap: '8px' }}>
+                        <div className="flex bg-slate-100 p-1 rounded-lg">
                             {['Week', 'Month', 'Year'].map(t => (
-                                <button key={t} style={{ padding: '4px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, border: 'none', background: t === 'Week' ? '#eff6ff' : 'transparent', color: t === 'Week' ? 'var(--accent-primary)' : '#64748b', cursor: 'pointer' }}>{t}</button>
+                                <button
+                                    key={t}
+                                    className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${t === 'Week' ? 'bg-white text-[#015fc9] shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                                        }`}
+                                >
+                                    {t}
+                                </button>
                             ))}
                         </div>
                     </div>
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'flex-end',
-                            justifyContent: 'space-between',
-                            height: '240px',
-                            padding: '0 8px',
-                        }}
-                    >
+                    <div className="flex items-end justify-between h-60 px-4">
                         {chartData.map((value, index) => (
-                            <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', flex: 1 }}>
+                            <div key={index} className="flex flex-col items-center gap-4 flex-1">
                                 <div
-                                    className="chart-bar"
-                                    style={{
-                                        width: '60%',
-                                        maxWidth: '40px',
-                                        height: `${value * 2.5}px`,
-                                        background: index === 4 ? 'var(--accent-gradient)' : '#e2e8f0',
-                                        borderRadius: '6px 6px 0 0',
-                                        transition: 'all 0.3s ease',
-                                    }}
+                                    className={`w-full max-w-[40px] rounded-t-lg transition-all duration-500 hover:opacity-80 cursor-pointer ${index === 4 ? 'bg-gradient-to-t from-[#015fc9] to-[#3b82f6] shadow-lg shadow-blue-200' : 'bg-slate-100'
+                                        }`}
+                                    style={{ height: `${value * 2.5}px` }}
                                 />
-                                <span style={{ color: '#94a3b8', fontSize: '12px', fontWeight: 500 }}>{days[index]}</span>
+                                <span className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">{days[index]}</span>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                {/* Recent Activity */}
-                <div className="glass-card" style={{ padding: '24px', background: '#ffffff' }}>
-                    <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1e293b', marginBottom: '24px' }}>
+                {/* Recent Activity Box */}
+                <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm flex flex-col h-full">
+                    <h3 className="text-xl font-bold text-slate-900 mb-6 font-display">
                         System Notifications
                     </h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div className="flex flex-col gap-4 flex-1">
                         {recentActivity.map((activity) => (
                             <div
                                 key={activity.id}
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'flex-start',
-                                    gap: '12px',
-                                    padding: '12px',
-                                    borderBottom: '1px solid #f1f5f9',
-                                }}
+                                className="flex items-start gap-4 p-4 rounded-xl hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
                             >
-                                <div
-                                    style={{
-                                        width: '32px',
-                                        height: '32px',
-                                        borderRadius: '8px',
-                                        background: '#f8fafc',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        fontSize: '16px',
-                                    }}
-                                >
+                                <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-xl shrink-0 shadow-sm">
                                     {activity.icon}
                                 </div>
-                                <div style={{ flex: 1 }}>
-                                    <p style={{ fontSize: '13.5px', color: '#334155', fontWeight: 500, lineHeight: 1.4 }}>{activity.msg}</p>
-                                    <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '2px' }}>{new Date(activity.date).toLocaleDateString()} {new Date(activity.date).toLocaleTimeString()}</p>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm text-slate-700 font-bold leading-snug line-clamp-2">{activity.msg}</p>
+                                    <p className="text-[10px] text-slate-400 font-bold mt-1 uppercase tracking-tight">
+                                        {new Date(activity.date).toLocaleDateString()} • {new Date(activity.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </p>
                                 </div>
                             </div>
                         ))}
                     </div>
-                    <button className="btn btn-secondary" style={{ width: '100%', marginTop: '16px', fontSize: '13px' }}>View All Notifications</button>
+                    <button className="w-full mt-6 py-3 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold text-sm rounded-xl transition-all border border-slate-100">
+                        View All Notifications
+                    </button>
                 </div>
             </div>
         </div>

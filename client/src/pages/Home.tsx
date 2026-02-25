@@ -1,5 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import icon06 from '../assets/icon-06-primary.png';
+import icon03 from '../assets/icon-03-primary.png';
+import icon04 from '../assets/icon-04-primary.png';
+import icon07 from '../assets/icon-07-primary.png';
+import homeDoctor from '../assets/home_doctor.jpg';
+import lifeIcon from '../assets/life_insurance.png';
+import healthIcon from '../assets/health_insurance.png';
+import homeIcon from '../assets/home_insurance.png';
+import vehicleIcon from '../assets/vehicle_insurance.png';
+import carousel2 from '../assets/carousel-2.jpg';
+import carousel12 from '../assets/carousel-12.jpg';
 
 const Home = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -33,32 +44,32 @@ const Home = () => {
 
     const services = [
         {
-            icon: '❤️',
+            icon: lifeIcon,
             title: 'Life Insurance',
-            description: 'Protect your loved ones with comprehensive life insurance coverage for peace of mind.',
+            description: 'Aliqu diam amet eos erat ipsum et lorem et sit, sed stet lorem sit clita duo justo erat amet',
         },
         {
-            icon: '🏥',
+            icon: healthIcon,
             title: 'Health Insurance',
-            description: 'Access quality healthcare with our flexible health insurance plans tailored to your needs.',
+            description: 'Aliqu diam amet eos erat ipsum et lorem et sit, sed stet lorem sit clita duo justo erat amet',
         },
         {
-            icon: '🏠',
+            icon: homeIcon,
             title: 'Home Insurance',
-            description: 'Safeguard your home and belongings with our reliable home insurance solutions.',
+            description: 'Aliqu diam amet eos erat ipsum et lorem et sit, sed stet lorem sit clita duo justo erat amet',
         },
         {
-            icon: '🚗',
+            icon: vehicleIcon,
             title: 'Vehicle Insurance',
-            description: 'Drive with confidence knowing your vehicle is fully protected against all risks.',
+            description: 'Aliqu diam amet eos erat ipsum et lorem et sit, sed stet lorem sit clita duo justo erat amet',
         },
     ];
 
     const features = [
-        { icon: '⚡', title: 'Easy Process', description: 'Simple and streamlined application process' },
-        { icon: '🚀', title: 'Fast Delivery', description: 'Quick policy issuance and claims processing' },
-        { icon: '🎛️', title: 'Policy Controlling', description: 'Full control over your insurance policies' },
-        { icon: '💰', title: 'Money Saving', description: 'Competitive rates and maximum savings' },
+        { icon: icon06, title: 'Easy Process', delay: '0.1s' },
+        { icon: icon03, title: 'Fast Delivery', delay: '0.2s' },
+        { icon: icon04, title: 'Policy Controlling', delay: '0.3s' },
+        { icon: icon07, title: 'Money Saving', delay: '0.4s' },
     ];
 
     const team = [
@@ -90,74 +101,28 @@ const Home = () => {
     ];
 
     return (
-        <div style={{ fontFamily: 'Inter, sans-serif' }}>
+        <div>
             {/* Hero Section */}
-            <section
-                style={{
-                    height: '100vh',
-                    position: 'relative',
-                    overflow: 'hidden',
-                }}
-            >
+            <section className="h-screen relative overflow-hidden">
                 {heroSlides.map((slide, index) => (
                     <div
                         key={index}
+                        className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 flex items-center`}
                         style={{
-                            position: 'absolute',
-                            inset: 0,
                             backgroundImage: `linear-gradient(rgba(0, 31, 63, 0.8), rgba(0, 31, 63, 0.8)), url(${slide.image})`,
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
                             opacity: currentSlide === index ? 1 : 0,
-                            transition: 'opacity 1s ease-in-out',
-                            display: 'flex',
-                            alignItems: 'center',
                         }}
                     >
-                        <div
-                            style={{
-                                maxWidth: '1200px',
-                                margin: '0 auto',
-                                padding: '0 20px',
-                                color: '#ffffff',
-                            }}
-                        >
-                            <h1
-                                style={{
-                                    fontSize: 'clamp(36px, 5vw, 64px)',
-                                    fontWeight: 700,
-                                    marginBottom: '20px',
-                                    lineHeight: 1.2,
-                                    maxWidth: '700px',
-                                }}
-                            >
+                        <div className="max-w-[1200px] mx-auto px-5 text-white">
+                            <h1 className="text-[clamp(36px,5vw,64px)] font-bold mb-5 leading-[1.2] max-w-[700px]">
                                 {slide.title}
                             </h1>
-                            <p
-                                style={{
-                                    fontSize: '18px',
-                                    marginBottom: '40px',
-                                    opacity: 0.9,
-                                    maxWidth: '600px',
-                                    lineHeight: 1.8,
-                                }}
-                            >
+                            <p className="text-lg mb-10 opacity-90 max-w-[600px] leading-[1.8]">
                                 {slide.subtitle}
                             </p>
                             <Link
                                 to="/services"
-                                style={{
-                                    display: 'inline-block',
-                                    background: 'linear-gradient(135deg, #015fc9 0%, #007bff 100%)',
-                                    color: '#ffffff',
-                                    padding: '18px 40px',
-                                    borderRadius: '50px',
-                                    textDecoration: 'none',
-                                    fontWeight: 600,
-                                    fontSize: '16px',
-                                    transition: 'all 0.3s ease',
-                                    boxShadow: '0 4px 20px rgba(1, 95, 201, 0.4)',
-                                }}
+                                className="inline-block bg-[linear-gradient(135deg,#015fc9_0%,#007bff_100%)] text-white px-10 py-[18px] rounded-[50px] no-underline font-semibold text-lg transition-all duration-300 shadow-[0_4px_20px_rgba(1,95,201,0.4)]"
                             >
                                 More Details
                             </Link>
@@ -165,283 +130,117 @@ const Home = () => {
                     </div>
                 ))}
                 {/* Slide indicators */}
-                <div
-                    style={{
-                        position: 'absolute',
-                        bottom: '40px',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        display: 'flex',
-                        gap: '12px',
-                    }}
-                >
+                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3">
                     {heroSlides.map((_, index) => (
                         <button
                             key={index}
                             onClick={() => setCurrentSlide(index)}
-                            style={{
-                                width: currentSlide === index ? '40px' : '12px',
-                                height: '12px',
-                                borderRadius: '6px',
-                                background: currentSlide === index ? '#015fc9' : 'rgba(255,255,255,0.5)',
-                                border: 'none',
-                                cursor: 'pointer',
-                                transition: 'all 0.3s ease',
-                            }}
+                            className={`h-3 rounded-[6px] border-none cursor-pointer transition-all duration-300 ${currentSlide === index ? 'w-10 bg-[#015fc9]' : 'w-3 bg-white/50'}`}
                         />
                     ))}
                 </div>
             </section>
 
             {/* About Section with 25 Years Experience */}
-            <section style={{ padding: '100px 0', background: '#ffffff' }}>
-                <div
-                    style={{
-                        maxWidth: '1200px',
-                        margin: '0 auto',
-                        padding: '0 20px',
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-                        gap: '60px',
-                        alignItems: 'center',
-                    }}
-                >
+            <section className="py-[100px] bg-white">
+                <div className="max-w-[1200px] mx-auto px-5 grid grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-[60px] items-center">
                     {/* Left side with image and badge */}
-                    <div style={{ position: 'relative' }}>
+                    <div className="relative">
                         <img
                             src="https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=600&h=500&fit=crop"
                             alt="Happy family"
-                            style={{
-                                width: '100%',
-                                height: '500px',
-                                objectFit: 'cover',
-                                borderRadius: '20px',
-                                boxShadow: '0 20px 60px rgba(0,0,0,0.1)',
-                            }}
+                            className="w-full h-[500px] object-cover rounded-[20px] shadow-[0_20px_60px_rgba(0,0,0,0.1)]"
                         />
                         {/* 25 Years Badge */}
-                        <div
-                            style={{
-                                position: 'absolute',
-                                top: '30px',
-                                left: '-30px',
-                                background: 'linear-gradient(135deg, #015fc9 0%, #007bff 100%)',
-                                color: '#ffffff',
-                                padding: '30px 25px',
-                                borderRadius: '15px',
-                                textAlign: 'center',
-                                boxShadow: '0 10px 40px rgba(1, 95, 201, 0.4)',
-                            }}
-                        >
-                            <div style={{ fontSize: '48px', fontWeight: 700, lineHeight: 1 }}>25</div>
-                            <div style={{ fontSize: '18px', fontWeight: 500, marginTop: '5px' }}>Years</div>
-                            <div style={{ fontSize: '12px', opacity: 0.9, marginTop: '5px' }}>Experience</div>
+                        <div className="absolute top-[30px] -left-[30px] bg-[linear-gradient(135deg,#015fc9_0%,#007bff_100%)] text-white px-[25px] py-[30px] rounded-[15px] text-center shadow-[0_10px_40px_rgba(1,95,201,0.4)]">
+                            <div className="text-[48px] font-bold leading-none">25</div>
+                            <div className="text-lg font-medium mt-1">Years</div>
+                            <div className="text-[12px] opacity-90 mt-1">Experience</div>
                         </div>
                     </div>
 
                     {/* Right side content */}
                     <div>
-                        <h2
-                            style={{
-                                fontSize: '42px',
-                                fontWeight: 700,
-                                color: '#0a1628',
-                                marginBottom: '25px',
-                                lineHeight: 1.3,
-                            }}
-                        >
+                        <h2 className="text-[42px] font-bold text-[#0a1628] mb-[25px] leading-[1.3]">
                             We're Here To Assist You With Exploring Protection
                         </h2>
-                        <p
-                            style={{
-                                color: '#666',
-                                lineHeight: 1.8,
-                                marginBottom: '35px',
-                                fontSize: '16px',
-                            }}
-                        >
+                        <p className="text-[#666] leading-[1.8] mb-[35px] text-base">
                             With over 25 years of experience in the insurance industry, we provide comprehensive coverage solutions
                             tailored to meet your unique needs. Our expert team is dedicated to protecting what matters most to you.
                         </p>
 
                         {/* Feature boxes */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '35px' }}>
-                            <div
-                                style={{
-                                    background: '#f8f9fa',
-                                    padding: '25px',
-                                    borderRadius: '15px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '15px',
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        width: '50px',
-                                        height: '50px',
-                                        background: '#015fc9',
-                                        borderRadius: '50%',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        fontSize: '24px',
-                                    }}
-                                >
+                        <div className="grid grid-cols-2 gap-5 mb-[35px]">
+                            <div className="bg-[#f8f9fa] p-[25px] rounded-[15px] flex items-center gap-[15px]">
+                                <div className="w-[50px] h-[50px] bg-[#015fc9] rounded-full flex items-center justify-center text-2xl text-white">
                                     ✓
                                 </div>
-                                <span style={{ fontWeight: 600, color: '#0a1628' }}>Flexible Insurance Plans</span>
+                                <span className="font-semibold text-[#0a1628]">Flexible Insurance Plans</span>
                             </div>
-                            <div
-                                style={{
-                                    background: '#f8f9fa',
-                                    padding: '25px',
-                                    borderRadius: '15px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '15px',
-                                }}
-                            >
-                                <div
-                                    style={{
-                                        width: '50px',
-                                        height: '50px',
-                                        background: '#015fc9',
-                                        borderRadius: '50%',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        fontSize: '24px',
-                                    }}
-                                >
+                            <div className="bg-[#f8f9fa] p-[25px] rounded-[15px] flex items-center gap-[15px]">
+                                <div className="w-[50px] h-[50px] bg-[#015fc9] rounded-full flex items-center justify-center text-2xl">
                                     💰
                                 </div>
-                                <span style={{ fontWeight: 600, color: '#0a1628' }}>Money Back Guarantee</span>
+                                <span className="font-semibold text-[#0a1628]">Money Back Guarantee</span>
                             </div>
                         </div>
 
                         {/* Call to action */}
-                        <div
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '20px',
-                                padding: '20px 25px',
-                                background: 'linear-gradient(135deg, rgba(1, 95, 201, 0.1) 0%, rgba(0, 123, 255, 0.1) 100%)',
-                                borderRadius: '15px',
-                                borderLeft: '4px solid #015fc9',
-                            }}
-                        >
-                            <div
-                                style={{
-                                    width: '60px',
-                                    height: '60px',
-                                    background: '#015fc9',
-                                    borderRadius: '50%',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            >
+                        <div className="flex items-center gap-5 px-[25px] py-5 bg-[linear-gradient(135deg,rgba(1,95,201,0.1)_0%,rgba(0,123,255,0.1)_100%)] rounded-[15px] border-l-4 border-[#015fc9]">
+                            <div className="w-[60px] h-[60px] bg-[#015fc9] rounded-full flex items-center justify-center">
                                 <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
                                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                                 </svg>
                             </div>
                             <div>
-                                <div style={{ fontSize: '14px', color: '#666' }}>Call Us Anytime</div>
-                                <div style={{ fontSize: '24px', fontWeight: 700, color: '#015fc9' }}>+84 123 456 789</div>
+                                <div className="text-sm text-[#666]">Call Us Anytime</div>
+                                <div className="text-[24px] font-bold text-[#015fc9]">+84 123 456 789</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Statistics Section with Blue Background */}
-            <section
-                style={{
-                    background: 'linear-gradient(135deg, #015fc9 0%, #0047ab 100%)',
-                    padding: '100px 0',
-                }}
-            >
-                <div
-                    style={{
-                        maxWidth: '1200px',
-                        margin: '0 auto',
-                        padding: '0 20px',
-                    }}
-                >
+            {/* Statistics Section with Dual-Pane Background */}
+            <section className="grid grid-cols-1 lg:grid-cols-2">
+                {/* Left Side: Blue Background with Image Overlay */}
+                <div className="relative bg-[#015fc9] py-[100px] px-5 flex justify-center lg:justify-end overflow-hidden">
+                    {/* Background City Image Overlay */}
                     <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                            gap: '40px',
-                            alignItems: 'center',
-                        }}
-                    >
-                        {/* Left content */}
-                        <div style={{ color: '#ffffff' }}>
-                            <h2
-                                style={{
-                                    fontSize: '42px',
-                                    fontWeight: 700,
-                                    marginBottom: '25px',
-                                    lineHeight: 1.3,
-                                }}
-                            >
-                                For Individuals And Organisations
-                            </h2>
-                            <p style={{ opacity: 0.9, lineHeight: 1.8, marginBottom: '30px' }}>
-                                We provide tailored insurance solutions for both individuals and businesses.
-                                Our comprehensive coverage options ensure complete protection for all your needs.
-                            </p>
-                            <Link
-                                to="/about"
-                                style={{
-                                    display: 'inline-block',
-                                    background: '#ffffff',
-                                    color: '#015fc9',
-                                    padding: '16px 35px',
-                                    borderRadius: '50px',
-                                    textDecoration: 'none',
-                                    fontWeight: 600,
-                                }}
-                            >
-                                More Details
-                            </Link>
-                        </div>
-
-                        {/* Stats grid */}
-                        <div
-                            style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(2, 1fr)',
-                                gap: '20px',
-                            }}
+                        className="absolute inset-0 opacity-20 pointer-events-none bg-cover bg-center"
+                        style={{ backgroundImage: `url(${carousel12})` }}
+                    />
+                    <div className="relative max-w-[500px] text-white lg:mr-10">
+                        <h2 className="text-[42px] font-bold mb-[25px] leading-[1.3]">
+                            For Individuals And Organisations
+                        </h2>
+                        <p className="opacity-90 leading-[1.8] mb-[40px]">
+                            Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo magna dolore erat amet
+                        </p>
+                        <Link
+                            to="/about"
+                            className="inline-block bg-[#00d8ff] text-[#0a1628] px-[40px] py-4 rounded-[10px] no-underline font-semibold shadow-lg hover:bg-white transition-all duration-300"
                         >
+                            More Details
+                        </Link>
+                    </div>
+                </div>
+
+                {/* Right Side: White Background with Family Image Overlay */}
+                <div className="relative bg-white py-[100px] px-5 flex justify-center lg:justify-start overflow-hidden border-t lg:border-t-0 lg:border-l border-[#eee]">
+                    {/* Background Family Image Overlay */}
+                    <div
+                        className="absolute inset-0 opacity-10 pointer-events-none bg-cover bg-center"
+                        style={{ backgroundImage: `url(${carousel2})` }}
+                    />
+                    <div className="relative max-w-[500px] w-full lg:ml-20">
+                        <div className="grid grid-cols-2 gap-y-12 gap-x-10">
                             {stats.map((stat, index) => (
-                                <div
-                                    key={index}
-                                    style={{
-                                        background: '#ffffff',
-                                        padding: '35px 25px',
-                                        borderRadius: '20px',
-                                        textAlign: 'center',
-                                        transition: 'transform 0.3s ease',
-                                    }}
-                                    onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-10px)')}
-                                    onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
-                                >
-                                    <div
-                                        style={{
-                                            fontSize: '48px',
-                                            fontWeight: 700,
-                                            color: stat.color,
-                                            marginBottom: '10px',
-                                        }}
-                                    >
+                                <div key={index} className="text-left">
+                                    <div className="text-[55px] font-bold text-[#0a1628] leading-none mb-3">
                                         {stat.number}
                                     </div>
-                                    <div style={{ color: '#666', fontSize: '15px', fontWeight: 500 }}>
+                                    <div className="text-[#015fc9] text-[18px] font-medium">
                                         {stat.label}
                                     </div>
                                 </div>
@@ -452,169 +251,83 @@ const Home = () => {
             </section>
 
             {/* Why Choose Us Section */}
-            <section style={{ padding: '100px 0', background: '#f8f9fa' }}>
-                <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
-                    <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-                        <h2
-                            style={{
-                                fontSize: '42px',
-                                fontWeight: 700,
-                                color: '#0a1628',
-                                marginBottom: '20px',
-                            }}
-                        >
+            <section className="py-[100px] bg-white">
+                <div className="max-w-[1200px] mx-auto px-5 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+                    <div>
+                        <h2 className="text-[42px] font-bold text-[#0a1628] mb-5 leading-tight">
                             Few Reasons Why People Choosing Us!
                         </h2>
-                        <p style={{ color: '#666', maxWidth: '700px', margin: '0 auto', lineHeight: 1.8 }}>
-                            We are committed to providing exceptional insurance services with transparency,
-                            reliability, and customer satisfaction at the core of everything we do.
+                        <p className="text-[#666] mb-10 leading-[1.8]">
+                            Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo magna dolore erat amet
                         </p>
-                    </div>
 
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-                            gap: '30px',
-                        }}
-                    >
-                        {features.map((feature, index) => (
-                            <div
-                                key={index}
-                                style={{
-                                    background: '#ffffff',
-                                    padding: '40px 30px',
-                                    borderRadius: '20px',
-                                    textAlign: 'center',
-                                    boxShadow: '0 10px 40px rgba(0,0,0,0.05)',
-                                    transition: 'all 0.3s ease',
-                                    border: '1px solid transparent',
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(-10px)';
-                                    e.currentTarget.style.borderColor = '#015fc9';
-                                    e.currentTarget.style.boxShadow = '0 20px 60px rgba(1, 95, 201, 0.15)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.borderColor = 'transparent';
-                                    e.currentTarget.style.boxShadow = '0 10px 40px rgba(0,0,0,0.05)';
-                                }}
-                            >
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            {features.map((feature, index) => (
                                 <div
-                                    style={{
-                                        width: '80px',
-                                        height: '80px',
-                                        background: 'linear-gradient(135deg, rgba(1, 95, 201, 0.1) 0%, rgba(0, 123, 255, 0.1) 100%)',
-                                        borderRadius: '50%',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        margin: '0 auto 25px',
-                                        fontSize: '36px',
-                                    }}
+                                    key={index}
+                                    className="wow fadeIn h-full"
+                                    data-wow-delay={feature.delay}
+                                    style={{ visibility: 'visible', animationDelay: feature.delay, animationName: 'fadeIn' }}
                                 >
-                                    {feature.icon}
+                                    <div className="bg-[#f0f7ff] rounded-[10px] h-full p-3">
+                                        <div className="bg-white flex flex-col justify-center text-center rounded-[10px] h-full py-8 px-3">
+                                            <img className="self-center mb-3 h-12 w-auto" src={feature.icon} alt={feature.title} />
+                                            <h5 className="mb-0 text-lg font-semibold text-[#0a1628]">{feature.title}</h5>
+                                        </div>
+                                    </div>
                                 </div>
-                                <h4 style={{ fontSize: '20px', fontWeight: 600, color: '#0a1628', marginBottom: '15px' }}>
-                                    {feature.title}
-                                </h4>
-                                <p style={{ color: '#666', fontSize: '14px', lineHeight: 1.7 }}>
-                                    {feature.description}
-                                </p>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
+                    </div>
+                    <div className="h-full min-h-[500px]">
+                        <img
+                            src={homeDoctor}
+                            alt="Professional woman looking at tablet"
+                            className="w-full h-full object-cover rounded-[20px]"
+                        />
                     </div>
                 </div>
             </section>
 
             {/* Services Section */}
-            <section style={{ padding: '100px 0', background: '#ffffff' }}>
-                <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
-                    <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-                        <h2
-                            style={{
-                                fontSize: '42px',
-                                fontWeight: 700,
-                                color: '#0a1628',
-                                marginBottom: '20px',
-                            }}
-                        >
+            <section className="py-[100px] bg-white">
+                <div className="max-w-[1200px] mx-auto px-5">
+                    <div className="text-center mb-[60px]">
+                        <h2 className="text-[42px] font-bold text-[#0a1628] mb-5">
                             We Provide Professional Insurance Services
                         </h2>
-                        <p style={{ color: '#666', maxWidth: '700px', margin: '0 auto', lineHeight: 1.8 }}>
+                        <p className="text-[#666] max-w-[700px] mx-auto leading-[1.8]">
                             Explore our wide range of insurance products designed to protect you and your loved ones.
                         </p>
                     </div>
 
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                            gap: '30px',
-                        }}
-                    >
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-[30px]">
                         {services.map((service, index) => (
                             <div
                                 key={index}
-                                style={{
-                                    background: '#ffffff',
-                                    padding: '40px 35px',
-                                    borderRadius: '20px',
-                                    boxShadow: '0 10px 40px rgba(0,0,0,0.05)',
-                                    transition: 'all 0.3s ease',
-                                    border: '1px solid #eee',
-                                    display: 'flex',
-                                    gap: '25px',
-                                    alignItems: 'flex-start',
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(-10px)';
-                                    e.currentTarget.style.boxShadow = '0 20px 60px rgba(1, 95, 201, 0.15)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.boxShadow = '0 10px 40px rgba(0,0,0,0.05)';
-                                }}
+                                className="bg-white p-8 rounded-[20px] shadow-[0_10px_40px_rgba(0,0,0,0.05)] transition-all duration-300 hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)] flex flex-col"
                             >
-                                <div
-                                    style={{
-                                        width: '70px',
-                                        height: '70px',
-                                        background: 'linear-gradient(135deg, #015fc9 0%, #007bff 100%)',
-                                        borderRadius: '15px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        fontSize: '32px',
-                                        flexShrink: 0,
-                                    }}
-                                >
-                                    {service.icon}
-                                </div>
-                                <div>
-                                    <h4 style={{ fontSize: '22px', fontWeight: 600, color: '#0a1628', marginBottom: '15px' }}>
+                                <div className="flex items-center gap-5 mb-6">
+                                    <div className="w-[60px] h-[60px] bg-[#015fc9] rounded-[10px] flex items-center justify-center shrink-0">
+                                        <img
+                                            src={service.icon}
+                                            alt=""
+                                            className="w-10 h-10 object-contain brightness-0 invert"
+                                        />
+                                    </div>
+                                    <h4 className="text-2xl font-bold text-[#0a1628] leading-tight">
                                         {service.title}
                                     </h4>
-                                    <p style={{ color: '#666', fontSize: '14px', lineHeight: 1.7, marginBottom: '20px' }}>
-                                        {service.description}
-                                    </p>
+                                </div>
+                                <p className="text-[#666] leading-[1.8] mb-8">
+                                    {service.description}
+                                </p>
+                                <div className="mt-auto">
                                     <Link
                                         to={`/services/${service.title.toLowerCase().replace(' ', '-')}`}
-                                        style={{
-                                            color: '#015fc9',
-                                            textDecoration: 'none',
-                                            fontWeight: 600,
-                                            fontSize: '14px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '8px',
-                                        }}
+                                        className="inline-block bg-[#f0f7ff] text-[#015fc9] px-6 py-3 rounded-[10px] font-semibold text-sm transition-all duration-300 hover:bg-[#015fc9] hover:text-white"
                                     >
                                         Read More
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" fill="none" />
-                                        </svg>
                                     </Link>
                                 </div>
                             </div>
@@ -624,117 +337,52 @@ const Home = () => {
             </section>
 
             {/* Award Winning Company Section */}
-            <section
-                style={{
-                    background: 'linear-gradient(135deg, #015fc9 0%, #0047ab 100%)',
-                    padding: '100px 0',
-                }}
-            >
+            <section className="relative bg-[linear-gradient(135deg,#015fc9_0%,#0047ab_100%)] py-[100px] overflow-hidden">
+                {/* Background Image Overlay */}
                 <div
-                    style={{
-                        maxWidth: '1200px',
-                        margin: '0 auto',
-                        padding: '0 20px',
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-                        gap: '60px',
-                        alignItems: 'center',
-                    }}
-                >
-                    <div style={{ color: '#ffffff' }}>
-                        <h2
-                            style={{
-                                fontSize: '42px',
-                                fontWeight: 700,
-                                marginBottom: '25px',
-                                lineHeight: 1.3,
-                            }}
-                        >
+                    className="absolute inset-0 opacity-20 pointer-events-none bg-cover bg-center"
+                    style={{ backgroundImage: `url(${carousel12})` }}
+                />
+                <div className="relative max-w-[1200px] mx-auto px-5 grid grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-[60px] items-center">
+                    <div className="text-white">
+                        <h2 className="text-[42px] font-bold mb-[25px] leading-[1.3]">
                             We're Award Winning Insurance Company
                         </h2>
-                        <p style={{ opacity: 0.9, lineHeight: 1.8, marginBottom: '30px' }}>
+                        <p className="opacity-90 leading-relaxed mb-8 text-base">
                             Recognized for excellence in customer service and comprehensive coverage solutions.
                             Our commitment to protecting your future has earned us numerous industry accolades.
                         </p>
-                        <div
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '20px',
-                                padding: '20px 25px',
-                                background: 'rgba(255,255,255,0.1)',
-                                borderRadius: '15px',
-                                backdropFilter: 'blur(10px)',
-                            }}
-                        >
-                            <div
-                                style={{
-                                    width: '60px',
-                                    height: '60px',
-                                    background: '#ffffff',
-                                    borderRadius: '50%',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            >
+                        <div className="flex items-center gap-5 px-[25px] py-5 bg-white/10 rounded-[15px] backdrop-blur-[10px]">
+                            <div className="w-[60px] h-[60px] bg-white rounded-full flex items-center justify-center">
                                 <svg width="28" height="28" viewBox="0 0 24 24" fill="#015fc9">
                                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                                 </svg>
                             </div>
                             <div>
-                                <div style={{ fontSize: '14px', opacity: 0.9 }}>Call Us Anytime</div>
-                                <div style={{ fontSize: '24px', fontWeight: 700 }}>+84 123 456 789</div>
+                                <div className="text-sm opacity-90">Call Us Anytime</div>
+                                <div className="text-[24px] font-bold">+84 123 456 789</div>
                             </div>
                         </div>
                     </div>
 
                     {/* Quote Form */}
-                    <div
-                        style={{
-                            background: '#ffffff',
-                            padding: '40px',
-                            borderRadius: '20px',
-                            boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
-                        }}
-                    >
-                        <h3 style={{ fontSize: '24px', fontWeight: 700, color: '#0a1628', marginBottom: '30px' }}>
+                    <div className="bg-white p-10 rounded-[20px] shadow-[0_20px_60px_rgba(0,0,0,0.2)]">
+                        <h3 className="text-2xl font-bold text-[#0a1628] mb-[30px]">
                             Get A Free Quote
                         </h3>
-                        <form style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                        <form className="flex flex-col gap-5">
                             <input
                                 type="text"
                                 placeholder="Your Name"
-                                style={{
-                                    padding: '15px 20px',
-                                    borderRadius: '10px',
-                                    border: '1px solid #eee',
-                                    fontSize: '14px',
-                                    outline: 'none',
-                                    transition: 'border-color 0.3s ease',
-                                }}
+                                className="p-[15px_20px] rounded-[10px] border border-[#eee] text-sm outline-none transition-colors duration-300 focus:border-[#015fc9]"
                             />
                             <input
                                 type="email"
                                 placeholder="Your Email"
-                                style={{
-                                    padding: '15px 20px',
-                                    borderRadius: '10px',
-                                    border: '1px solid #eee',
-                                    fontSize: '14px',
-                                    outline: 'none',
-                                }}
+                                className="p-[15px_20px] rounded-[10px] border border-[#eee] text-sm outline-none transition-colors duration-300 focus:border-[#015fc9]"
                             />
                             <select
-                                style={{
-                                    padding: '15px 20px',
-                                    borderRadius: '10px',
-                                    border: '1px solid #eee',
-                                    fontSize: '14px',
-                                    outline: 'none',
-                                    background: '#ffffff',
-                                    cursor: 'pointer',
-                                }}
+                                className="p-[15px_20px] rounded-[10px] border border-[#eee] text-sm outline-none bg-white cursor-pointer transition-colors duration-300 focus:border-[#015fc9]"
                             >
                                 <option value="">Select Insurance Type</option>
                                 <option value="life">Life Insurance</option>
@@ -745,28 +393,11 @@ const Home = () => {
                             <textarea
                                 placeholder="Your Message"
                                 rows={4}
-                                style={{
-                                    padding: '15px 20px',
-                                    borderRadius: '10px',
-                                    border: '1px solid #eee',
-                                    fontSize: '14px',
-                                    outline: 'none',
-                                    resize: 'none',
-                                }}
+                                className="p-[15px_20px] rounded-[10px] border border-[#eee] text-sm outline-none resize-none transition-colors duration-300 focus:border-[#015fc9]"
                             />
                             <button
                                 type="submit"
-                                style={{
-                                    background: 'linear-gradient(135deg, #015fc9 0%, #007bff 100%)',
-                                    color: '#ffffff',
-                                    padding: '18px',
-                                    borderRadius: '50px',
-                                    border: 'none',
-                                    fontWeight: 600,
-                                    fontSize: '16px',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.3s ease',
-                                }}
+                                className="bg-[linear-gradient(135deg,#015fc9_0%,#007bff_100%)] text-white p-[18px] rounded-[50px] border-none font-semibold text-lg cursor-pointer transition-all duration-300 shadow-[0_5px_15px_rgba(1,95,201,0.3)] hover:shadow-[0_8px_25px_rgba(1,95,201,0.4)] hover:-translate-y-0.5 active:translate-y-0"
                             >
                                 Get A Quote
                             </button>
@@ -776,86 +407,36 @@ const Home = () => {
             </section>
 
             {/* Team Section */}
-            <section style={{ padding: '100px 0', background: '#ffffff' }}>
-                <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
-                    <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-                        <h2
-                            style={{
-                                fontSize: '42px',
-                                fontWeight: 700,
-                                color: '#0a1628',
-                                marginBottom: '20px',
-                            }}
-                        >
+            <section className="py-[100px] bg-white">
+                <div className="max-w-[1200px] mx-auto px-5">
+                    <div className="text-center mb-[60px]">
+                        <h2 className="text-[42px] font-bold text-[#0a1628] mb-5">
                             Meet Our Professional Team Members
                         </h2>
-                        <p style={{ color: '#666', maxWidth: '700px', margin: '0 auto', lineHeight: 1.8 }}>
+                        <p className="text-slate-500 max-w-2xl mx-auto leading-relaxed text-base">
                             Our dedicated team of professionals is here to guide you through every step of your insurance journey.
                         </p>
                     </div>
 
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-                            gap: '30px',
-                        }}
-                    >
+                    <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-[30px]">
                         {team.map((member, index) => (
                             <div
                                 key={index}
-                                style={{
-                                    background: '#ffffff',
-                                    borderRadius: '20px',
-                                    overflow: 'hidden',
-                                    boxShadow: '0 10px 40px rgba(0,0,0,0.05)',
-                                    transition: 'all 0.3s ease',
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(-10px)';
-                                    e.currentTarget.style.boxShadow = '0 20px 60px rgba(0,0,0,0.1)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.boxShadow = '0 10px 40px rgba(0,0,0,0.05)';
-                                }}
+                                className="bg-white rounded-[20px] overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-[10px] hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)] group"
                             >
-                                <div style={{ position: 'relative', overflow: 'hidden' }}>
+                                <div className="relative overflow-hidden">
                                     <img
                                         src={member.image}
                                         alt={member.name}
-                                        style={{
-                                            width: '100%',
-                                            height: '300px',
-                                            objectFit: 'cover',
-                                            transition: 'transform 0.5s ease',
-                                        }}
+                                        className="w-full h-[300px] object-cover transition-transform duration-500 group-hover:scale-110"
                                     />
                                     {/* Social overlay */}
-                                    <div
-                                        style={{
-                                            position: 'absolute',
-                                            bottom: '15px',
-                                            left: '50%',
-                                            transform: 'translateX(-50%)',
-                                            display: 'flex',
-                                            gap: '10px',
-                                        }}
-                                    >
+                                    <div className="absolute bottom-[15px] left-1/2 -translate-x-1/2 flex gap-[10px]">
                                         {['facebook', 'twitter', 'linkedin'].map((social) => (
                                             <a
                                                 key={social}
                                                 href="#"
-                                                style={{
-                                                    width: '40px',
-                                                    height: '40px',
-                                                    background: '#015fc9',
-                                                    borderRadius: '50%',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    transition: 'all 0.3s ease',
-                                                }}
+                                                className="w-10 h-10 bg-[#015fc9] rounded-full flex items-center justify-center transition-all duration-300 hover:bg-[#0047ab] hover:scale-110"
                                             >
                                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
                                                     {social === 'facebook' && (
@@ -872,11 +453,11 @@ const Home = () => {
                                         ))}
                                     </div>
                                 </div>
-                                <div style={{ padding: '25px', textAlign: 'center' }}>
-                                    <h4 style={{ fontSize: '20px', fontWeight: 600, color: '#0a1628', marginBottom: '8px' }}>
+                                <div className="p-[25px] text-center">
+                                    <h4 className="text-xl font-semibold text-[#0a1628] mb-2">
                                         {member.name}
                                     </h4>
-                                    <p style={{ color: '#666', fontSize: '14px' }}>{member.role}</p>
+                                    <p className="text-[#666] text-sm">{member.role}</p>
                                 </div>
                             </div>
                         ))}
@@ -885,83 +466,41 @@ const Home = () => {
             </section>
 
             {/* Testimonials Section */}
-            <section style={{ padding: '100px 0', background: '#f8f9fa' }}>
-                <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
-                    <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-                        <h2
-                            style={{
-                                fontSize: '42px',
-                                fontWeight: 700,
-                                color: '#0a1628',
-                                marginBottom: '20px',
-                            }}
-                        >
+            <section className="py-[100px] bg-[#f8f9fa]">
+                <div className="max-w-[1200px] mx-auto px-5">
+                    <div className="text-center mb-[60px]">
+                        <h2 className="text-[42px] font-bold text-[#0a1628] mb-5">
                             What They Say About Our Insurance
                         </h2>
-                        <p style={{ color: '#666', maxWidth: '700px', margin: '0 auto', lineHeight: 1.8 }}>
+                        <p className="text-slate-500 max-w-2xl mx-auto leading-relaxed text-base">
                             Hear from our satisfied clients about their experience with INSLIFE.
                         </p>
                     </div>
 
-                    <div
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-                            gap: '30px',
-                        }}
-                    >
+                    <div className="grid grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-[30px]">
                         {testimonials.map((testimonial, index) => (
                             <div
                                 key={index}
-                                style={{
-                                    background: '#ffffff',
-                                    padding: '40px',
-                                    borderRadius: '20px',
-                                    boxShadow: '0 10px 40px rgba(0,0,0,0.05)',
-                                    position: 'relative',
-                                }}
+                                className="bg-white p-10 rounded-[20px] shadow-[0_10px_40px_rgba(0,0,0,0.05)] relative transition-all duration-300 hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)]"
                             >
                                 {/* Quote icon */}
-                                <div
-                                    style={{
-                                        position: 'absolute',
-                                        top: '25px',
-                                        right: '30px',
-                                        fontSize: '60px',
-                                        color: 'rgba(1, 95, 201, 0.1)',
-                                        fontFamily: 'serif',
-                                        lineHeight: 1,
-                                    }}
-                                >
+                                <div className="absolute top-[25px] right-[30px] text-[60px] text-[rgba(1,95,201,0.1)] leading-none italic font-serif">
                                     "
                                 </div>
-                                <p
-                                    style={{
-                                        color: '#666',
-                                        lineHeight: 1.8,
-                                        marginBottom: '30px',
-                                        fontSize: '15px',
-                                        fontStyle: 'italic',
-                                    }}
-                                >
+                                <p className="text-[#666] leading-[1.8] mb-[30px] text-[15px] italic">
                                     {testimonial.text}
                                 </p>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                <div className="flex items-center gap-[15px]">
                                     <img
                                         src={testimonial.image}
                                         alt={testimonial.name}
-                                        style={{
-                                            width: '60px',
-                                            height: '60px',
-                                            borderRadius: '50%',
-                                            objectFit: 'cover',
-                                        }}
+                                        className="w-[60px] h-[60px] rounded-full object-cover"
                                     />
                                     <div>
-                                        <h5 style={{ fontSize: '18px', fontWeight: 600, color: '#0a1628' }}>
+                                        <h5 className="text-lg font-semibold text-[#0a1628]">
                                             {testimonial.name}
                                         </h5>
-                                        <p style={{ color: '#015fc9', fontSize: '14px' }}>{testimonial.role}</p>
+                                        <p className="text-[#015fc9] text-sm">{testimonial.role}</p>
                                     </div>
                                 </div>
                             </div>

@@ -4,9 +4,9 @@ import PublicFooter from './PublicFooter';
 
 const PublicLayout = () => {
     return (
-        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <div className="min-h-screen flex flex-col">
             <PublicHeader />
-            <main style={{ flex: 1 }}>
+            <main className="flex-1">
                 <Outlet />
             </main>
             <PublicFooter />

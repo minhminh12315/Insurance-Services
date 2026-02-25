@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { insuranceCategories } from '../../data/fakeData';
 // import api from '../../services/api';
 import type { InsuranceCategory } from '../../types';
@@ -9,7 +9,7 @@ const CategoryList = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [editingCategory, setEditingCategory] = useState<InsuranceCategory | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [loading] = useState(false);
 
     // useEffect(() => {
     //     fetchCategories();
@@ -53,65 +53,64 @@ const CategoryList = () => {
     };
 
     if (loading) {
-        return <div style={{ padding: '20px', textAlign: 'center' }}>Loading categories...</div>;
+        return <div className="p-5 text-center">Loading categories...</div>;
     }
 
     return (
         <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+            <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#1e293b', marginBottom: '8px' }}>Insurance Categories</h1>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>Organize and manage the different types of insurance products</p>
+                    <h1 className="text-[28px] font-extrabold text-slate-800 mb-2">Insurance Categories</h1>
+                    <p className="text-slate-500 text-[15px]">Organize and manage the different types of insurance products</p>
                 </div>
                 <button className="btn btn-primary" onClick={() => { setEditingCategory(null); setShowModal(true); }}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '8px' }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mr-2">
                         <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
                     </svg>
                     Add Category
                 </button>
             </div>
 
-            <div className="glass-card" style={{ padding: '20px', marginBottom: '24px', background: '#ffffff', border: '1px solid #e2e8f0' }}>
-                <div style={{ flex: 1, minWidth: '300px', position: 'relative' }}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }}>
+            <div className="glass-card p-5 mb-6 bg-white border border-slate-200">
+                <div className="flex-1 min-w-[300px] relative">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" className="absolute left-3.5 top-1/2 -translate-y-1/2">
                         <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
                     </svg>
                     <input
                         type="text"
                         placeholder="Search categories..."
-                        className="input"
-                        style={{ paddingLeft: '44px' }}
+                        className="input pl-11"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
             </div>
 
-            <div className="glass-card table-container" style={{ background: '#ffffff', border: '1px solid #e2e8f0' }}>
+            <div className="glass-card table-container bg-white border border-slate-200">
                 <table className="table">
                     <thead>
                         <tr>
-                            <th style={{ width: '300px', background: '#f8fafc' }}>Category Name</th>
-                            <th style={{ background: '#f8fafc' }}>Description</th>
-                            <th style={{ textAlign: 'right', background: '#f8fafc' }}>Actions</th>
+                            <th className="w-[300px] bg-slate-50">Category Name</th>
+                            <th className="bg-slate-50">Description</th>
+                            <th className="text-right bg-slate-50">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredCategories.map((category) => (
                             <tr key={category.category_id}>
                                 <td>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-primary)' }}>
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /></svg>
                                         </div>
-                                        <span style={{ fontWeight: 600, color: '#334155' }}>{category.category_name}</span>
+                                        <span className="font-semibold text-slate-700">{category.category_name}</span>
                                     </div>
                                 </td>
-                                <td style={{ color: '#64748b', fontSize: '14px' }}>{category.description || 'No description provided.'}</td>
+                                <td className="text-slate-500 text-sm">{category.description || 'No description provided.'}</td>
                                 <td>
-                                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                                    <div className="flex justify-end gap-2">
                                         <button className="btn btn-secondary btn-sm" onClick={() => { setEditingCategory(category); setShowModal(true); }}>Edit</button>
-                                        <button className="btn btn-danger btn-sm" style={{ padding: '6px' }} onClick={() => handleDelete(category.category_id)}>
+                                        <button className="btn btn-danger btn-sm p-1.5" onClick={() => handleDelete(category.category_id)}>
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
                                         </button>
                                     </div>
@@ -124,8 +123,8 @@ const CategoryList = () => {
 
             {showModal && (
                 <div className="modal-overlay" onClick={() => setShowModal(false)}>
-                    <div className="modal-content glass-card" style={{ width: '500px', background: '#fff', padding: '32px' }} onClick={e => e.stopPropagation()}>
-                        <h2 style={{ fontSize: '22px', fontWeight: 800, color: '#1e293b', marginBottom: '24px' }}>
+                    <div className="modal-content glass-card w-[500px] bg-white p-8" onClick={e => e.stopPropagation()}>
+                        <h2 className="text-[22px] font-extrabold text-slate-800 mb-6">
                             {editingCategory ? 'Edit Category' : 'Add New Category'}
                         </h2>
                         <CategoryForm

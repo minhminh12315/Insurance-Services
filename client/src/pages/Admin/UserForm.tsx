@@ -41,9 +41,9 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
 
     return (
         <form onSubmit={handleSubmit}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '32px' }}>
-                <div style={{ gridColumn: 'span 2' }}>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Full Name *</label>
+            <div className="grid grid-cols-2 gap-5 mb-8">
+                <div className="col-span-2">
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Full Name *</label>
                     <input
                         type="text"
                         name="full_name"
@@ -55,7 +55,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
                     />
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Email Address *</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Email Address *</label>
                     <input
                         type="email"
                         name="email"
@@ -67,7 +67,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
                     />
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Phone Number</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Phone Number</label>
                     <input
                         type="text"
                         name="phone_number"
@@ -78,7 +78,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
                     />
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Role</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Role</label>
                     <select
                         name="role"
                         className="select"
@@ -91,7 +91,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
                     </select>
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Gender</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Gender</label>
                     <select
                         name="gender"
                         className="select"
@@ -104,7 +104,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
                     </select>
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Date of Birth</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Date of Birth</label>
                     <input
                         type="date"
                         name="date_of_birth"
@@ -114,7 +114,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
                     />
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>City</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">City</label>
                     <input
                         type="text"
                         name="city"
@@ -124,19 +124,18 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
                         placeholder="e.g. Ho Chi Minh"
                     />
                 </div>
-                <div style={{ gridColumn: 'span 2' }}>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Address</label>
+                <div className="col-span-2">
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Address</label>
                     <textarea
                         name="address"
-                        className="input"
-                        style={{ height: '80px', resize: 'none' }}
+                        className="input h-20 resize-none"
                         value={formData.address || ''}
                         onChange={handleChange}
                         placeholder="Street address, apartment, etc."
                     />
                 </div>
             </div>
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+            <div className="flex gap-3 justify-end">
                 <button type="button" className="btn btn-secondary" onClick={onCancel}>Cancel</button>
                 <button type="submit" className="btn btn-primary">
                     {user ? 'Update User' : 'Create User'}

@@ -25,116 +25,54 @@ const Profile = () => {
 
     const initials = user?.full_name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'AD';
 
-    const inputStyle: React.CSSProperties = {
-        width: '100%',
-        padding: '12px 16px',
-        border: '1px solid #e2e8f0',
-        borderRadius: '10px',
-        fontSize: '14px',
-        color: '#334155',
-        outline: 'none',
-        transition: 'border-color 0.2s',
-        background: '#ffffff',
-    };
-
-    const labelStyle: React.CSSProperties = {
-        display: 'block',
-        fontSize: '13px',
-        fontWeight: 600,
-        color: '#475569',
-        marginBottom: '6px',
-    };
+    const inputClasses = "w-full px-4 py-3 border border-slate-200 rounded-xl text-sm text-slate-700 outline-none transition-all bg-white focus:border-blue-600";
+    const labelClasses = "block text-[13px] font-semibold text-slate-600 mb-1.5";
 
     return (
-        <div style={{ padding: '32px' }}>
+        <div className="p-8">
             {/* Page Header */}
-            <div style={{ marginBottom: '32px' }}>
-                <h1 style={{ fontSize: '28px', fontWeight: 700, color: '#0f172a' }}>My Profile</h1>
-                <p style={{ color: '#64748b', fontSize: '15px', marginTop: '4px' }}>
+            <div className="mb-8">
+                <h1 className="text-[28px] font-bold text-slate-900">My Profile</h1>
+                <p className="text-slate-500 text-[15px] mt-1">
                     View and manage your account details
                 </p>
             </div>
 
             {/* Profile Card */}
-            <div
-                style={{
-                    background: 'linear-gradient(135deg, #015fc9 0%, #007bff 100%)',
-                    borderRadius: '20px',
-                    padding: '40px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '30px',
-                    marginBottom: '32px',
-                    color: '#ffffff',
-                    position: 'relative',
-                    overflow: 'hidden',
-                }}
-            >
+            <div className="bg-gradient-to-br from-[#015fc9] to-[#007bff] rounded-[20px] p-10 flex items-center gap-[30px] mb-8 text-white relative overflow-hidden">
                 {/* Decorative circles */}
-                <div style={{ position: 'absolute', top: '-30px', right: '-30px', width: '150px', height: '150px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)' }} />
-                <div style={{ position: 'absolute', bottom: '-50px', right: '80px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }} />
+                <div className="absolute -top-[30px] -right-[30px] w-[150px] h-[150px] rounded-full bg-white/10" />
+                <div className="absolute -bottom-[50px] right-[80px] w-[200px] h-[200px] rounded-full bg-white/5" />
 
                 {/* Avatar */}
-                <div
-                    style={{
-                        width: '90px',
-                        height: '90px',
-                        borderRadius: '20px',
-                        background: 'rgba(255,255,255,0.2)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '32px',
-                        fontWeight: 700,
-                        flexShrink: 0,
-                        border: '3px solid rgba(255,255,255,0.3)',
-                    }}
-                >
+                <div className="w-[90px] h-[90px] rounded-[20px] bg-white/20 flex items-center justify-center text-[32px] font-bold shrink-0 border-[3px] border-white/30">
                     {initials}
                 </div>
 
                 {/* Info */}
-                <div style={{ position: 'relative', zIndex: 1 }}>
-                    <h2 style={{ fontSize: '26px', fontWeight: 700, marginBottom: '4px' }}>
+                <div className="relative z-[1]">
+                    <h2 className="text-[26px] font-bold mb-1">
                         {user?.full_name || 'Admin User'}
                     </h2>
-                    <p style={{ opacity: 0.85, fontSize: '15px', marginBottom: '8px' }}>
+                    <p className="opacity-85 text-[15px] mb-2">
                         {user?.email || ''}
                     </p>
-                    <span
-                        style={{
-                            display: 'inline-block',
-                            padding: '4px 14px',
-                            borderRadius: '20px',
-                            background: 'rgba(255,255,255,0.2)',
-                            fontSize: '13px',
-                            fontWeight: 500,
-                        }}
-                    >
+                    <span className="inline-block px-[14px] py-1 rounded-full bg-white/20 text-[13px] font-medium">
                         {user?.role || 'Admin'}
                     </span>
                 </div>
             </div>
 
             {/* Tabs */}
-            <div style={{ display: 'flex', gap: '4px', marginBottom: '24px', background: '#f1f5f9', padding: '4px', borderRadius: '12px', width: 'fit-content' }}>
+            <div className="flex gap-1 mb-6 bg-slate-100 p-1 rounded-xl w-fit">
                 {(['overview', 'edit'] as const).map(tab => (
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
-                        style={{
-                            padding: '10px 24px',
-                            borderRadius: '8px',
-                            border: 'none',
-                            background: activeTab === tab ? '#ffffff' : 'transparent',
-                            color: activeTab === tab ? '#0f172a' : '#64748b',
-                            fontWeight: 600,
-                            fontSize: '14px',
-                            cursor: 'pointer',
-                            boxShadow: activeTab === tab ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                            transition: 'all 0.2s',
-                            textTransform: 'capitalize',
-                        }}
+                        className={`px-6 py-2.5 rounded-lg font-semibold text-sm cursor-pointer transition-all capitalize ${activeTab === tab
+                            ? 'bg-white text-slate-900 shadow-sm'
+                            : 'bg-transparent text-slate-500 hover:text-slate-700'
+                            }`}
                     >
                         {tab === 'overview' ? 'Overview' : 'Edit Profile'}
                     </button>
@@ -143,10 +81,10 @@ const Profile = () => {
 
             {/* Content */}
             {activeTab === 'overview' ? (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Personal Information */}
-                    <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '28px' }}>
-                        <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div className="bg-white rounded-2xl border border-slate-200 p-7">
+                        <h3 className="text-lg font-semibold text-slate-900 mb-6 flex items-center gap-2.5">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#015fc9" strokeWidth="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                                 <circle cx="12" cy="7" r="4" />
@@ -160,17 +98,17 @@ const Profile = () => {
                             { label: 'Date of Birth', value: user?.date_of_birth || 'Not provided' },
                             { label: 'Gender', value: user?.gender || 'Not provided' },
                         ].map((item, i) => (
-                            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderBottom: i < 4 ? '1px solid #f1f5f9' : 'none' }}>
-                                <span style={{ color: '#64748b', fontSize: '14px' }}>{item.label}</span>
-                                <span style={{ color: '#0f172a', fontSize: '14px', fontWeight: 500 }}>{item.value}</span>
+                            <div key={i} className={`flex justify-between py-3 ${i < 4 ? 'border-b border-slate-50' : ''}`}>
+                                <span className="text-slate-500 text-sm">{item.label}</span>
+                                <span className="text-slate-900 text-sm font-medium">{item.value}</span>
                             </div>
                         ))}
                     </div>
 
                     {/* Address & Account Info */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                        <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '28px' }}>
-                            <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div className="flex flex-col gap-6">
+                        <div className="bg-white rounded-2xl border border-slate-200 p-7">
+                            <h3 className="text-lg font-semibold text-slate-900 mb-6 flex items-center gap-2.5">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#015fc9" strokeWidth="2">
                                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                                     <circle cx="12" cy="10" r="3" />
@@ -181,15 +119,15 @@ const Profile = () => {
                                 { label: 'Address', value: user?.address || 'Not provided' },
                                 { label: 'City', value: user?.city || 'Not provided' },
                             ].map((item, i) => (
-                                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderBottom: i < 1 ? '1px solid #f1f5f9' : 'none' }}>
-                                    <span style={{ color: '#64748b', fontSize: '14px' }}>{item.label}</span>
-                                    <span style={{ color: '#0f172a', fontSize: '14px', fontWeight: 500 }}>{item.value}</span>
+                                <div key={i} className={`flex justify-between py-3 ${i < 1 ? 'border-b border-slate-50' : ''}`}>
+                                    <span className="text-slate-500 text-sm">{item.label}</span>
+                                    <span className="text-slate-900 text-sm font-medium">{item.value}</span>
                                 </div>
                             ))}
                         </div>
 
-                        <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '28px' }}>
-                            <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div className="bg-white rounded-2xl border border-slate-200 p-7">
+                            <h3 className="text-lg font-semibold text-slate-900 mb-6 flex items-center gap-2.5">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#015fc9" strokeWidth="2">
                                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
@@ -200,9 +138,9 @@ const Profile = () => {
                                 { label: 'Role', value: user?.role },
                                 { label: 'Member Since', value: user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A' },
                             ].map((item, i) => (
-                                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderBottom: i < 1 ? '1px solid #f1f5f9' : 'none' }}>
-                                    <span style={{ color: '#64748b', fontSize: '14px' }}>{item.label}</span>
-                                    <span style={{ color: '#0f172a', fontSize: '14px', fontWeight: 500 }}>{item.value}</span>
+                                <div key={i} className={`flex justify-between py-3 ${i < 1 ? 'border-b border-slate-50' : ''}`}>
+                                    <span className="text-slate-500 text-sm">{item.label}</span>
+                                    <span className="text-slate-900 text-sm font-medium">{item.value}</span>
                                 </div>
                             ))}
                         </div>
@@ -210,43 +148,28 @@ const Profile = () => {
                 </div>
             ) : (
                 /* Edit Profile Form */
-                <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '32px', maxWidth: '800px' }}>
+                <div className="bg-white rounded-2xl border border-slate-200 p-8 max-w-[800px]">
                     <form onSubmit={handleSave}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px' }}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
                             <div>
-                                <label style={labelStyle}>Full Name</label>
-                                <input name="full_name" value={formData.full_name} onChange={handleChange} style={inputStyle}
-                                    onFocus={e => { e.currentTarget.style.borderColor = '#015fc9'; }}
-                                    onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; }}
-                                />
+                                <label className={labelClasses}>Full Name</label>
+                                <input name="full_name" value={formData.full_name} onChange={handleChange} className={inputClasses} />
                             </div>
                             <div>
-                                <label style={labelStyle}>Email</label>
-                                <input name="email" type="email" value={formData.email} onChange={handleChange} style={inputStyle}
-                                    onFocus={e => { e.currentTarget.style.borderColor = '#015fc9'; }}
-                                    onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; }}
-                                />
+                                <label className={labelClasses}>Email</label>
+                                <input name="email" type="email" value={formData.email} onChange={handleChange} className={inputClasses} />
                             </div>
                             <div>
-                                <label style={labelStyle}>Phone Number</label>
-                                <input name="phone_number" value={formData.phone_number} onChange={handleChange} style={inputStyle}
-                                    onFocus={e => { e.currentTarget.style.borderColor = '#015fc9'; }}
-                                    onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; }}
-                                />
+                                <label className={labelClasses}>Phone Number</label>
+                                <input name="phone_number" value={formData.phone_number} onChange={handleChange} className={inputClasses} />
                             </div>
                             <div>
-                                <label style={labelStyle}>Date of Birth</label>
-                                <input name="date_of_birth" type="date" value={formData.date_of_birth} onChange={handleChange} style={inputStyle}
-                                    onFocus={e => { e.currentTarget.style.borderColor = '#015fc9'; }}
-                                    onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; }}
-                                />
+                                <label className={labelClasses}>Date of Birth</label>
+                                <input name="date_of_birth" type="date" value={formData.date_of_birth} onChange={handleChange} className={inputClasses} />
                             </div>
                             <div>
-                                <label style={labelStyle}>Gender</label>
-                                <select name="gender" value={formData.gender} onChange={handleChange} style={{ ...inputStyle, cursor: 'pointer' }}
-                                    onFocus={e => { e.currentTarget.style.borderColor = '#015fc9'; }}
-                                    onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; }}
-                                >
+                                <label className={labelClasses}>Gender</label>
+                                <select name="gender" value={formData.gender} onChange={handleChange} className={`${inputClasses} cursor-pointer`}>
                                     <option value="">Select</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
@@ -254,54 +177,25 @@ const Profile = () => {
                                 </select>
                             </div>
                             <div>
-                                <label style={labelStyle}>City</label>
-                                <input name="city" value={formData.city} onChange={handleChange} style={inputStyle}
-                                    onFocus={e => { e.currentTarget.style.borderColor = '#015fc9'; }}
-                                    onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; }}
-                                />
+                                <label className={labelClasses}>City</label>
+                                <input name="city" value={formData.city} onChange={handleChange} className={inputClasses} />
                             </div>
                         </div>
-                        <div style={{ marginBottom: '24px' }}>
-                            <label style={labelStyle}>Address</label>
-                            <input name="address" value={formData.address} onChange={handleChange} style={inputStyle}
-                                onFocus={e => { e.currentTarget.style.borderColor = '#015fc9'; }}
-                                onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; }}
-                            />
+                        <div className="mb-6">
+                            <label className={labelClasses}>Address</label>
+                            <input name="address" value={formData.address} onChange={handleChange} className={inputClasses} />
                         </div>
-                        <div style={{ display: 'flex', gap: '12px' }}>
+                        <div className="flex gap-3">
                             <button
                                 type="submit"
-                                style={{
-                                    padding: '12px 32px',
-                                    background: 'linear-gradient(135deg, #015fc9 0%, #007bff 100%)',
-                                    color: '#ffffff',
-                                    border: 'none',
-                                    borderRadius: '10px',
-                                    fontWeight: 600,
-                                    fontSize: '14px',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s',
-                                    boxShadow: '0 4px 12px rgba(1, 95, 201, 0.3)',
-                                }}
-                                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
+                                className="px-8 py-3 bg-gradient-to-br from-[#015fc9] to-[#007bff] text-white border-none rounded-xl font-semibold text-sm cursor-pointer transition-all shadow-lg shadow-blue-600/30 hover:-translate-y-0.5"
                             >
                                 Save Changes
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setActiveTab('overview')}
-                                style={{
-                                    padding: '12px 32px',
-                                    background: 'transparent',
-                                    color: '#64748b',
-                                    border: '1px solid #e2e8f0',
-                                    borderRadius: '10px',
-                                    fontWeight: 600,
-                                    fontSize: '14px',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s',
-                                }}
+                                className="px-8 py-3 bg-transparent text-slate-500 border border-slate-200 rounded-xl font-semibold text-sm cursor-pointer transition-all hover:bg-slate-50"
                             >
                                 Cancel
                             </button>
