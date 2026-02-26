@@ -172,14 +172,14 @@ const Home = () => {
                         {/* Feature boxes */}
                         <div className="grid grid-cols-2 gap-5 mb-[35px]">
                             <div className="bg-[#f8f9fa] p-[25px] rounded-[15px] flex items-center gap-[15px]">
-                                <div className="w-[50px] h-[50px] bg-[#015fc9] rounded-full flex items-center justify-center text-2xl text-white">
-                                    ✓
+                                <div className="w-12 h-12 bg-[#015fc9] rounded-[10px] flex items-center justify-center shrink-0">
+                                    <img src={icon03} alt="Flexible Insurance Plans" className="w-8 h-8 object-contain brightness-0 invert" />
                                 </div>
                                 <span className="font-semibold text-[#0a1628]">Flexible Insurance Plans</span>
                             </div>
                             <div className="bg-[#f8f9fa] p-[25px] rounded-[15px] flex items-center gap-[15px]">
-                                <div className="w-[50px] h-[50px] bg-[#015fc9] rounded-full flex items-center justify-center text-2xl">
-                                    💰
+                                <div className="w-12 h-12 bg-[#015fc9] rounded-[10px] flex items-center justify-center shrink-0">
+                                    <img src={icon04} alt="Money Back Guarantee" className="w-8 h-8 object-contain brightness-0 invert" />
                                 </div>
                                 <span className="font-semibold text-[#0a1628]">Money Back Guarantee</span>
                             </div>

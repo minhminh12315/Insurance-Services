@@ -1,45 +1,29 @@
 import { Link } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
+import lifeIcon from '../assets/life_insurance.png';
+import healthIcon from '../assets/health_insurance.png';
+import homeIcon from '../assets/home_insurance.png';
+import vehicleIcon from '../assets/vehicle_insurance.png';
 
 const Services = () => {
     const services = [
         {
-            icon: (
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#015fc9" strokeWidth="1.5">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                </svg>
-            ),
+            icon: lifeIcon,
             title: 'Life Insurance',
             description: 'Protect your loved ones with comprehensive life insurance coverage that ensures financial security for your family\'s future.',
         },
         {
-            icon: (
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#015fc9" strokeWidth="1.5">
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                </svg>
-            ),
+            icon: healthIcon,
             title: 'Health Insurance',
             description: 'Access quality healthcare with our flexible health insurance plans tailored to meet your medical needs and budget.',
         },
         {
-            icon: (
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#015fc9" strokeWidth="1.5">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                    <polyline points="9 22 9 12 15 12 15 22" />
-                </svg>
-            ),
+            icon: homeIcon,
             title: 'Home Insurance',
             description: 'Safeguard your home and belongings with our reliable home insurance solutions protecting against all risks.',
         },
         {
-            icon: (
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#015fc9" strokeWidth="1.5">
-                    <rect x="1" y="3" width="15" height="13" rx="2" />
-                    <circle cx="8.5" cy="13.5" r="2.5" />
-                    <circle cx="18.5" cy="13.5" r="2.5" />
-                    <path d="M16 8h4l3 5v4h-7" />
-                </svg>
-            ),
+            icon: vehicleIcon,
             title: 'Vehicle Insurance',
             description: 'Drive with confidence knowing your vehicle is fully protected against accidents, theft, and all types of damages.',
         },
@@ -70,8 +54,8 @@ const Services = () => {
                                 className="bg-white p-[40px_35px] rounded-[20px] shadow-[0_5px_30px_rgba(0,0,0,0.08)] transition-all duration-300 border border-[#eee] hover:-translate-y-[10px] hover:shadow-[0_20px_60px_rgba(1,95,201,0.15)] hover:border-[#015fc9]"
                             >
                                 <div className="flex items-start gap-[25px]">
-                                    <div className="w-20 h-20 bg-[linear-gradient(135deg,rgba(1,95,201,0.1)_0%,rgba(0,123,255,0.1)_100%)] rounded-[15px] flex items-center justify-center shrink-0">
-                                        {service.icon}
+                                    <div className="w-16 h-16 bg-[#015fc9] rounded-[15px] flex items-center justify-center shrink-0">
+                                        <img src={service.icon} alt={service.title} className="w-9 h-9 object-contain brightness-0 invert" />
                                     </div>
                                     <div>
                                         <h4 className="text-[22px] font-semibold text-[#0a1628] mb-[15px]">

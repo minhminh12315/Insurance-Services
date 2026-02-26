@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
-
+import icon03 from '../assets/icon-03-primary.png';
+import icon04 from '../assets/icon-04-primary.png';
+import carousel2 from '../assets/carousel-2.jpg';
+import carousel12 from '../assets/carousel-12.jpg';
 const About = () => {
     const stats = [
         { number: '1234', label: 'Happy Clients', textColor: 'text-[#015fc9]' },
@@ -43,30 +46,31 @@ const About = () => {
                         <h2 className="text-[42px] font-bold text-[#0a1628] mb-[25px] leading-[1.3]">
                             We're Here To Assist You With Exploring Protection
                         </h2>
-                        <p className="text-[#666] leading-[1.8] mb-[35px] text-base">
-                            With over 25 years of experience in the insurance industry, we provide comprehensive coverage solutions
-                            tailored to meet your unique needs. Our expert team is dedicated to protecting what matters most to you.
+                        <p className="text-[#015fc9] leading-[1.8] mb-[35px] text-[18px]">
+                            Aliqu diam amet diam et eos. Clita erat ipsum et lorem sed stet
+                            lorem sit clita duo justo erat amet
                         </p>
 
                         {/* Feature boxes */}
-                        <div className="grid grid-cols-2 gap-5 mb-[35px]">
-                            <div className="bg-[#f8f9fa] p-[25px] rounded-[15px] flex items-center gap-[15px]">
-                                <div className="w-[50px] h-[50px] bg-[#015fc9] rounded-full flex items-center justify-center text-2xl text-white">
-                                    ✓
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-[35px]">
+                            <div className="flex items-center gap-[15px]">
+                                <div className="w-14 h-14 bg-[#015fc9] rounded-[10px] flex items-center justify-center shrink-0">
+                                    <img src={icon03} alt="Flexible Insurance Plans" className="w-9 h-9 object-contain brightness-0 invert" />
                                 </div>
-                                <span className="font-semibold text-[#0a1628]">Flexible Insurance Plans</span>
+                                <span className="text-[20px] font-bold text-[#0a1628] leading-tight">Flexible Insurance Plans</span>
                             </div>
-                            <div className="bg-[#f8f9fa] p-[25px] rounded-[15px] flex items-center gap-[15px]">
-                                <div className="w-[50px] h-[50px] bg-[#015fc9] rounded-full flex items-center justify-center text-2xl text-white">
-                                    💰
+                            <div className="flex items-center gap-[15px]">
+                                <div className="w-14 h-14 bg-[#015fc9] rounded-[10px] flex items-center justify-center shrink-0">
+                                    <img src={icon04} alt="Money Back Guarantee" className="w-9 h-9 object-contain brightness-0 invert" />
                                 </div>
-                                <span className="font-semibold text-[#0a1628]">Money Back Guarantee</span>
+                                <span className="text-[20px] font-bold text-[#0a1628] leading-tight">Money Back Guarantee</span>
                             </div>
                         </div>
 
-                        <p className="text-[#666] leading-[1.8] mb-[25px] text-[15px]">
-                            We understand the importance of securing your future. Our dedicated team works tirelessly to provide
-                            you with the best insurance solutions that offer peace of mind and financial security.
+                        <p className="text-[#666] leading-[1.8] mb-[25px] text-[18px]">
+                            Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et
+                            eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo magna dolore
+                            erat amet
                         </p>
 
                         {/* Call to action */}
@@ -85,40 +89,46 @@ const About = () => {
                 </div>
             </section>
 
-            {/* Statistics Section with Blue Background */}
-            <section className="bg-gradient-to-br from-[#015fc9] to-[#0047ab] py-[100px]">
-                <div className="max-w-[1200px] mx-auto px-5">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-                        {/* Left content */}
-                        <div className="text-white">
-                            <h2 className="text-[42px] font-bold mb-[25px] leading-[1.3]">
-                                For Individuals And Organisations
-                            </h2>
-                            <p className="opacity-90 leading-[1.8] mb-[30px]">
-                                We provide tailored insurance solutions for both individuals and businesses.
-                                Our comprehensive coverage options ensure complete protection for all your needs.
-                            </p>
-                            <Link
-                                to="/services"
-                                className="inline-block bg-white text-[#015fc9] px-[35px] py-4 rounded-[50px] no-underline font-semibold"
-                            >
-                                More Details
-                            </Link>
-                        </div>
+            {/* Statistics Section with Dual-Pane Background */}
+            <section className="grid grid-cols-1 lg:grid-cols-2">
+                {/* Left Side: Blue Background with Image Overlay */}
+                <div className="relative bg-[#015fc9] py-[100px] px-5 flex justify-center lg:justify-end overflow-hidden">
+                    {/* Background City Image Overlay */}
+                    <div
+                        className="absolute inset-0 opacity-20 pointer-events-none bg-cover bg-center"
+                        style={{ backgroundImage: `url(${carousel12})` }}
+                    />
+                    <div className="relative max-w-[500px] text-white lg:mr-10">
+                        <h2 className="text-[42px] font-bold mb-[25px] leading-[1.3]">
+                            For Individuals And Organisations
+                        </h2>
+                        <p className="opacity-90 leading-[1.8] mb-[40px]">
+                            Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo magna dolore erat amet
+                        </p>
+                        <Link
+                            to="/about"
+                            className="inline-block bg-[#00d8ff] text-[#0a1628] px-[40px] py-4 rounded-[10px] no-underline font-semibold shadow-lg hover:bg-white transition-all duration-300"
+                        >
+                            More Details
+                        </Link>
+                    </div>
+                </div>
 
-                        {/* Stats grid */}
-                        <div className="grid grid-cols-2 gap-5">
+                {/* Right Side: White Background with Family Image Overlay */}
+                <div className="relative bg-white py-[100px] px-5 flex justify-center lg:justify-start overflow-hidden border-t lg:border-t-0 lg:border-l border-[#eee]">
+                    {/* Background Family Image Overlay */}
+                    <div
+                        className="absolute inset-0 opacity-10 pointer-events-none bg-cover bg-center"
+                        style={{ backgroundImage: `url(${carousel2})` }}
+                    />
+                    <div className="relative max-w-[500px] w-full lg:ml-20">
+                        <div className="grid grid-cols-2 gap-y-12 gap-x-10">
                             {stats.map((stat, index) => (
-                                <div
-                                    key={index}
-                                    className="bg-white p-[35px_25px] rounded-[20px] text-center transition-transform duration-300 hover:-translate-y-[10px]"
-                                >
-                                    <div
-                                        className={`text-[48px] font-bold mb-2.5 ${stat.textColor}`}
-                                    >
+                                <div key={index} className="text-left">
+                                    <div className="text-[55px] font-bold text-[#0a1628] leading-none mb-3">
                                         {stat.number}
                                     </div>
-                                    <div className="text-[#666] text-[15px] font-medium">
+                                    <div className="text-[#015fc9] text-[18px] font-medium">
                                         {stat.label}
                                     </div>
                                 </div>
@@ -127,6 +137,7 @@ const About = () => {
                     </div>
                 </div>
             </section>
+
 
             {/* Team Section */}
             <section className="py-[100px] bg-white">
