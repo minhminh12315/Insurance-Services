@@ -38,9 +38,9 @@ public partial class InsuranceDbContext : DbContext
     public virtual DbSet<PremiumPayment> PremiumPayments { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=InsuranceDB;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -344,6 +344,16 @@ public partial class InsuranceDbContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("transaction_reference");
+            entity.Property(e => e.OrderCode)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("order_code");
+            entity.Property(e => e.Gateway)
+                .HasMaxLength(50)
+                .HasColumnName("gateway");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
             entity.HasOne(d => d.Policy).WithMany(p => p.PremiumPayments)

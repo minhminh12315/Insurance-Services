@@ -18,6 +18,12 @@ public partial class PremiumPayment
     public string? PaymentMethod { get; set; }
 
     public string? TransactionReference { get; set; }
+    
+    public string? OrderCode { get; set; }
+    
+    public string? Gateway { get; set; }
+    
+    public DateTime? UpdatedAt { get; set; }
 
     public string? Status { get; set; }
 
