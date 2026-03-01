@@ -497,11 +497,12 @@ export const fakeNews: NewsAnnouncement[] = [
         author_id: 1,
     }
 ];
+
 // --- Compatibility & Helpers ---
 export const fakeProducts = insuranceSchemes.map(s => ({
     id: s.scheme_id.toString(),
     name: s.scheme_name,
-    category: insuranceCategories.find(c => c.categoryId === s.category_id)?.categoryName || 'General',
+    category: insuranceCategories.find(c => c.category_id === s.category_id)?.category_name || 'General',
     price: s.min_investment_amount || 0,
     stock: 100,
     imageUrl: '',
@@ -509,7 +510,7 @@ export const fakeProducts = insuranceSchemes.map(s => ({
     ...s
 }));
 
-export const categories = insuranceCategories.map(c => c.categoryName);
+export const categories = insuranceCategories.map(c => c.category_name);
 
 export const dashboardStats: DashboardStats = {
     totalPolicies: 1284,

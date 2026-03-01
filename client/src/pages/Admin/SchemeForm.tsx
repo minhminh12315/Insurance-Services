@@ -12,7 +12,7 @@ interface SchemeFormProps {
 const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, onCancel }) => {
     const [formData, setFormData] = useState<Partial<InsuranceScheme>>({
         scheme_name: '',
-        category_id: categories[0]?.categoryId || 0,
+        category_id: categories[0]?.category_id || 0,
         description: '',
         min_term: 1,
         max_term: 20,
@@ -50,9 +50,9 @@ const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, o
 
     return (
         <form onSubmit={handleSubmit}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '32px' }}>
-                <div style={{ gridColumn: 'span 2' }}>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Scheme Name *</label>
+            <div className="grid grid-cols-2 gap-5 mb-8">
+                <div className="col-span-2">
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Scheme Name *</label>
                     <input
                         type="text"
                         name="scheme_name"
@@ -64,7 +64,7 @@ const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, o
                     />
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Category *</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Category *</label>
                     <select
                         name="category_id"
                         className="select"
@@ -74,12 +74,12 @@ const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, o
                     >
                         <option value="">Select Category</option>
                         {categories.map(cat => (
-                            <option key={cat.categoryId} value={cat.categoryId}>{cat.categoryName}</option>
+                            <option key={cat.category_id} value={cat.category_id}>{cat.category_name}</option>
                         ))}
                     </select>
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Status</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Status</label>
                     <select
                         name="is_active"
                         className="select"
@@ -91,7 +91,7 @@ const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, o
                     </select>
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Min Term (Years)</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Min Term (Years)</label>
                     <input
                         type="number"
                         name="min_term"
@@ -101,7 +101,7 @@ const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, o
                     />
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Max Term (Years)</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Max Term (Years)</label>
                     <input
                         type="number"
                         name="max_term"
@@ -111,7 +111,7 @@ const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, o
                     />
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Min Investment ($)</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Min Investment ($)</label>
                     <input
                         type="number"
                         name="min_investment_amount"
@@ -121,7 +121,7 @@ const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, o
                     />
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Max Investment ($)</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Max Investment ($)</label>
                     <input
                         type="number"
                         name="max_investment_amount"
@@ -131,7 +131,7 @@ const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, o
                     />
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Profit Ratio (%)</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Profit Ratio (%)</label>
                     <input
                         type="number"
                         step="0.1"
@@ -142,7 +142,7 @@ const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, o
                     />
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Launch Date</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Launch Date</label>
                     <input
                         type="date"
                         name="new_launch_date"
@@ -151,19 +151,18 @@ const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, o
                         onChange={handleChange}
                     />
                 </div>
-                <div style={{ gridColumn: 'span 2' }}>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Description</label>
+                <div className="col-span-2">
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Description</label>
                     <textarea
                         name="description"
-                        className="input"
-                        style={{ height: '80px', resize: 'none' }}
+                        className="input h-20 resize-none"
                         value={formData.description || ''}
                         onChange={handleChange}
                         placeholder="Detail the scheme benefits..."
                     />
                 </div>
             </div>
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+            <div className="flex gap-3 justify-end">
                 <button type="button" className="btn btn-secondary" onClick={onCancel}>Cancel</button>
                 <button type="submit" className="btn btn-primary">
                     {scheme ? 'Update Scheme' : 'Create Scheme'}

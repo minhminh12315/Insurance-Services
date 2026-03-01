@@ -1,6 +1,9 @@
 using InsuranceService.API.DTOs;
 using InsuranceService.API.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -10,16 +13,14 @@ public class AuthService : IAuthService
 {
     private readonly InsuranceDbContext _context;
     private readonly IConfiguration _configuration;
-    private readonly ITokenService _tokenService;
 
-    public AuthService(InsuranceDbContext context, IConfiguration configuration, ITokenService tokenService)
+    public AuthService(InsuranceDbContext context, IConfiguration configuration)
     {
         _context = context;
         _configuration = configuration;
-        _tokenService = tokenService;
     }
 
-    public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request, string ipAddress)
+    public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request)
     {
         var existingUser = await _context.Users
             .FirstOrDefaultAsync(u => u.Email == request.Email);
@@ -51,25 +52,18 @@ public class AuthService : IAuthService
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        var accessToken = _tokenService.GenerateAccessToken(user);
-        var refreshToken = _tokenService.GenerateRefreshToken();
-        await _tokenService.SaveRefreshTokenAsync(user.UserId, refreshToken, ipAddress);
-
-        var jwtSettings = _configuration.GetSection("JwtSettings");
-        var expirationHours = Convert.ToDouble(jwtSettings["ExpirationInHours"] ?? "24");
+        var token = GenerateJwtToken(user);
 
         return new AuthResponseDto
         {
             Success = true,
             Message = "Registration successful",
-            Token = accessToken,
-            RefreshToken = refreshToken,
-            TokenExpiration = DateTime.UtcNow.AddHours(expirationHours),
+            Token = token,
             User = MapToUserDto(user)
         };
     }
 
-    public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request, string ipAddress)
+    public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request)
     {
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Email == request.Email);
@@ -92,42 +86,15 @@ public class AuthService : IAuthService
             };
         }
 
-        var accessToken = _tokenService.GenerateAccessToken(user);
-        var refreshToken = _tokenService.GenerateRefreshToken();
-        await _tokenService.SaveRefreshTokenAsync(user.UserId, refreshToken, ipAddress);
-
-        var jwtSettings = _configuration.GetSection("JwtSettings");
-        var expirationHours = Convert.ToDouble(jwtSettings["ExpirationInHours"] ?? "24");
+        var token = GenerateJwtToken(user);
 
         return new AuthResponseDto
         {
             Success = true,
             Message = "Login successful",
-            Token = accessToken,
-            RefreshToken = refreshToken,
-            TokenExpiration = DateTime.UtcNow.AddHours(expirationHours),
+            Token = token,
             User = MapToUserDto(user)
         };
-    }
-
-    public async Task<TokenResponseDto?> RefreshTokenAsync(string refreshToken, string ipAddress)
-    {
-        return await _tokenService.RefreshTokenAsync(refreshToken, ipAddress);
-    }
-
-    public async Task<bool> RevokeTokenAsync(string token, string ipAddress)
-    {
-        return await _tokenService.RevokeTokenAsync(token, ipAddress, "Revoked by user");
-    }
-
-    public async Task<bool> LogoutAsync(int userId, string ipAddress)
-    {
-        return await _tokenService.RevokeAllUserTokensAsync(userId, ipAddress, "User logged out");
-    }
-
-    public async Task<ValidateTokenResponseDto> ValidateTokenAsync(string token)
-    {
-        return await _tokenService.ValidateAccessTokenAsync(token);
     }
 
     private string HashPassword(string password)
@@ -141,6 +108,32 @@ public class AuthService : IAuthService
     {
         var hashOfInput = HashPassword(password);
         return hashOfInput == passwordHash;
+    }
+
+    private string GenerateJwtToken(User user)
+    {
+        var jwtSettings = _configuration.GetSection("JwtSettings");
+        var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT Secret Key is not configured");
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var claims = new[]
+        {
+            new System.Security.Claims.Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+            new System.Security.Claims.Claim(ClaimTypes.Name, user.FullName),
+            new System.Security.Claims.Claim(ClaimTypes.Email, user.Email),
+            new System.Security.Claims.Claim(ClaimTypes.Role, user.Role ?? "Customer")
+        };
+
+        var token = new JwtSecurityToken(
+            issuer: jwtSettings["Issuer"],
+            audience: jwtSettings["Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddHours(Convert.ToDouble(jwtSettings["ExpirationInHours"] ?? "24")),
+            signingCredentials: credentials
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
     private UserDto MapToUserDto(User user)

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 // import { fakeUsers, insuranceSchemes } from '../../data/fakeData';
-import type { Policy, PolicyStatus, PaymentFrequency, User, InsuranceScheme } from '../../types';
+import type { Policy, User, InsuranceScheme } from '../../types';
 
 interface PolicyFormProps {
     policy: Policy | null;
@@ -51,9 +51,9 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ policy, users, schemes, onSubmi
 
     return (
         <form onSubmit={handleSubmit}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '32px' }}>
+            <div className="grid grid-cols-2 gap-5 mb-8">
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Policy Number *</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Policy Number *</label>
                     <input
                         type="text"
                         name="policy_number"
@@ -64,7 +64,7 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ policy, users, schemes, onSubmi
                     />
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Status</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Status</label>
                     <select
                         name="policy_status"
                         className="select"
@@ -79,7 +79,7 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ policy, users, schemes, onSubmi
                     </select>
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Customer *</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Customer *</label>
                     <select
                         name="user_id"
                         className="select"
@@ -93,7 +93,7 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ policy, users, schemes, onSubmi
                     </select>
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Insurance Scheme *</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Insurance Scheme *</label>
                     <select
                         name="scheme_id"
                         className="select"
@@ -107,7 +107,7 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ policy, users, schemes, onSubmi
                     </select>
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Sum Assured ($)</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Sum Assured ($)</label>
                     <input
                         type="number"
                         name="sum_assured"
@@ -118,7 +118,7 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ policy, users, schemes, onSubmi
                     />
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Premium Amount ($)</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Premium Amount ($)</label>
                     <input
                         type="number"
                         name="premium_amount"
@@ -129,7 +129,7 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ policy, users, schemes, onSubmi
                     />
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Payment Frequency</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Payment Frequency</label>
                     <select
                         name="payment_frequency"
                         className="select"
@@ -143,7 +143,7 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ policy, users, schemes, onSubmi
                     </select>
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Term (Years)</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Term (Years)</label>
                     <input
                         type="number"
                         name="term_years"
@@ -153,7 +153,7 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ policy, users, schemes, onSubmi
                     />
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Start Date</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Start Date</label>
                     <input
                         type="date"
                         name="start_date"
@@ -163,7 +163,7 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ policy, users, schemes, onSubmi
                     />
                 </div>
                 <div>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Maturity Date</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Maturity Date</label>
                     <input
                         type="date"
                         name="maturity_date"
@@ -173,7 +173,7 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ policy, users, schemes, onSubmi
                     />
                 </div>
             </div>
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+            <div className="flex gap-3 justify-end">
                 <button type="button" className="btn btn-secondary" onClick={onCancel}>Cancel</button>
                 <button type="submit" className="btn btn-primary">
                     {policy ? 'Update Policy' : 'Issue Policy'}
