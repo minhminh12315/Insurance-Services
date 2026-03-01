@@ -62,10 +62,10 @@ export const fakeUsers: User[] = [
 
 // --- Insurance Products ---
 export const insuranceCategories: InsuranceCategory[] = [
-    { category_id: 1, category_name: 'Bảo hiểm nhân thọ', description: 'Bảo vệ tài chính cho gia đình bạn.' },
-    { category_id: 2, category_name: 'Bảo hiểm y tế', description: 'Chi trả chi phí khám chữa bệnh.' },
-    { category_id: 3, category_name: 'Bảo hiểm xe cơ giới', description: 'Bảo vệ phương tiện của bạn.' },
-    { category_id: 4, category_name: 'Bảo hiểm nhà ở', description: 'Bảo vệ ngôi nhà và tài sản.' },
+    // { category_id: 1, category_name: 'Bảo hiểm nhân thọ', description: 'Bảo vệ tài chính cho gia đình bạn.' },
+    // { category_id: 2, category_name: 'Bảo hiểm y tế', description: 'Chi trả chi phí khám chữa bệnh.' },
+    // { category_id: 3, category_name: 'Bảo hiểm xe cơ giới', description: 'Bảo vệ phương tiện của bạn.' },
+    // { category_id: 4, category_name: 'Bảo hiểm nhà ở', description: 'Bảo vệ ngôi nhà và tài sản.' },
 ];
 
 export const insuranceSchemes: InsuranceScheme[] = [
