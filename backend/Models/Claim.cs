@@ -1,11 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
 namespace InsuranceService.API.Models;
 
-public class Claim
+public partial class Claim
 {
-    [Key]
     public int ClaimId { get; set; }
 
     public int PolicyId { get; set; }
@@ -14,20 +13,15 @@ public class Claim
 
     public DateOnly ClaimDate { get; set; }
 
-    [Column(TypeName = "decimal(15,2)")]
     public decimal ClaimAmount { get; set; }
 
-    [Required]
-    [MaxLength(500)]
-    public string Reason { get; set; } = string.Empty;
+    public string Reason { get; set; } = null!;
 
-    [MaxLength(20)]
-    public string Status { get; set; } = "Submitted";
+    public string? Status { get; set; }
 
-    [MaxLength(500)]
     public string? AdminComment { get; set; }
 
-    public Policy Policy { get; set; } = null!;
+    public virtual Policy Policy { get; set; } = null!;
 
-    public User User { get; set; } = null!;
+    public virtual User User { get; set; } = null!;
 }

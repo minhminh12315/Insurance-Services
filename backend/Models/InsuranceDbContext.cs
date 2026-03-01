@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace InsuranceService.API.Models;
 
-public class InsuranceDbContext : DbContext
+public partial class InsuranceDbContext : DbContext
 {
-    public InsuranceDbContext(DbContextOptions<InsuranceDbContext> options) : base(options)
+    public InsuranceDbContext()
+    {
+    }
+
+    public InsuranceDbContext(DbContextOptions<InsuranceDbContext> options)
+        : base(options)
     {
     }
 
@@ -33,110 +39,369 @@ public class InsuranceDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=InsuranceDB;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Claim>(entity =>
+        {
+            entity.HasKey(e => e.ClaimId).HasName("PK__Claims__F9CC0896144DC79A");
 
-        // Configure unique indexes
-        modelBuilder.Entity<User>()
-            .HasIndex(u => u.Email)
-            .IsUnique();
+            entity.Property(e => e.ClaimId).HasColumnName("claim_id");
+            entity.Property(e => e.AdminComment).HasColumnName("admin_comment");
+            entity.Property(e => e.ClaimAmount)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("claim_amount");
+            entity.Property(e => e.ClaimDate).HasColumnName("claim_date");
+            entity.Property(e => e.PolicyId).HasColumnName("policy_id");
+            entity.Property(e => e.Reason).HasColumnName("reason");
+            entity.Property(e => e.Status)
+                .HasMaxLength(20)
+                .HasDefaultValue("Submitted")
+                .HasColumnName("status");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
 
-        modelBuilder.Entity<Policy>()
-            .HasIndex(p => p.PolicyNumber)
-            .IsUnique();
+            entity.HasOne(d => d.Policy).WithMany(p => p.Claims)
+                .HasForeignKey(d => d.PolicyId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Claims__policy_i__18EBB532");
 
-        // Configure Policy relationships
-        modelBuilder.Entity<Policy>()
-            .HasOne(p => p.User)
-            .WithMany(u => u.Policies)
-            .HasForeignKey(p => p.UserId)
-            .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(d => d.User).WithMany(p => p.Claims)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Claims__user_id__19DFD96B");
+        });
 
-        modelBuilder.Entity<Policy>()
-            .HasOne(p => p.Scheme)
-            .WithMany(s => s.Policies)
-            .HasForeignKey(p => p.SchemeId)
-            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<InsuranceCategory>(entity =>
+        {
+            entity.HasKey(e => e.CategoryId).HasName("PK__Insuranc__D54EE9B40360DABD");
 
-        // Configure Claim relationships
-        modelBuilder.Entity<Claim>()
-            .HasOne(c => c.User)
-            .WithMany(u => u.Claims)
-            .HasForeignKey(c => c.UserId)
-            .OnDelete(DeleteBehavior.Restrict);
+            entity.Property(e => e.CategoryId).HasColumnName("category_id");
+            entity.Property(e => e.CategoryName)
+                .HasMaxLength(50)
+                .HasColumnName("category_name");
+            entity.Property(e => e.Description).HasColumnName("description");
+        });
 
-        modelBuilder.Entity<Claim>()
-            .HasOne(c => c.Policy)
-            .WithMany(p => p.Claims)
-            .HasForeignKey(c => c.PolicyId)
-            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<InsuranceScheme>(entity =>
+        {
+            entity.HasKey(e => e.SchemeId).HasName("PK__Insuranc__8DF8FA63B4C6C668");
 
-        // Configure PolicyLoan relationships
-        modelBuilder.Entity<PolicyLoan>()
-            .HasOne(pl => pl.User)
-            .WithMany(u => u.PolicyLoans)
-            .HasForeignKey(pl => pl.UserId)
-            .OnDelete(DeleteBehavior.Restrict);
+            entity.Property(e => e.SchemeId).HasColumnName("scheme_id");
+            entity.Property(e => e.CategoryId).HasColumnName("category_id");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValue(true)
+                .HasColumnName("is_active");
+            entity.Property(e => e.MaxInvestmentAmount)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("max_investment_amount");
+            entity.Property(e => e.MaxTerm).HasColumnName("max_term");
+            entity.Property(e => e.MinInvestmentAmount)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("min_investment_amount");
+            entity.Property(e => e.MinTerm).HasColumnName("min_term");
+            entity.Property(e => e.NewLaunchDate).HasColumnName("new_launch_date");
+            entity.Property(e => e.ProfitRatio)
+                .HasColumnType("decimal(5, 2)")
+                .HasColumnName("profit_ratio");
+            entity.Property(e => e.SchemeName)
+                .HasMaxLength(100)
+                .HasColumnName("scheme_name");
 
-        modelBuilder.Entity<PolicyLoan>()
-            .HasOne(pl => pl.Policy)
-            .WithMany(p => p.PolicyLoans)
-            .HasForeignKey(pl => pl.PolicyId)
-            .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(d => d.Category).WithMany(p => p.InsuranceSchemes)
+                .HasForeignKey(d => d.CategoryId)
+                .HasConstraintName("FK__Insurance__categ__693CA210");
+        });
 
-        // Configure PremiumPayment relationships
-        modelBuilder.Entity<PremiumPayment>()
-            .HasOne(pp => pp.User)
-            .WithMany(u => u.PremiumPayments)
-            .HasForeignKey(pp => pp.UserId)
-            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<NewsAndAnnouncement>(entity =>
+        {
+            entity.HasKey(e => e.NewsId).HasName("PK__NewsAndA__4C27CCD8E2DD9B95");
 
-        modelBuilder.Entity<PremiumPayment>()
-            .HasOne(pp => pp.Policy)
-            .WithMany(p => p.PremiumPayments)
-            .HasForeignKey(pp => pp.PolicyId)
-            .OnDelete(DeleteBehavior.Restrict);
+            entity.Property(e => e.NewsId).HasColumnName("news_id");
+            entity.Property(e => e.AuthorId).HasColumnName("author_id");
+            entity.Property(e => e.Content).HasColumnName("content");
+            entity.Property(e => e.PublishedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("published_date");
+            entity.Property(e => e.Title)
+                .HasMaxLength(200)
+                .HasColumnName("title");
 
-        // Configure NewsAndAnnouncement relationship
-        modelBuilder.Entity<NewsAndAnnouncement>()
-            .HasOne(na => na.Author)
-            .WithMany(u => u.NewsAndAnnouncements)
-            .HasForeignKey(na => na.AuthorId)
-            .OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(d => d.Author).WithMany(p => p.NewsAndAnnouncements)
+                .HasForeignKey(d => d.AuthorId)
+                .HasConstraintName("FK__NewsAndAn__autho__14270015");
+        });
 
-        // Configure InsuranceScheme relationship
-        modelBuilder.Entity<InsuranceScheme>()
-            .HasOne(s => s.Category)
-            .WithMany(c => c.InsuranceSchemes)
-            .HasForeignKey(s => s.CategoryId)
-            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<Policy>(entity =>
+        {
+            entity.HasKey(e => e.PolicyId).HasName("PK__Policies__47DA3F0311C450B0");
 
-        // Configure One-to-One relationships for Policy Details (Cascade delete allowed)
-        modelBuilder.Entity<PolicyDetailsHome>()
-            .HasOne(pdh => pdh.Policy)
-            .WithOne(p => p.PolicyDetailsHome)
-            .HasForeignKey<PolicyDetailsHome>(pdh => pdh.PolicyId)
-            .OnDelete(DeleteBehavior.Cascade);
+            entity.HasIndex(e => e.PolicyNumber, "UQ__Policies__9691687297386018").IsUnique();
 
-        modelBuilder.Entity<PolicyDetailsLife>()
-            .HasOne(pdl => pdl.Policy)
-            .WithOne(p => p.PolicyDetailsLife)
-            .HasForeignKey<PolicyDetailsLife>(pdl => pdl.PolicyId)
-            .OnDelete(DeleteBehavior.Cascade);
+            entity.Property(e => e.PolicyId).HasColumnName("policy_id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.MaturityDate).HasColumnName("maturity_date");
+            entity.Property(e => e.PaymentFrequency)
+                .HasMaxLength(20)
+                .HasColumnName("payment_frequency");
+            entity.Property(e => e.PolicyNumber)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("policy_number");
+            entity.Property(e => e.PolicyStatus)
+                .HasMaxLength(20)
+                .HasDefaultValue("Pending")
+                .HasColumnName("policy_status");
+            entity.Property(e => e.PremiumAmount)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("premium_amount");
+            entity.Property(e => e.SchemeId).HasColumnName("scheme_id");
+            entity.Property(e => e.StartDate).HasColumnName("start_date");
+            entity.Property(e => e.SumAssured)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("sum_assured");
+            entity.Property(e => e.TermYears).HasColumnName("term_years");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
 
-        modelBuilder.Entity<PolicyDetailsMedical>()
-            .HasOne(pdm => pdm.Policy)
-            .WithOne(p => p.PolicyDetailsMedical)
-            .HasForeignKey<PolicyDetailsMedical>(pdm => pdm.PolicyId)
-            .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(d => d.Scheme).WithMany(p => p.Policies)
+                .HasForeignKey(d => d.SchemeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Policies__scheme__71D1E811");
 
-        modelBuilder.Entity<PolicyDetailsMotor>()
-            .HasOne(pdm => pdm.Policy)
-            .WithOne(p => p.PolicyDetailsMotor)
-            .HasForeignKey<PolicyDetailsMotor>(pdm => pdm.PolicyId)
-            .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(d => d.User).WithMany(p => p.Policies)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Policies__user_i__70DDC3D8");
+        });
+
+        modelBuilder.Entity<PolicyDetailsHome>(entity =>
+        {
+            entity.HasKey(e => e.DetailId).HasName("PK__PolicyDe__38E9A2245B17D7E2");
+
+            entity.ToTable("PolicyDetails_Home");
+
+            entity.HasIndex(e => e.PolicyId, "UQ__PolicyDe__47DA3F0228F3C749").IsUnique();
+
+            entity.Property(e => e.DetailId).HasColumnName("detail_id");
+            entity.Property(e => e.BuiltYear).HasColumnName("built_year");
+            entity.Property(e => e.PolicyId).HasColumnName("policy_id");
+            entity.Property(e => e.PropertyAddress).HasColumnName("property_address");
+            entity.Property(e => e.PropertyValue)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("property_value");
+            entity.Property(e => e.StructureType)
+                .HasMaxLength(50)
+                .HasColumnName("structure_type");
+
+            entity.HasOne(d => d.Policy).WithOne(p => p.PolicyDetailsHome)
+                .HasForeignKey<PolicyDetailsHome>(d => d.PolicyId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__PolicyDet__polic__02FC7413");
+        });
+
+        modelBuilder.Entity<PolicyDetailsLife>(entity =>
+        {
+            entity.HasKey(e => e.DetailId).HasName("PK__PolicyDe__38E9A22438F371FB");
+
+            entity.ToTable("PolicyDetails_Life");
+
+            entity.HasIndex(e => e.PolicyId, "UQ__PolicyDe__47DA3F02CF575983").IsUnique();
+
+            entity.Property(e => e.DetailId).HasColumnName("detail_id");
+            entity.Property(e => e.NomineeName)
+                .HasMaxLength(100)
+                .HasColumnName("nominee_name");
+            entity.Property(e => e.NomineeRelation)
+                .HasMaxLength(50)
+                .HasColumnName("nominee_relation");
+            entity.Property(e => e.PolicyId).HasColumnName("policy_id");
+
+            entity.HasOne(d => d.Policy).WithOne(p => p.PolicyDetailsLife)
+                .HasForeignKey<PolicyDetailsLife>(d => d.PolicyId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__PolicyDet__polic__75A278F5");
+        });
+
+        modelBuilder.Entity<PolicyDetailsMedical>(entity =>
+        {
+            entity.HasKey(e => e.DetailId).HasName("PK__PolicyDe__38E9A22431A48E84");
+
+            entity.ToTable("PolicyDetails_Medical");
+
+            entity.HasIndex(e => e.PolicyId, "UQ__PolicyDe__47DA3F02095C5CAC").IsUnique();
+
+            entity.Property(e => e.DetailId).HasColumnName("detail_id");
+            entity.Property(e => e.HospitalNetworkTier)
+                .HasMaxLength(50)
+                .HasColumnName("hospital_network_tier");
+            entity.Property(e => e.IsFamilyFloater)
+                .HasDefaultValue(false)
+                .HasColumnName("is_family_floater");
+            entity.Property(e => e.PolicyId).HasColumnName("policy_id");
+            entity.Property(e => e.PreExistingDiseases).HasColumnName("pre_existing_diseases");
+
+            entity.HasOne(d => d.Policy).WithOne(p => p.PolicyDetailsMedical)
+                .HasForeignKey<PolicyDetailsMedical>(d => d.PolicyId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__PolicyDet__polic__7A672E12");
+        });
+
+        modelBuilder.Entity<PolicyDetailsMotor>(entity =>
+        {
+            entity.HasKey(e => e.DetailId).HasName("PK__PolicyDe__38E9A22426EED2C7");
+
+            entity.ToTable("PolicyDetails_Motor");
+
+            entity.HasIndex(e => e.PolicyId, "UQ__PolicyDe__47DA3F02C801E076").IsUnique();
+
+            entity.Property(e => e.DetailId).HasColumnName("detail_id");
+            entity.Property(e => e.ChassisNumber)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("chassis_number");
+            entity.Property(e => e.EngineNumber)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("engine_number");
+            entity.Property(e => e.ManufacturingYear).HasColumnName("manufacturing_year");
+            entity.Property(e => e.PolicyId).HasColumnName("policy_id");
+            entity.Property(e => e.VehicleModel)
+                .HasMaxLength(50)
+                .HasColumnName("vehicle_model");
+            entity.Property(e => e.VehicleRegNumber)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("vehicle_reg_number");
+            entity.Property(e => e.VehicleType)
+                .HasMaxLength(10)
+                .HasColumnName("vehicle_type");
+
+            entity.HasOne(d => d.Policy).WithOne(p => p.PolicyDetailsMotor)
+                .HasForeignKey<PolicyDetailsMotor>(d => d.PolicyId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__PolicyDet__polic__7F2BE32F");
+        });
+
+        modelBuilder.Entity<PolicyLoan>(entity =>
+        {
+            entity.HasKey(e => e.LoanId).HasName("PK__PolicyLo__A1F79554F1962F1B");
+
+            entity.Property(e => e.LoanId).HasColumnName("loan_id");
+            entity.Property(e => e.ApplicationDate).HasColumnName("application_date");
+            entity.Property(e => e.ApprovalDate).HasColumnName("approval_date");
+            entity.Property(e => e.InterestRate)
+                .HasColumnType("decimal(5, 2)")
+                .HasColumnName("interest_rate");
+            entity.Property(e => e.LoanAmount)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("loan_amount");
+            entity.Property(e => e.LoanStatus)
+                .HasMaxLength(20)
+                .HasDefaultValue("Requested")
+                .HasColumnName("loan_status");
+            entity.Property(e => e.PolicyId).HasColumnName("policy_id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+
+            entity.HasOne(d => d.Policy).WithMany(p => p.PolicyLoans)
+                .HasForeignKey(d => d.PolicyId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__PolicyLoa__polic__0F624AF8");
+
+            entity.HasOne(d => d.User).WithMany(p => p.PolicyLoans)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__PolicyLoa__user___10566F31");
+        });
+
+        modelBuilder.Entity<PremiumPayment>(entity =>
+        {
+            entity.HasKey(e => e.PaymentId).HasName("PK__PremiumP__ED1FC9EA4E0C5346");
+
+            entity.Property(e => e.PaymentId).HasColumnName("payment_id");
+            entity.Property(e => e.AmountPaid)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("amount_paid");
+            entity.Property(e => e.PaymentDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("payment_date");
+            entity.Property(e => e.PaymentMethod)
+                .HasMaxLength(50)
+                .HasColumnName("payment_method");
+            entity.Property(e => e.PolicyId).HasColumnName("policy_id");
+            entity.Property(e => e.Status)
+                .HasMaxLength(20)
+                .HasDefaultValue("Pending")
+                .HasColumnName("status");
+            entity.Property(e => e.TransactionReference)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("transaction_reference");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+
+            entity.HasOne(d => d.Policy).WithMany(p => p.PremiumPayments)
+                .HasForeignKey(d => d.PolicyId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__PremiumPa__polic__09A971A2");
+
+            entity.HasOne(d => d.User).WithMany(p => p.PremiumPayments)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__PremiumPa__user___0A9D95DB");
+        });
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(e => e.UserId).HasName("PK__Users__B9BE370F35449800");
+
+            entity.HasIndex(e => e.Email, "UQ__Users__AB6E61644DCC5FA2").IsUnique();
+
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.Address).HasColumnName("address");
+            entity.Property(e => e.City)
+                .HasMaxLength(50)
+                .HasColumnName("city");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.DateOfBirth).HasColumnName("date_of_birth");
+            entity.Property(e => e.Email)
+                .HasMaxLength(100)
+                .HasColumnName("email");
+            entity.Property(e => e.FullName)
+                .HasMaxLength(100)
+                .HasColumnName("full_name");
+            entity.Property(e => e.Gender)
+                .HasMaxLength(10)
+                .HasColumnName("gender");
+            entity.Property(e => e.PasswordHash)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("password_hash");
+            entity.Property(e => e.PhoneNumber)
+                .HasMaxLength(15)
+                .IsUnicode(false)
+                .HasColumnName("phone_number");
+            entity.Property(e => e.Role)
+                .HasMaxLength(20)
+                .HasDefaultValue("Customer")
+                .HasColumnName("role");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+        });
+
+        OnModelCreatingPartial(modelBuilder);
     }
+
+    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { fakeUsers } from '../data/fakeData';
 import loginImage from '../assets/image.png';
 
@@ -7,6 +8,7 @@ type AuthMode = 'login' | 'register' | 'forgot' | 'otp';
 
 const Login = () => {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [mode, setMode] = useState<AuthMode>('login');
 
     // Form States
@@ -17,10 +19,20 @@ const Login = () => {
         fullName: '',
         otp: ''
     });
+    const [rememberMe, setRememberMe] = useState(false);
 
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
+
+    // Check for saved email on mount
+    useEffect(() => {
+        const savedEmail = localStorage.getItem('rememberedEmail');
+        if (savedEmail) {
+            setFormData(prev => ({ ...prev, email: savedEmail }));
+            setRememberMe(true);
+        }
+    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -33,11 +45,11 @@ const Login = () => {
         setLoading(true);
 
         setTimeout(() => {
-            const user = fakeUsers.find(u => u.email === formData.email || u.email === 'admin');
+            const user = fakeUsers.find(u => u.email === formData.email);
             let isValid = false;
 
             if (user) {
-                if ((user.email === 'admin' || formData.email === 'admin') && formData.password === '123123') {
+                if (formData.email === 'admin' && formData.password === '123123') {
                     isValid = true;
                 } else if (formData.email !== 'admin') {
                     isValid = true;
@@ -45,10 +57,17 @@ const Login = () => {
             }
 
             if (isValid && user) {
-                if (user.role === 'Admin') {
-                    navigate('/');
+                if (rememberMe) {
+                    localStorage.setItem('rememberedEmail', formData.email);
                 } else {
-                    setError('Access denied. Admin privileges required.');
+                    localStorage.removeItem('rememberedEmail');
+                }
+
+                login(user);
+                if (user.role === 'Admin') {
+                    navigate('/admin');
+                } else {
+                    navigate('/home');
                 }
             } else {
                 setError('Invalid username or password');
@@ -173,16 +192,7 @@ const Login = () => {
                                 />
                             </div>
                             <div>
-                                <div className="flex justify-between items-center mb-2">
-                                    <label className="block text-sm font-medium text-slate-700">Password</label>
-                                    <button
-                                        type="button"
-                                        onClick={() => { setMode('forgot'); setError(''); setSuccess(''); }}
-                                        className="text-xs font-medium text-blue-600 hover:text-blue-700 transition"
-                                    >
-                                        Forgot Password?
-                                    </button>
-                                </div>
+                                <label className="block text-sm font-medium text-slate-700 mb-2">Password</label>
                                 <input
                                     name="password"
                                     type="password"
@@ -193,6 +203,26 @@ const Login = () => {
                                     required
                                 />
                             </div>
+
+                            <div className="flex items-center justify-between text-sm">
+                                <label className="flex items-center gap-2 cursor-pointer group">
+                                    <input
+                                        type="checkbox"
+                                        checked={rememberMe}
+                                        onChange={(e) => setRememberMe(e.target.checked)}
+                                        className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 border-gray-300 cursor-pointer"
+                                    />
+                                    <span className="text-slate-600 group-hover:text-slate-800 transition-colors">Remember me</span>
+                                </label>
+                                <button
+                                    type="button"
+                                    onClick={() => { setMode('forgot'); setError(''); setSuccess(''); }}
+                                    className="font-medium text-blue-600 hover:text-blue-700 transition"
+                                >
+                                    Forgot Password?
+                                </button>
+                            </div>
+
                             <button
                                 type="submit"
                                 className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md shadow-blue-500/20 transition-all active:scale-[0.98] flex justify-center items-center disabled:opacity-70 disabled:cursor-not-allowed text-base mt-2"

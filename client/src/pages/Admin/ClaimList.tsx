@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { fakeClaims, fakePolicies, fakeUsers } from '../../data/fakeData';
 // import api from '../../services/api';
 import type { Claim, ClaimStatus, Policy, User } from '../../types';
 
 const ClaimList = () => {
     const [claims, setClaims] = useState<Claim[]>(fakeClaims);
-    const [policies, setPolicies] = useState<Policy[]>(fakePolicies);
-    const [users, setUsers] = useState<User[]>(fakeUsers);
+    const [policies] = useState<Policy[]>(fakePolicies);
+    const [users] = useState<User[]>(fakeUsers);
     const [statusFilter, setStatusFilter] = useState<string>('');
-    const [loading, setLoading] = useState(false);
+    const [loading] = useState(false);
 
     // useEffect(() => {
     //     const fetchData = async () => {
@@ -58,20 +58,20 @@ const ClaimList = () => {
     const getPolicyNum = (id: number) => policies.find(p => p.policy_id === id)?.policy_number || 'Unknown';
 
     if (loading) {
-        return <div style={{ padding: '20px', textAlign: 'center' }}>Loading claims...</div>;
+        return <div className="p-5 text-center">Loading claims...</div>;
     }
 
     return (
         <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+            <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#1e293b', marginBottom: '8px' }}>Claims Management</h1>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>Process and review insurance claims submitted by customers</p>
+                    <h1 className="text-[28px] font-extrabold text-slate-800 mb-2">Claims Management</h1>
+                    <p className="text-slate-500 text-[15px]">Process and review insurance claims submitted by customers</p>
                 </div>
             </div>
 
-            <div className="glass-card" style={{ padding: '20px', marginBottom: '24px', background: '#ffffff', border: '1px solid #e2e8f0' }}>
-                <select className="select" style={{ width: '200px' }} value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+            <div className="glass-card p-5 mb-6 bg-white border border-slate-200">
+                <select className="select w-[200px]" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
                     <option value="">All Statuses</option>
                     <option value="Submitted">Submitted</option>
                     <option value="Under Review">Under Review</option>
@@ -80,32 +80,32 @@ const ClaimList = () => {
                 </select>
             </div>
 
-            <div className="glass-card table-container" style={{ background: '#ffffff', border: '1px solid #e2e8f0' }}>
+            <div className="glass-card table-container bg-white border border-slate-200">
                 <table className="table">
                     <thead>
                         <tr>
-                            <th style={{ background: '#f8fafc' }}>Claim ID</th>
-                            <th style={{ background: '#f8fafc' }}>Policy</th>
-                            <th style={{ background: '#f8fafc' }}>Customer</th>
-                            <th style={{ background: '#f8fafc' }}>Amount</th>
-                            <th style={{ background: '#f8fafc' }}>Reason</th>
-                            <th style={{ background: '#f8fafc' }}>Date</th>
-                            <th style={{ background: '#f8fafc' }}>Status</th>
-                            <th style={{ textAlign: 'right', background: '#f8fafc' }}>Actions</th>
+                            <th className="bg-slate-50">Claim ID</th>
+                            <th className="bg-slate-50">Policy</th>
+                            <th className="bg-slate-50">Customer</th>
+                            <th className="bg-slate-50">Amount</th>
+                            <th className="bg-slate-50">Reason</th>
+                            <th className="bg-slate-50">Date</th>
+                            <th className="bg-slate-50">Status</th>
+                            <th className="text-right bg-slate-50">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredClaims.map((c) => (
                             <tr key={c.claim_id}>
-                                <td><span style={{ fontWeight: 600, color: '#475569' }}>#CLM-{c.claim_id.toString().padStart(4, '0')}</span></td>
-                                <td><span style={{ fontWeight: 700, color: 'var(--accent-primary)' }}>{getPolicyNum(c.policy_id)}</span></td>
+                                <td><span className="font-semibold text-slate-600">#CLM-{c.claim_id.toString().padStart(4, '0')}</span></td>
+                                <td><span className="font-bold text-blue-600">{getPolicyNum(c.policy_id)}</span></td>
                                 <td>{getUserName(c.user_id)}</td>
-                                <td style={{ fontWeight: 700, color: '#1e293b' }}>${c.claim_amount.toLocaleString()}</td>
-                                <td style={{ fontSize: '13px', maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.reason}</td>
+                                <td className="font-bold text-slate-800">${c.claim_amount.toLocaleString()}</td>
+                                <td className="text-[13px] max-w-[200px] truncate">{c.reason}</td>
                                 <td>{new Date(c.claim_date).toLocaleDateString()}</td>
                                 <td>{getStatusBadge(c.status)}</td>
-                                <td style={{ textAlign: 'right' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                                <td>
+                                    <div className="flex justify-end gap-2">
                                         {c.status === 'Submitted' && (
                                             <button className="btn btn-warning btn-sm" onClick={() => handleUpdateStatus(c.claim_id, 'Under Review')}>Review</button>
                                         )}
@@ -115,7 +115,7 @@ const ClaimList = () => {
                                                 <button className="btn btn-danger btn-sm" onClick={() => handleUpdateStatus(c.claim_id, 'Rejected')}>Reject</button>
                                             </>
                                         )}
-                                        <button className="btn btn-danger btn-sm" style={{ padding: '6px' }} onClick={() => handleDelete(c.claim_id)}>
+                                        <button className="btn btn-danger btn-sm p-1.5" onClick={() => handleDelete(c.claim_id)}>
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
                                         </button>
                                     </div>

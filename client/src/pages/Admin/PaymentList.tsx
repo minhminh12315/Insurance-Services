@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { fakePayments, fakePolicies, fakeUsers } from '../../data/fakeData';
 // import api from '../../services/api';
 import type { PremiumPayment, PaymentStatus, Policy, User } from '../../types';
 
 const PaymentList = () => {
     const [payments, setPayments] = useState<PremiumPayment[]>(fakePayments);
-    const [policies, setPolicies] = useState<Policy[]>(fakePolicies);
-    const [users, setUsers] = useState<User[]>(fakeUsers);
+    const [policies] = useState<Policy[]>(fakePolicies);
+    const [users] = useState<User[]>(fakeUsers);
     const [searchTerm, setSearchTerm] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [loading] = useState(false);
 
     // useEffect(() => {
     //     const fetchData = async () => {
@@ -54,19 +54,19 @@ const PaymentList = () => {
     const getPolicyNum = (id: number) => policies.find(p => p.policy_id === id)?.policy_number || 'Unknown';
 
     if (loading) {
-        return <div style={{ padding: '20px', textAlign: 'center' }}>Loading payments...</div>;
+        return <div className="p-5 text-center">Loading payments...</div>;
     }
 
     return (
         <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+            <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#1e293b', marginBottom: '8px' }}>Premium Payments</h1>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>Track and manage all customer premium transactions</p>
+                    <h1 className="text-[28px] font-extrabold text-slate-800 mb-2">Premium Payments</h1>
+                    <p className="text-slate-500 text-[15px]">Track and manage all customer premium transactions</p>
                 </div>
             </div>
 
-            <div className="glass-card" style={{ padding: '20px', marginBottom: '24px', background: '#ffffff', border: '1px solid #e2e8f0' }}>
+            <div className="glass-card p-5 mb-6 bg-white border border-slate-200">
                 <input
                     type="text"
                     placeholder="Search by Transaction Ref or Policy ID..."
@@ -76,34 +76,36 @@ const PaymentList = () => {
                 />
             </div>
 
-            <div className="glass-card table-container" style={{ background: '#ffffff', border: '1px solid #e2e8f0' }}>
+            <div className="glass-card table-container bg-white border border-slate-200">
                 <table className="table">
                     <thead>
                         <tr>
-                            <th style={{ background: '#f8fafc' }}>Transaction Ref</th>
-                            <th style={{ background: '#f8fafc' }}>Policy</th>
-                            <th style={{ background: '#f8fafc' }}>Customer</th>
-                            <th style={{ background: '#f8fafc' }}>Amount</th>
-                            <th style={{ background: '#f8fafc' }}>Date</th>
-                            <th style={{ background: '#f8fafc' }}>Method</th>
-                            <th style={{ background: '#f8fafc' }}>Status</th>
-                            <th style={{ textAlign: 'right', background: '#f8fafc' }}>Actions</th>
+                            <th className="bg-slate-50">Transaction Ref</th>
+                            <th className="bg-slate-50">Policy</th>
+                            <th className="bg-slate-50">Customer</th>
+                            <th className="bg-slate-50">Amount</th>
+                            <th className="bg-slate-50">Date</th>
+                            <th className="bg-slate-50">Method</th>
+                            <th className="bg-slate-50">Status</th>
+                            <th className="text-right bg-slate-50">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredPayments.map((p) => (
                             <tr key={p.payment_id}>
-                                <td><span style={{ fontWeight: 600, color: '#475569' }}>{p.transaction_reference}</span></td>
-                                <td><span style={{ fontWeight: 700, color: 'var(--accent-primary)' }}>{getPolicyNum(p.policy_id)}</span></td>
-                                <td><span style={{ fontWeight: 500, color: '#334155' }}>{getUserName(p.user_id)}</span></td>
-                                <td style={{ fontWeight: 700, color: '#1e293b' }}>${p.amount_paid.toLocaleString()}</td>
-                                <td style={{ color: '#64748b' }}>{new Date(p.payment_date).toLocaleDateString()}</td>
-                                <td><span style={{ fontSize: '12px', background: '#f1f5f9', padding: '4px 8px', borderRadius: '4px' }}>{p.payment_method}</span></td>
+                                <td><span className="font-semibold text-slate-600">{p.transaction_reference}</span></td>
+                                <td><span className="font-bold text-blue-600">{getPolicyNum(p.policy_id)}</span></td>
+                                <td><span className="font-medium text-slate-700">{getUserName(p.user_id)}</span></td>
+                                <td className="font-bold text-slate-800">${p.amount_paid.toLocaleString()}</td>
+                                <td className="text-slate-500">{new Date(p.payment_date).toLocaleDateString()}</td>
+                                <td><span className="text-xs bg-slate-100 px-2 py-1 rounded text-slate-600">{p.payment_method}</span></td>
                                 <td>{getStatusBadge(p.status)}</td>
-                                <td style={{ textAlign: 'right' }}>
-                                    <button className="btn btn-danger btn-sm" style={{ padding: '6px' }} onClick={() => handleDelete(p.payment_id)}>
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
-                                    </button>
+                                <td>
+                                    <div className="flex justify-end">
+                                        <button className="btn btn-danger btn-sm p-1.5" onClick={() => handleDelete(p.payment_id)}>
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}

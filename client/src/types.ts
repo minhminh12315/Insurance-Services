@@ -19,8 +19,8 @@ export interface User {
 
 // --- Insurance Products ---
 export interface InsuranceCategory {
-    categoryId: number;
-    categoryName: string;
+    category_id: number;
+    category_name: string;
     description: string | null;
 }
 
@@ -39,14 +39,18 @@ export interface InsuranceScheme {
 }
 
 // --- Policies & Details ---
-export type PolicyStatus = 'Active' | 'Pending' | 'Lapsed' | 'Claimed' | 'Cancelled';
+export type PolicyStatus = 'Active' | 'Pending' | 'Lapsed' | 'Claimed' | 'Cancelled' | 'Matured';
 export type PaymentFrequency = 'Monthly' | 'Quarterly' | 'Yearly' | 'OneTime';
+export type InsuranceType = 'Life' | 'Health' | 'Motor' | 'Home';
 
+// Common Policy Interface
 export interface Policy {
     policy_id: number;
     user_id: number;
     scheme_id: number;
     policy_number: string;
+    insured_name?: string;
+    type: InsuranceType; // Discriminator
     start_date: string;
     maturity_date: string;
     term_years: number;
@@ -55,41 +59,101 @@ export interface Policy {
     premium_amount: number;
     policy_status: PolicyStatus;
     created_at: string;
+    // Union of detail types based on 'type'
+    details: LifePolicyDetails | HealthPolicyDetails | MotorPolicyDetails | HomePolicyDetails;
 }
 
-export interface HomePolicyDetail {
-    detail_id: number;
-    policy_id: number | null;
-    property_address: string;
-    property_value: number | null;
-    structure_type: string | null;
-    built_year: number | null;
+// 1. Life Insurance Details
+export interface LifePolicyDetails {
+    // Main Product
+    main_benefit: {
+        coverage_scope: string; // e.g. "Death or Total Permanent Disability"
+        end_age: number; // e.g. 99
+        sum_assured: number;
+    };
+    // Supplementaries
+    riders: {
+        name: string;
+        type: 'Accident' | 'CriticalIllness' | 'Waiver' | 'Hospital' | 'Other';
+        sum_assured: number;
+        premium: number;
+        description?: string; // e.g. "100 diseases covered"
+        is_waiver_active?: boolean; // For Waiver of Premium
+    }[];
+    beneficiaries: { name: string; relation: string; percentage: number }[];
+    cash_value: {
+        current_balance: number;
+        surrender_value: number; // "Right now" value
+    };
+    premium_history: { year: number; status: 'Paid' | 'Due' | 'Future' }[];
 }
 
-export interface LifePolicyDetail {
-    detail_id: number;
-    policy_id: number | null;
-    nominee_name: string | null;
-    nominee_relation: string | null;
-}
-
-export interface MedicalPolicyDetail {
-    detail_id: number;
-    policy_id: number | null;
-    pre_existing_diseases: string | null;
-    hospital_network_tier: string | null;
+// 2. Health Insurance Details (Usage Tracker)
+export interface HealthPolicyDetails {
+    // Main Benefit: Inpatient (Nội trú)
+    main_benefit: {
+        total_limit_per_year: number;
+        room_board_limit: number; // per day
+        surgery_limit: number; // per case
+        used_amount: number;
+    };
+    // Supplementary Benefits (Ngoại trú, Nha khoa, Thai sản)
+    supplementary_benefits: {
+        name: string; // e.g., "Outpatient", "Dental Care"
+        type: 'Outpatient' | 'Dental' | 'Maternity' | 'Other';
+        limit_per_year: number;
+        used_amount: number;
+        waiting_period_end_date?: string; // If active, show date
+    }[];
+    hospital_network_tier: string;
     is_family_floater: boolean;
+    e_card_image?: string;
 }
 
-export interface MotorPolicyDetail {
-    detail_id: number;
-    policy_id: number | null;
-    vehicle_reg_number: string | null;
-    vehicle_model: string | null;
-    vehicle_type: 'Car' | 'Bike' | 'Truck' | null;
-    engine_number: string | null;
-    chassis_number: string | null;
-    manufacturing_year: number | null;
+// 3. Motor Insurance Details
+export interface MotorPolicyDetails {
+    // 1. Compulsory Civil Liability (TNDS)
+    tnds_compulsory: {
+        is_active: boolean;
+        limit_per_person: number; // e.g. 150,000,000
+        limit_property: number; // e.g. 100,000,000
+        qr_code_url: string; // "E-Certificate"
+    };
+    // 2. Voluntary Material / Physical Damage (Vật chất xe)
+    voluntary_coverage?: {
+        is_active: boolean;
+        vehicle_value: number; // Sum assured for the car
+        deductible_amount: number; // Miễn thường e.g. 500k
+        riders: ('Hydrostatic' | 'PartsTheft' | 'GenuineGarage' | 'PassengerAccident' | 'NewReplacement')[];
+    };
+    // 3. Vehicle Info
+    vehicle_info: {
+        type: 'Car' | 'Bike';
+        brand_model: string;
+        license_plate: string;
+        chassis_number: string;
+        engine_number: string;
+    };
+    rescue_hotline?: string;
+}
+
+// 4. Home Insurance Details
+// 4. Home Insurance Details
+export interface HomePolicyDetails {
+    // 1. Main: Structure & Risks
+    main_benefit: {
+        property_address: string;
+        property_type: 'Apartment' | 'Villa' | 'Townhouse';
+        structure_value: number; // The "Shell" value
+        coverage_risks: ('Fire' | 'Flood' | 'Theft' | 'Lightning' | 'Explosion' | 'Earthquake')[];
+    };
+    // 2. Supplementary: Contents & Liability
+    supplementary_benefits: {
+        contents_value: number; // Interior assets (TV, Fridge...)
+        liability_limit: number; // Compensation for neighbors
+        rental_support_limit: number; // Temporary accommodation cost
+    };
+    asset_photos_urls?: string[]; // Proof of contents
 }
 
 // --- Financials ---
