@@ -16,7 +16,7 @@ builder.Services.AddDbContext<InsuranceDbContext>(options =>
 // Add Authentication Service
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<InsuranceCategoryService>();
+builder.Services.AddScoped<IInsuranceCategoryService, InsuranceCategoryService>();
 builder.Services.AddScoped<IInsuranceSchemeService, InsuranceSchemeService>();
 builder.Services.AddScoped<IPolicyService, PolicyService>();
 builder.Services.AddScoped<IClaimService, ClaimService>();

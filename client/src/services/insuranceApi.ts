@@ -260,3 +260,44 @@ export const vnPayApi = {
         return data;
     },
 };
+
+// Category API
+export interface InsuranceCategoryModel {
+    categoryId: number;
+    categoryName: string;
+    description?: string | null;
+}
+
+export const categoryApi = {
+    async getAllCategories(): Promise<InsuranceCategoryModel[]> {
+        const { data } = await api.get<ApiResponse<InsuranceCategoryModel[]>>('/insurancecategory');
+        return data.data;
+    },
+};
+
+// News API
+export interface NewsModel {
+    newsId: number;
+    title: string;
+    content?: string | null;
+    publishedDate?: string | null;
+    authorId?: number | null;
+    authorName?: string | null;
+}
+
+export const newsApi = {
+    async getAllNews(): Promise<NewsModel[]> {
+        const { data } = await api.get<ApiResponse<NewsModel[]>>('/news');
+        return data.data;
+    },
+};
+
+// Scheme API - Get all active schemes
+export const schemeFullApi = {
+    async getAllActiveSchemes(): Promise<InsuranceSchemeModel[]> {
+        const { data } = await api.get<ApiResponse<InsuranceSchemeModel[]>>('/insurancescheme', {
+            params: { isActive: true },
+        });
+        return data.data;
+    },
+};
