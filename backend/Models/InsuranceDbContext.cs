@@ -278,7 +278,7 @@ public partial class InsuranceDbContext : DbContext
                 .HasColumnName("annual_limit");
             entity.Property(e => e.UsedAmount)
                 .HasColumnType("decimal(15, 2)")
-                .HasDefaultValue(0)
+                .HasDefaultValue(0m)
                 .HasColumnName("used_amount");
             entity.Property(e => e.RoomAndBoardLimit)
                 .HasColumnType("decimal(15, 2)")
