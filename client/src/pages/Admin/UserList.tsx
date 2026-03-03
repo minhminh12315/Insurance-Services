@@ -61,6 +61,7 @@ const UserList = () => {
     const getRoleBadge = (role: UserRole) => {
         switch (role) {
             case 'Admin': return <span className="badge badge-danger">Admin</span>;
+            case 'Employee': return <span className="badge badge-warning">Employee</span>;
             case 'Staff': return <span className="badge badge-warning">Staff</span>;
             default: return <span className="badge badge-success">Customer</span>;
         }
@@ -107,6 +108,7 @@ const UserList = () => {
                         >
                             <option value="">All Roles</option>
                             <option value="Admin">Admin</option>
+                            <option value="Employee">Employee</option>
                             <option value="Staff">Staff</option>
                             <option value="Customer">Customer</option>
                         </select>

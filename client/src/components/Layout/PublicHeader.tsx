@@ -166,7 +166,7 @@ const PublicHeader = () => {
                                 </div>
                                 {[
                                     // Admin Menu Items
-                                    ...(user.role === 'Admin' ? [
+                                    ...(user.role === 'Admin' || user.role === 'Employee' ? [
                                         {
                                             label: 'My Profile',
                                             icon: (
@@ -214,6 +214,20 @@ const PublicHeader = () => {
                                                     </svg>
                                                 ),
                                                 onClick: () => navigate('/user/policies'),
+                                            },
+                                            {
+                                                label: 'Calculator',
+                                                icon: (
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                        <rect x="4" y="2" width="16" height="20" rx="2" />
+                                                        <line x1="8" y1="6" x2="16" y2="6" />
+                                                        <line x1="8" y1="12" x2="10" y2="12" />
+                                                        <line x1="14" y1="12" x2="16" y2="12" />
+                                                        <line x1="8" y1="16" x2="10" y2="16" />
+                                                        <line x1="14" y1="16" x2="16" y2="16" />
+                                                    </svg>
+                                                ),
+                                                onClick: () => navigate('/calculator'),
                                             }
                                         ]),
                                 ].map((item, i) => (

@@ -1,5 +1,5 @@
 // --- User Management ---
-export type UserRole = 'Customer' | 'Admin' | 'Staff';
+export type UserRole = 'Customer' | 'Admin' | 'Employee' | 'Staff';
 export type Gender = 'Male' | 'Female' | 'Other';
 
 export interface User {
@@ -40,7 +40,7 @@ export interface InsuranceScheme {
 
 // --- Policies & Details ---
 export type PolicyStatus = 'Active' | 'Pending' | 'Lapsed' | 'Claimed' | 'Cancelled' | 'Matured';
-export type PaymentFrequency = 'Monthly' | 'Quarterly' | 'Yearly' | 'OneTime';
+export type PaymentFrequency = 'Monthly' | 'Quarterly' | 'HalfYearly' | 'Yearly' | 'OneTime';
 export type InsuranceType = 'Life' | 'Health' | 'Motor' | 'Home';
 
 // Common Policy Interface

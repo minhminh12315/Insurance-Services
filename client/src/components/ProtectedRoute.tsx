@@ -18,6 +18,9 @@ const ProtectedRoute = ({ requiredRole }: ProtectedRouteProps) => {
         if (user.role === 'Admin') {
             return <Navigate to="/admin" replace />;
         }
+        if (user.role === 'Employee') {
+            return <Navigate to="/home" replace />;
+        }
         return <Navigate to="/user" replace />;
     }
 

@@ -1,6 +1,7 @@
 using InsuranceService.API.Data;
 using InsuranceService.API.Models;
 using InsuranceService.API.Services;
+using InsuranceService.API.Services.VNPay;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -22,6 +23,8 @@ builder.Services.AddScoped<IClaimService, ClaimService>();
 builder.Services.AddScoped<IPremiumPaymentService, PremiumPaymentService>();
 builder.Services.AddScoped<IPolicyLoanService, PolicyLoanService>();
 builder.Services.AddScoped<INewsService, NewsService>();
+builder.Services.Configure<VNPaySettings>(builder.Configuration.GetSection("VNPay"));
+builder.Services.AddScoped<IVNPayService, VNPayService>();
 // Swagger services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
