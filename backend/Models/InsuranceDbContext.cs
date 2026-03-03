@@ -38,7 +38,12 @@ public partial class InsuranceDbContext : DbContext
     public virtual DbSet<PremiumPayment> PremiumPayments { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+    
     public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+    
+    public virtual DbSet<Notification> Notifications { get; set; }
+    
+    public virtual DbSet<PolicyRider> PolicyRiders { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=InsuranceDB;Trusted_Connection=True;TrustServerCertificate=True;");
@@ -62,6 +67,16 @@ public partial class InsuranceDbContext : DbContext
                 .HasDefaultValue("Submitted")
                 .HasColumnName("status");
             entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.DocumentPath)
+                .HasMaxLength(500)
+                .HasColumnName("document_path");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
 
             entity.HasOne(d => d.Policy).WithMany(p => p.Claims)
                 .HasForeignKey(d => d.PolicyId)
@@ -246,6 +261,37 @@ public partial class InsuranceDbContext : DbContext
                 .HasColumnName("is_family_floater");
             entity.Property(e => e.PolicyId).HasColumnName("policy_id");
             entity.Property(e => e.PreExistingDiseases).HasColumnName("pre_existing_diseases");
+            entity.Property(e => e.AnnualLimit)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("annual_limit");
+            entity.Property(e => e.UsedAmount)
+                .HasColumnType("decimal(15, 2)")
+                .HasDefaultValue(0)
+                .HasColumnName("used_amount");
+            entity.Property(e => e.RoomAndBoardLimit)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("room_and_board_limit");
+            entity.Property(e => e.SurgeryLimit)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("surgery_limit");
+            entity.Property(e => e.OutpatientLimit)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("outpatient_limit");
+            entity.Property(e => e.DentalLimit)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("dental_limit");
+            entity.Property(e => e.MaternityLimit)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("maternity_limit");
+            entity.Property(e => e.HasDirectBilling)
+                .HasDefaultValue(false)
+                .HasColumnName("has_direct_billing");
+            entity.Property(e => e.CardTier)
+                .HasMaxLength(20)
+                .HasColumnName("card_tier");
+            entity.Property(e => e.WaitingPeriodDays)
+                .HasDefaultValue(30)
+                .HasColumnName("waiting_period_days");
 
             entity.HasOne(d => d.Policy).WithOne(p => p.PolicyDetailsMedical)
                 .HasForeignKey<PolicyDetailsMedical>(d => d.PolicyId)
@@ -408,6 +454,91 @@ public partial class InsuranceDbContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("updated_at");
+        });
+
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.HasKey(e => e.NotificationId);
+
+            entity.Property(e => e.NotificationId).HasColumnName("notification_id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.Title)
+                .HasMaxLength(200)
+                .IsRequired()
+                .HasColumnName("title");
+            entity.Property(e => e.Message)
+                .HasMaxLength(1000)
+                .IsRequired()
+                .HasColumnName("message");
+            entity.Property(e => e.NotificationType)
+                .HasMaxLength(50)
+                .IsRequired()
+                .HasColumnName("notification_type");
+            entity.Property(e => e.RelatedEntityId).HasColumnName("related_entity_id");
+            entity.Property(e => e.RelatedEntityType)
+                .HasMaxLength(50)
+                .HasColumnName("related_entity_type");
+            entity.Property(e => e.IsRead)
+                .HasDefaultValue(false)
+                .HasColumnName("is_read");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.ReadAt)
+                .HasColumnType("datetime")
+                .HasColumnName("read_at");
+            entity.Property(e => e.EmailSent)
+                .HasDefaultValue(false)
+                .HasColumnName("email_sent");
+            entity.Property(e => e.EmailSentAt)
+                .HasColumnType("datetime")
+                .HasColumnName("email_sent_at");
+
+            entity.HasOne(d => d.User)
+                .WithMany()
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_Notifications_Users");
+        });
+
+        modelBuilder.Entity<PolicyRider>(entity =>
+        {
+            entity.HasKey(e => e.RiderId);
+
+            entity.Property(e => e.RiderId).HasColumnName("rider_id");
+            entity.Property(e => e.PolicyId).HasColumnName("policy_id");
+            entity.Property(e => e.RiderName)
+                .HasMaxLength(100)
+                .IsRequired()
+                .HasColumnName("rider_name");
+            entity.Property(e => e.RiderType)
+                .HasMaxLength(50)
+                .IsRequired()
+                .HasColumnName("rider_type");
+            entity.Property(e => e.Description)
+                .HasMaxLength(500)
+                .HasColumnName("description");
+            entity.Property(e => e.RiderPremium)
+                .HasColumnType("decimal(15, 2)")
+                .IsRequired()
+                .HasColumnName("rider_premium");
+            entity.Property(e => e.CoverageAmount)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("coverage_amount");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValue(true)
+                .HasColumnName("is_active");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+
+            entity.HasOne(d => d.Policy)
+                .WithMany()
+                .HasForeignKey(d => d.PolicyId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_PolicyRiders_Policies");
         });
 
         OnModelCreatingPartial(modelBuilder);

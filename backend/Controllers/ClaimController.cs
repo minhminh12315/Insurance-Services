@@ -12,10 +12,17 @@ namespace InsuranceService.API.Controllers;
 public class ClaimController : ControllerBase
 {
     private readonly IClaimService _claimService;
+    private readonly IFileStorageService _fileStorageService;
+    private readonly InsuranceService.API.Models.InsuranceDbContext _context;
 
-    public ClaimController(IClaimService claimService)
+    public ClaimController(
+        IClaimService claimService,
+        IFileStorageService fileStorageService,
+        InsuranceService.API.Models.InsuranceDbContext context)
     {
         _claimService = claimService;
+        _fileStorageService = fileStorageService;
+        _context = context;
     }
 
     [HttpGet]
@@ -72,6 +79,67 @@ public class ClaimController : ControllerBase
         catch (InvalidOperationException ex)
         {
             return BadRequest(new { success = false, message = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Upload document for a claim
+    /// </summary>
+    [HttpPost("{id}/upload-document")]
+    public async Task<ActionResult> UploadClaimDocument(int id, IFormFile file)
+    {
+        if (file == null || file  .Length == 0)
+            return BadRequest(new { success = false, message = "No file uploaded" });
+
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+        if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+            return Unauthorized(new { success = false, message = "Invalid user" });
+
+        // Get the claim
+        var claim = await _context.Claims.FindAsync(id);
+        if (claim == null)
+            return NotFound(new { success = false, message = "Claim not found" });
+
+        // Check if user owns the claim or is admin/employee
+        if (userRole != "Admin" && userRole != "Employee" && claim.UserId != userId)
+            return Forbid();
+
+        // Validate file type
+        var allowedExtensions = new[] { ".pdf", ".jpg", ".jpeg", ".png", ".doc", ".docx" };
+        if (!_fileStorageService.IsValidFileType(file, allowedExtensions))
+            return BadRequest(new { success = false, message = $"Invalid file type. Allowed: {string.Join(", ", allowedExtensions)}" });
+
+        // Validate file size (10MB max)
+        if (!_fileStorageService.IsValidFileSize(file, 10 * 1024 * 1024))
+            return BadRequest(new { success = false, message = "File size exceeds 10MB limit" });
+
+        try
+        {
+            // Delete old document if exists
+            if (!string.IsNullOrEmpty(claim.DocumentPath))
+            {
+                await _fileStorageService.DeleteFileAsync(claim.DocumentPath);
+            }
+
+            // Save new document
+            var filePath = await _fileStorageService.SaveFileAsync(file, "claims");
+            claim.DocumentPath = filePath;
+            claim.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            var fileUrl = _fileStorageService.GetFileUrl(filePath);
+
+            return Ok(new
+            {
+                success = true,
+                message = "Document uploaded successfully",
+                data = new { documentPath = filePath, documentUrl = fileUrl }
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { success = false, message = "Error uploading file", error = ex.Message });
         }
     }
 
