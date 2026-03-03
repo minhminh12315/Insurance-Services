@@ -44,6 +44,18 @@ public partial class InsuranceDbContext : DbContext
     public virtual DbSet<Notification> Notifications { get; set; }
     
     public virtual DbSet<PolicyRider> PolicyRiders { get; set; }
+    
+    public virtual DbSet<PolicyRenewal> PolicyRenewals { get; set; }
+    
+    public virtual DbSet<PolicyBeneficiary> PolicyBeneficiaries { get; set; }
+    
+    public virtual DbSet<ClaimApprovalHistory> ClaimApprovalHistories { get; set; }
+    
+    public virtual DbSet<PaymentReceipt> PaymentReceipts { get; set; }
+    
+    public virtual DbSet<PolicySurrender> PolicySurrenders { get; set; }
+    
+    public virtual DbSet<LoanRepaymentSchedule> LoanRepaymentSchedules { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=InsuranceDB;Trusted_Connection=True;TrustServerCertificate=True;");
@@ -539,6 +551,295 @@ public partial class InsuranceDbContext : DbContext
                 .HasForeignKey(d => d.PolicyId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_PolicyRiders_Policies");
+        });
+
+        modelBuilder.Entity<PolicyRenewal>(entity =>
+        {
+            entity.HasKey(e => e.RenewalId);
+
+            entity.Property(e => e.RenewalId).HasColumnName("renewal_id");
+            entity.Property(e => e.PolicyId).HasColumnName("policy_id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.RenewalDate).HasColumnName("renewal_date");
+            entity.Property(e => e.PreviousMaturityDate).HasColumnName("previous_maturity_date");
+            entity.Property(e => e.NewMaturityDate).HasColumnName("new_maturity_date");
+            entity.Property(e => e.PreviousPremium)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("previous_premium");
+            entity.Property(e => e.NewPremium)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("new_premium");
+            entity.Property(e => e.RenewalTermYears).HasColumnName("renewal_term_years");
+            entity.Property(e => e.RenewalStatus)
+                .HasMaxLength(20)
+                .HasDefaultValue("Pending")
+                .HasColumnName("renewal_status");
+            entity.Property(e => e.RenewalNotes)
+                .HasMaxLength(1000)
+                .HasColumnName("renewal_notes");
+            entity.Property(e => e.RequestedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("requested_at");
+            entity.Property(e => e.ProcessedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("processed_at");
+            entity.Property(e => e.ProcessedBy).HasColumnName("processed_by");
+
+            entity.HasOne(d => d.Policy)
+                .WithMany()
+                .HasForeignKey(d => d.PolicyId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_PolicyRenewals_Policies");
+
+            entity.HasOne(d => d.User)
+                .WithMany()
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_PolicyRenewals_Users");
+        });
+
+        modelBuilder.Entity<PolicyBeneficiary>(entity =>
+        {
+            entity.HasKey(e => e.BeneficiaryId);
+
+            entity.Property(e => e.BeneficiaryId).HasColumnName("beneficiary_id");
+            entity.Property(e => e.PolicyId).HasColumnName("policy_id");
+            entity.Property(e => e.BeneficiaryName)
+                .HasMaxLength(100)
+                .IsRequired()
+                .HasColumnName("beneficiary_name");
+            entity.Property(e => e.Relationship)
+                .HasMaxLength(50)
+                .IsRequired()
+                .HasColumnName("relationship");
+            entity.Property(e => e.DateOfBirth).HasColumnName("date_of_birth");
+            entity.Property(e => e.PhoneNumber)
+                .HasMaxLength(20)
+                .HasColumnName("phone_number");
+            entity.Property(e => e.Email)
+                .HasMaxLength(100)
+                .HasColumnName("email");
+            entity.Property(e => e.Address)
+                .HasMaxLength(500)
+                .HasColumnName("address");
+            entity.Property(e => e.BenefitPercentage)
+                .HasColumnType("decimal(5, 2)")
+                .HasColumnName("benefit_percentage");
+            entity.Property(e => e.IsPrimary)
+                .HasDefaultValue(true)
+                .HasColumnName("is_primary");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValue(true)
+                .HasColumnName("is_active");
+            entity.Property(e => e.IdentificationNumber)
+                .HasMaxLength(50)
+                .HasColumnName("identification_number");
+            entity.Property(e => e.IdentificationType)
+                .HasMaxLength(50)
+                .HasColumnName("identification_type");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+
+            entity.HasOne(d => d.Policy)
+                .WithMany()
+                .HasForeignKey(d => d.PolicyId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_PolicyBeneficiaries_Policies");
+        });
+
+        modelBuilder.Entity<ClaimApprovalHistory>(entity =>
+        {
+            entity.HasKey(e => e.ApprovalId);
+
+            entity.Property(e => e.ApprovalId).HasColumnName("approval_id");
+            entity.Property(e => e.ClaimId).HasColumnName("claim_id");
+            entity.Property(e => e.ApprovedBy).HasColumnName("approved_by");
+            entity.Property(e => e.Action)
+                .HasMaxLength(50)
+                .IsRequired()
+                .HasColumnName("action");
+            entity.Property(e => e.PreviousStatus)
+                .HasMaxLength(20)
+                .IsRequired()
+                .HasColumnName("previous_status");
+            entity.Property(e => e.NewStatus)
+                .HasMaxLength(20)
+                .IsRequired()
+                .HasColumnName("new_status");
+            entity.Property(e => e.Comments)
+                .HasMaxLength(1000)
+                .HasColumnName("comments");
+            entity.Property(e => e.ApprovedAmount)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("approved_amount");
+            entity.Property(e => e.ActionDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("action_date");
+            entity.Property(e => e.DocumentsVerified)
+                .HasMaxLength(500)
+                .HasColumnName("documents_verified");
+            entity.Property(e => e.RejectionReason)
+                .HasMaxLength(500)
+                .HasColumnName("rejection_reason");
+
+            entity.HasOne(d => d.Claim)
+                .WithMany()
+                .HasForeignKey(d => d.ClaimId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_ClaimApprovalHistory_Claims");
+
+            entity.HasOne(d => d.Approver)
+                .WithMany()
+                .HasForeignKey(d => d.ApprovedBy)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_ClaimApprovalHistory_Users");
+        });
+
+        modelBuilder.Entity<PaymentReceipt>(entity =>
+        {
+            entity.HasKey(e => e.ReceiptId);
+
+            entity.Property(e => e.ReceiptId).HasColumnName("receipt_id");
+            entity.Property(e => e.PaymentId).HasColumnName("payment_id");
+            entity.Property(e => e.ReceiptNumber)
+                .HasMaxLength(50)
+                .IsRequired()
+                .HasColumnName("receipt_number");
+            entity.Property(e => e.GeneratedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("generated_at");
+            entity.Property(e => e.ReceiptPdfPath)
+                .HasMaxLength(500)
+                .HasColumnName("receipt_pdf_path");
+            entity.Property(e => e.ReceiptHtml)
+                .HasColumnType("ntext")
+                .HasColumnName("receipt_html");
+            entity.Property(e => e.EmailSent)
+                .HasDefaultValue(false)
+                .HasColumnName("email_sent");
+            entity.Property(e => e.EmailSentAt)
+                .HasColumnType("datetime")
+                .HasColumnName("email_sent_at");
+
+            entity.HasOne(d => d.Payment)
+                .WithMany()
+                .HasForeignKey(d => d.PaymentId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_PaymentReceipts_PremiumPayments");
+
+            entity.HasIndex(e => e.ReceiptNumber).IsUnique();
+        });
+
+        modelBuilder.Entity<PolicySurrender>(entity =>
+        {
+            entity.HasKey(e => e.SurrenderId);
+
+            entity.Property(e => e.SurrenderId).HasColumnName("surrender_id");
+            entity.Property(e => e.PolicyId).HasColumnName("policy_id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.RequestDate).HasColumnName("request_date");
+            entity.Property(e => e.TotalPremiumPaid)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("total_premium_paid");
+            entity.Property(e => e.SurrenderValue)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("surrender_value");
+            entity.Property(e => e.SurrenderCharges)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("surrender_charges");
+            entity.Property(e => e.NetPayable)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("net_payable");
+            entity.Property(e => e.PolicyHeldYears).HasColumnName("policy_held_years");
+            entity.Property(e => e.PolicyHeldMonths).HasColumnName("policy_held_months");
+            entity.Property(e => e.SurrenderStatus)
+                .HasMaxLength(20)
+                .HasDefaultValue("Pending")
+                .HasColumnName("surrender_status");
+            entity.Property(e => e.SurrenderReason)
+                .HasMaxLength(500)
+                .HasColumnName("surrender_reason");
+            entity.Property(e => e.AdminNotes)
+                .HasMaxLength(1000)
+                .HasColumnName("admin_notes");
+            entity.Property(e => e.RequestedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("requested_at");
+            entity.Property(e => e.ProcessedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("processed_at");
+            entity.Property(e => e.ProcessedBy).HasColumnName("processed_by");
+            entity.Property(e => e.PaymentMethod)
+                .HasMaxLength(50)
+                .HasColumnName("payment_method");
+            entity.Property(e => e.PaymentReference)
+                .HasMaxLength(200)
+                .HasColumnName("payment_reference");
+
+            entity.HasOne(d => d.Policy)
+                .WithMany()
+                .HasForeignKey(d => d.PolicyId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_PolicySurrenders_Policies");
+
+            entity.HasOne(d => d.User)
+                .WithMany()
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_PolicySurrenders_Users");
+        });
+
+        modelBuilder.Entity<LoanRepaymentSchedule>(entity =>
+        {
+            entity.HasKey(e => e.ScheduleId);
+
+            entity.Property(e => e.ScheduleId).HasColumnName("schedule_id");
+            entity.Property(e => e.LoanId).HasColumnName("loan_id");
+            entity.Property(e => e.InstallmentNumber).HasColumnName("installment_number");
+            entity.Property(e => e.DueDate).HasColumnName("due_date");
+            entity.Property(e => e.PrincipalAmount)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("principal_amount");
+            entity.Property(e => e.InterestAmount)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("interest_amount");
+            entity.Property(e => e.TotalAmount)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("total_amount");
+            entity.Property(e => e.OutstandingBalance)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("outstanding_balance");
+            entity.Property(e => e.IsPaid)
+                .HasDefaultValue(false)
+                .HasColumnName("is_paid");
+            entity.Property(e => e.PaidDate)
+                .HasColumnType("datetime")
+                .HasColumnName("paid_date");
+            entity.Property(e => e.PaidAmount)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("paid_amount");
+            entity.Property(e => e.PaymentReference)
+                .HasMaxLength(200)
+                .HasColumnName("payment_reference");
+            entity.Property(e => e.DaysOverdue).HasColumnName("days_overdue");
+            entity.Property(e => e.LateFee)
+                .HasColumnType("decimal(15, 2)")
+                .HasColumnName("late_fee");
+
+            entity.HasOne(d => d.Loan)
+                .WithMany()
+                .HasForeignKey(d => d.LoanId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_LoanRepaymentSchedule_PolicyLoans");
         });
 
         OnModelCreatingPartial(modelBuilder);

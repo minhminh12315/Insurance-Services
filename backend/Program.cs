@@ -30,6 +30,14 @@ builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IPolicyRiderService, PolicyRiderService>();
 
+// Medium Priority Features Services
+builder.Services.AddScoped<IPolicyRenewalService, PolicyRenewalService>();
+builder.Services.AddScoped<IBeneficiaryService, BeneficiaryService>();
+builder.Services.AddScoped<IClaimApprovalService, ClaimApprovalService>();
+builder.Services.AddScoped<IPaymentReceiptService, PaymentReceiptService>();
+builder.Services.AddScoped<IPolicySurrenderService, PolicySurrenderService>();
+builder.Services.AddScoped<ILoanRepaymentService, LoanRepaymentService>();
+
 // Configure VNPay Settings
 builder.Services.Configure<VNPaySettings>(builder.Configuration.GetSection("VNPay"));
 builder.Services.AddScoped<IVNPayService, VNPayService>();
