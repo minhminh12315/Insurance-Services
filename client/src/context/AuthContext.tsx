@@ -1,26 +1,20 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { createContext, useContext, useState, type ReactNode } from 'react';
 import type { User } from '../types';
 import type { AuthSession } from '../services/authStorage';
-import { clearAuthSession, getStoredUser, setAuthSession } from '../services/authStorage';
+import { clearAuthSession, getAccessToken, getStoredUser, setAuthSession } from '../services/authStorage';
 
 interface AuthContextType {
     user: User | null;
     login: (session: AuthSession) => void;
     logout: () => void;
+    updateUser: (user: User) => void;
     isAuthenticated: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [user, setUser] = useState<User | null>(null);
-
-    useEffect(() => {
-        const storedUser = getStoredUser();
-        if (storedUser) {
-            setUser(storedUser);
-        }
-    }, []);
+    const [user, setUser] = useState<User | null>(() => getStoredUser());
 
     const login = (session: AuthSession) => {
         setUser(session.user);
@@ -32,8 +26,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         clearAuthSession();
     };
 
+    const updateUser = (updatedUser: User) => {
+        setUser(updatedUser);
+        const stored = getAccessToken();
+        if (stored) {
+            setAuthSession({ user: updatedUser, token: stored });
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
+        <AuthContext.Provider value={{ user, login, logout, updateUser, isAuthenticated: !!user }}>
             {children}
         </AuthContext.Provider>
     );

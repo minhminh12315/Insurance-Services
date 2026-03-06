@@ -254,7 +254,7 @@ public class PolicyService : IPolicyService
         return $"POL-{prefix}-{timestamp}-{(count + 1):D6}";
     }
 
-    private PolicyDto MapToDto(Policy policy)
+    private static PolicyDto MapToDto(Policy policy)
     {
         object? policyDetails = null;
 

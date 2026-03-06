@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import type { InsuranceCategory } from '../../types';
+import type { InsuranceCategoryModel } from '../../services/insuranceApi';
 
 interface CategoryFormProps {
-    category: InsuranceCategory | null;
-    onSubmit: (categoryData: Partial<InsuranceCategory>) => void;
+    category: InsuranceCategoryModel | null;
+    onSubmit: (categoryData: Partial<InsuranceCategoryModel>) => void;
     onCancel: () => void;
 }
 
 const CategoryForm: React.FC<CategoryFormProps> = ({ category, onSubmit, onCancel }) => {
-    const [formData, setFormData] = useState<Partial<InsuranceCategory>>({
-        category_name: '',
+    const [formData, setFormData] = useState<Partial<InsuranceCategoryModel>>({
+        categoryName: '',
         description: '',
     });
 
@@ -32,30 +32,30 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ category, onSubmit, onCance
     return (
         <form onSubmit={handleSubmit}>
             <div className="mb-6">
-                <label className="block mb-2 text-[13px] font-semibold text-slate-500">Category Name *</label>
+                <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Category Name *</label>
                 <input
                     type="text"
-                    name="category_name"
-                    className="input"
-                    value={formData.category_name}
+                    name="categoryName"
+                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    value={formData.categoryName}
                     onChange={handleChange}
                     required
                     placeholder="e.g. Health Insurance"
                 />
             </div>
             <div className="mb-8">
-                <label className="block mb-2 text-[13px] font-semibold text-slate-500">Description</label>
+                <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Description</label>
                 <textarea
                     name="description"
-                    className="input h-[120px] resize-none"
+                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white h-[120px] resize-none"
                     value={formData.description || ''}
                     onChange={handleChange}
                     placeholder="Briefly describe what this category covers..."
                 />
             </div>
             <div className="flex gap-3 justify-end">
-                <button type="button" className="btn btn-secondary" onClick={onCancel}>Cancel</button>
-                <button type="submit" className="btn btn-primary">
+                <button type="button" className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors font-medium shadow-sm" onClick={onCancel}>Cancel</button>
+                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm">
                     {category ? 'Update Category' : 'Create Category'}
                 </button>
             </div>

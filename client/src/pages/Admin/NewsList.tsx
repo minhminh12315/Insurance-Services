@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { fakeNews, fakeUsers } from '../../data/fakeData';
 // import api from '../../services/api';
 import type { NewsAnnouncement, User } from '../../types';
+import ConfirmationModal from '../../components/ConfirmationModal';
 
 const NewsList = () => {
     const [news, setNews] = useState<NewsAnnouncement[]>(fakeNews);
@@ -10,6 +11,11 @@ const NewsList = () => {
     const [showModal, setShowModal] = useState(false);
     const [editingNews, setEditingNews] = useState<NewsAnnouncement | null>(null);
     const [loading] = useState(false);
+
+    // Deletion states
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deletingId, setDeletingId] = useState<number | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string>('');
 
     // Form state
     const [formData, setFormData] = useState<Partial<NewsAnnouncement>>({});
@@ -50,10 +56,19 @@ const NewsList = () => {
         return users.find(u => u.user_id === id)?.full_name || 'Admin';
     };
 
-    const handleDelete = (id: number) => {
-        if (window.confirm('Are you sure you want to delete this announcement?')) {
-            setNews(news.filter(n => n.news_id !== id));
+    const handleDeleteClick = (id: number) => {
+        setDeletingId(id);
+        setShowDeleteModal(true);
+    };
+
+    const confirmDelete = () => {
+        if (deletingId) {
+            setNews(news.filter(n => n.news_id !== deletingId));
+            setSuccessMessage('Announcement deleted successfully');
+            setTimeout(() => setSuccessMessage(''), 3000);
         }
+        setShowDeleteModal(false);
+        setDeletingId(null);
     };
 
     const handleSave = () => {
@@ -87,13 +102,26 @@ const NewsList = () => {
     }
 
     return (
-        <div>
+        <div className="relative">
+            {/* Global Notification Banner */}
+            <div className="fixed top-24 right-6 z-[110] flex flex-col gap-3 min-w-[320px] max-w-md pointer-events-none">
+                {successMessage && (
+                    <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 shadow-xl shadow-emerald-500/10 flex items-center gap-3 text-emerald-600 animate-in slide-in-from-right duration-500 pointer-events-auto">
+                        <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                        </div>
+                        <p className="text-sm font-bold">{successMessage}</p>
+                    </div>
+                )}
+            </div>
             <div className="flex justify-between items-center mb-8">
                 <div>
                     <h1 className="text-[28px] font-extrabold text-slate-800 mb-2">News & Announcements</h1>
                     <p className="text-slate-500 text-[15px]">Broadcast important updates and notifications to all users</p>
                 </div>
-                <button className="btn btn-primary" onClick={() => { setEditingNews(null); setShowModal(true); }}>
+                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center shadow-sm" onClick={() => { setEditingNews(null); setShowModal(true); }}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mr-2">
                         <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" />
                     </svg>
@@ -101,11 +129,11 @@ const NewsList = () => {
                 </button>
             </div>
 
-            <div className="glass-card p-5 mb-6 bg-white border border-slate-200">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5 mb-6">
                 <input
                     type="text"
                     placeholder="Search by title or content..."
-                    className="input"
+                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -113,22 +141,22 @@ const NewsList = () => {
 
             <div className="grid grid-cols-[repeat(auto-fill,minmax(350px,1fr))] gap-6">
                 {filteredNews.map((n) => (
-                    <div key={n.news_id} className="glass-card bg-white border border-slate-200 p-6 flex flex-col">
+                    <div key={n.news_id} className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 flex flex-col">
                         <div className="flex justify-between items-start mb-4">
                             <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">
                                 {new Date(n.published_date).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
                             </span>
                             <div className="flex gap-2">
-                                <button className="border-none bg-none cursor-pointer text-slate-400 hover:text-blue-600 transition-colors" onClick={() => { setEditingNews(n); setShowModal(true); }}>
+                                <button className="p-1 hover:bg-slate-50 rounded transition-colors text-slate-400 hover:text-blue-600" onClick={() => { setEditingNews(n); setShowModal(true); }}>
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                                 </button>
-                                <button className="border-none bg-none cursor-pointer text-red-500 hover:text-red-700 transition-colors" onClick={() => handleDelete(n.news_id)}>
+                                <button className="p-1 hover:bg-red-50 rounded transition-colors text-red-500 hover:text-red-700" onClick={() => handleDeleteClick(n.news_id)}>
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
                                 </button>
                             </div>
                         </div>
-                        <h3 className="text-lg font-bold text-slate-800 mb-3 leading-tight">{n.title}</h3>
-                        <p className="text-slate-500 text-sm leading-relaxed flex-1 mb-6">{n.content}</p>
+                        <h3 className="text-lg font-bold text-slate-800 mb-3 leading-tight text-left">{n.title}</h3>
+                        <p className="text-slate-500 text-sm leading-relaxed flex-1 mb-6 text-left">{n.content}</p>
                         <div className="flex items-center gap-2 pt-4 border-t border-slate-100">
                             <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center text-[10px] text-blue-600 font-bold">
                                 {getAuthorName(n.author_id)[0]}
@@ -140,35 +168,45 @@ const NewsList = () => {
             </div>
 
             {showModal && (
-                <div className="modal-overlay" onClick={() => setShowModal(false)}>
-                    <div className="modal-content glass-card w-[600px] bg-white p-8" onClick={e => e.stopPropagation()}>
-                        <h2 className="text-[22px] font-extrabold text-slate-800 mb-6">{editingNews ? 'Edit Announcement' : 'Post New Announcement'}</h2>
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
+                    <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-[600px] p-8" onClick={e => e.stopPropagation()}>
+                        <h2 className="text-[22px] font-extrabold text-slate-800 mb-6 text-left">{editingNews ? 'Edit Announcement' : 'Post New Announcement'}</h2>
                         <div className="mb-5">
-                            <label className="block mb-2 text-[13px] font-semibold text-slate-500">Title</label>
+                            <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Title</label>
                             <input
                                 type="text"
-                                className="input"
+                                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                                 value={formData.title || ''}
                                 onChange={e => setFormData({ ...formData, title: e.target.value })}
                                 placeholder="Headline for the announcement"
                             />
                         </div>
                         <div className="mb-8">
-                            <label className="block mb-2 text-[13px] font-semibold text-slate-500">Announcement Content</label>
+                            <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Announcement Content</label>
                             <textarea
-                                className="input h-[200px] resize-none"
+                                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white h-[200px] resize-none"
                                 value={formData.content || ''}
                                 onChange={e => setFormData({ ...formData, content: e.target.value })}
                                 placeholder="Write the full announcement details here..."
                             />
                         </div>
                         <div className="flex gap-3 justify-end">
-                            <button className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
-                            <button className="btn btn-primary" onClick={handleSave}>{editingNews ? 'Update' : 'Publish'} Announcement</button>
+                            <button className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors font-medium shadow-sm" onClick={() => setShowModal(false)}>Cancel</button>
+                            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm" onClick={handleSave}>{editingNews ? 'Update' : 'Publish'} Announcement</button>
                         </div>
                     </div>
                 </div>
             )}
+
+            <ConfirmationModal
+                isOpen={showDeleteModal}
+                title="Delete Announcement"
+                message="Are you sure you want to delete this announcement? This will remove it from all users' dashboards. This action cannot be undone."
+                onConfirm={confirmDelete}
+                onCancel={() => setShowDeleteModal(false)}
+                confirmLabel="Delete"
+                isDanger={true}
+            />
         </div>
     );
 };

@@ -108,10 +108,10 @@ const Services = () => {
                                 >
                                     <div className="flex items-start gap-[25px]">
                                         <div className="w-16 h-16 bg-[#015fc9] rounded-[15px] flex items-center justify-center shrink-0">
-                                            <img 
-                                                src={getCategoryIcon(category.categoryName)} 
-                                                alt={category.categoryName} 
-                                                className="w-9 h-9 object-contain brightness-0 invert" 
+                                            <img
+                                                src={getCategoryIcon(category.categoryName)}
+                                                alt={category.categoryName}
+                                                className="w-9 h-9 object-contain brightness-0 invert"
                                             />
                                         </div>
                                         <div>
@@ -122,7 +122,7 @@ const Services = () => {
                                                 {category.description || 'Comprehensive coverage for your protection needs with flexible plans tailored to your requirements.'}
                                             </p>
                                             <Link
-                                                to="/calculator"
+                                                to={`/calculator?categoryId=${category.categoryId}`}
                                                 className="inline-flex items-center gap-2 text-[#015fc9] no-underline font-semibold text-sm px-[25px] py-[10px] border-2 border-[#015fc9] rounded-[50px] transition-all duration-300 hover:bg-[#015fc9] hover:text-white"
                                             >
                                                 Read More & Get Quote

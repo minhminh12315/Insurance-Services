@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { fakePayments, fakePolicies, fakeUsers } from '../../data/fakeData';
 // import api from '../../services/api';
 import type { PremiumPayment, PaymentStatus, Policy, User } from '../../types';
+import ConfirmationModal from '../../components/ConfirmationModal';
 
 const PaymentList = () => {
     const [payments, setPayments] = useState<PremiumPayment[]>(fakePayments);
@@ -9,6 +10,11 @@ const PaymentList = () => {
     const [users] = useState<User[]>(fakeUsers);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading] = useState(false);
+
+    // Deletion states
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deletingId, setDeletingId] = useState<number | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string>('');
 
     // useEffect(() => {
     //     const fetchData = async () => {
@@ -30,10 +36,19 @@ const PaymentList = () => {
     //     fetchData();
     // }, []);
 
-    const handleDelete = (id: number) => {
-        if (window.confirm('Delete this payment record?')) {
-            setPayments(payments.filter(p => p.payment_id !== id));
+    const handleDeleteClick = (id: number) => {
+        setDeletingId(id);
+        setShowDeleteModal(true);
+    };
+
+    const confirmDelete = () => {
+        if (deletingId) {
+            setPayments(payments.filter(p => p.payment_id !== deletingId));
+            setSuccessMessage('Payment record removed successfully');
+            setTimeout(() => setSuccessMessage(''), 3000);
         }
+        setShowDeleteModal(false);
+        setDeletingId(null);
     };
 
     const filteredPayments = payments.filter((p) =>
@@ -42,11 +57,12 @@ const PaymentList = () => {
     );
 
     const getStatusBadge = (status: PaymentStatus) => {
+        const baseClass = "px-2.5 py-0.5 rounded-full text-xs font-semibold";
         switch (status) {
-            case 'Success': return <span className="badge badge-success">Success</span>;
-            case 'Pending': return <span className="badge badge-warning">Pending</span>;
-            case 'Failed': return <span className="badge badge-danger">Failed</span>;
-            default: return <span className="badge">{status}</span>;
+            case 'Success': return <span className={`${baseClass} bg-emerald-100 text-emerald-600`}>Success</span>;
+            case 'Pending': return <span className={`${baseClass} bg-amber-100 text-amber-600`}>Pending</span>;
+            case 'Failed': return <span className={`${baseClass} bg-red-100 text-red-600`}>Failed</span>;
+            default: return <span className={`${baseClass} bg-slate-100 text-slate-600`}>{status}</span>;
         }
     };
 
@@ -58,7 +74,20 @@ const PaymentList = () => {
     }
 
     return (
-        <div>
+        <div className="relative">
+            {/* Global Notification Banner */}
+            <div className="fixed top-24 right-6 z-[110] flex flex-col gap-3 min-w-[320px] max-w-md pointer-events-none">
+                {successMessage && (
+                    <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 shadow-xl shadow-emerald-500/10 flex items-center gap-3 text-emerald-600 animate-in slide-in-from-right duration-500 pointer-events-auto">
+                        <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                        </div>
+                        <p className="text-sm font-bold">{successMessage}</p>
+                    </div>
+                )}
+            </div>
             <div className="flex justify-between items-center mb-8">
                 <div>
                     <h1 className="text-[28px] font-extrabold text-slate-800 mb-2">Premium Payments</h1>
@@ -66,43 +95,43 @@ const PaymentList = () => {
                 </div>
             </div>
 
-            <div className="glass-card p-5 mb-6 bg-white border border-slate-200">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5 mb-6">
                 <input
                     type="text"
                     placeholder="Search by Transaction Ref or Policy ID..."
-                    className="input"
+                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </div>
 
-            <div className="glass-card table-container bg-white border border-slate-200">
-                <table className="table">
+            <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm bg-white">
+                <table className="w-full text-left border-collapse text-[14px]">
                     <thead>
                         <tr>
-                            <th className="bg-slate-50">Transaction Ref</th>
-                            <th className="bg-slate-50">Policy</th>
-                            <th className="bg-slate-50">Customer</th>
-                            <th className="bg-slate-50">Amount</th>
-                            <th className="bg-slate-50">Date</th>
-                            <th className="bg-slate-50">Method</th>
-                            <th className="bg-slate-50">Status</th>
-                            <th className="text-right bg-slate-50">Actions</th>
+                            <th className="bg-slate-50 p-4 font-semibold text-slate-700 border-b border-slate-100 text-left">Transaction Ref</th>
+                            <th className="bg-slate-50 p-4 font-semibold text-slate-700 border-b border-slate-100 text-left">Policy</th>
+                            <th className="bg-slate-50 p-4 font-semibold text-slate-700 border-b border-slate-100 text-left">Customer</th>
+                            <th className="bg-slate-50 p-4 font-semibold text-slate-700 border-b border-slate-100 text-left">Amount</th>
+                            <th className="bg-slate-50 p-4 font-semibold text-slate-700 border-b border-slate-100 text-left">Date</th>
+                            <th className="bg-slate-50 p-4 font-semibold text-slate-700 border-b border-slate-100 text-left">Method</th>
+                            <th className="bg-slate-50 p-4 font-semibold text-slate-700 border-b border-slate-100 text-left">Status</th>
+                            <th className="text-right bg-slate-50 p-4 font-semibold text-slate-700 border-b border-slate-100">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredPayments.map((p) => (
                             <tr key={p.payment_id}>
-                                <td><span className="font-semibold text-slate-600">{p.transaction_reference}</span></td>
-                                <td><span className="font-bold text-blue-600">{getPolicyNum(p.policy_id)}</span></td>
-                                <td><span className="font-medium text-slate-700">{getUserName(p.user_id)}</span></td>
-                                <td className="font-bold text-slate-800">${p.amount_paid.toLocaleString()}</td>
-                                <td className="text-slate-500">{new Date(p.payment_date).toLocaleDateString()}</td>
-                                <td><span className="text-xs bg-slate-100 px-2 py-1 rounded text-slate-600">{p.payment_method}</span></td>
-                                <td>{getStatusBadge(p.status)}</td>
-                                <td>
+                                <td className="p-4 border-b border-slate-50"><span className="font-semibold text-slate-600 text-left">{p.transaction_reference}</span></td>
+                                <td className="p-4 border-b border-slate-50"><span className="font-bold text-blue-600 text-left">{getPolicyNum(p.policy_id)}</span></td>
+                                <td className="p-4 border-b border-slate-50"><span className="font-medium text-slate-700 text-left">{getUserName(p.user_id)}</span></td>
+                                <td className="p-4 border-b border-slate-50 font-bold text-slate-800 text-left">${p.amount_paid.toLocaleString()}</td>
+                                <td className="p-4 border-b border-slate-50 text-slate-500 text-left">{new Date(p.payment_date).toLocaleDateString()}</td>
+                                <td className="p-4 border-b border-slate-50"><span className="text-xs bg-slate-100 px-2 py-1 rounded text-slate-600 text-left">{p.payment_method}</span></td>
+                                <td className="p-4 border-b border-slate-50 text-left">{getStatusBadge(p.status)}</td>
+                                <td className="p-4 border-b border-slate-50 text-left">
                                     <div className="flex justify-end">
-                                        <button className="btn btn-danger btn-sm p-1.5" onClick={() => handleDelete(p.payment_id)}>
+                                        <button className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors" onClick={() => handleDeleteClick(p.payment_id)}>
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
                                         </button>
                                     </div>
@@ -112,6 +141,15 @@ const PaymentList = () => {
                     </tbody>
                 </table>
             </div>
+            <ConfirmationModal
+                isOpen={showDeleteModal}
+                title="Delete Payment Record"
+                message="Are you sure you want to delete this payment record? This action should only be performed if the record was created in error. This will permanentely remove the transaction history."
+                onConfirm={confirmDelete}
+                onCancel={() => setShowDeleteModal(false)}
+                confirmLabel="Delete Record"
+                isDanger={true}
+            />
         </div>
     );
 };

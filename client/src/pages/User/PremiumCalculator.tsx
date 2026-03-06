@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
     paymentApi,
@@ -10,7 +10,6 @@ import {
     type PremiumCalculationModel,
     type PremiumFrequency,
 } from '../../services/insuranceApi';
-import './PremiumCalculator.css';
 
 const FALLBACK_MIN_SUM = 10000;
 const FALLBACK_MAX_SUM = 2000000;
@@ -22,6 +21,38 @@ const frequencyOptions: Array<{ value: PremiumFrequency; label: string; savings:
     { value: 'Quarterly', label: 'Quarterly', savings: 1 },
     { value: 'HalfYearly', label: 'Half-Yearly', savings: 3 },
     { value: 'Yearly', label: 'Yearly', savings: 5 },
+];
+
+interface Rider {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    icon: string;
+}
+
+const AVAILABLE_RIDERS: Rider[] = [
+    {
+        id: 1,
+        name: 'Critical Illness Cover',
+        description: 'Lump sum payment on diagnosis of major illnesses.',
+        price: 45.0,
+        icon: '🏥',
+    },
+    {
+        id: 2,
+        name: 'Accidental Death Benefit',
+        description: 'Double coverage in case of accidental death.',
+        price: 25.5,
+        icon: '🛡️',
+    },
+    {
+        id: 3,
+        name: 'Waiver of Premium',
+        description: 'Future premiums waived if you become disabled.',
+        price: 15.0,
+        icon: '⚖️',
+    },
 ];
 
 const installmentsPerYear: Record<PremiumFrequency, number> = {
@@ -83,8 +114,11 @@ const buildTermOptions = (scheme: InsuranceSchemeModel | undefined, selectedTerm
 };
 
 const PremiumCalculator = () => {
-    const navigate = useNavigate();
     const { user } = useAuth();
+    const [searchParams] = useSearchParams();
+    const categoryIdParam = searchParams.get('categoryId');
+    const categoryIdFilter = categoryIdParam ? Number(categoryIdParam) : undefined;
+
     const [schemes, setSchemes] = useState<InsuranceSchemeModel[]>([]);
     const [selectedSchemeId, setSelectedSchemeId] = useState<number | null>(null);
     const [sumAssured, setSumAssured] = useState<number>(500000);
@@ -96,6 +130,7 @@ const PremiumCalculator = () => {
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [confirmationMessage, setConfirmationMessage] = useState<string>('');
+    const [selectedRiderIds, setSelectedRiderIds] = useState<number[]>([]);
 
     const selectedScheme = useMemo(
         () => schemes.find((scheme) => scheme.schemeId === selectedSchemeId),
@@ -112,32 +147,39 @@ const PremiumCalculator = () => {
 
     const pricingBreakdown = useMemo(() => {
         const annualPremium = calculation?.annualPremium ?? 0;
-        const taxAmount = annualPremium * 0.18;
+        const riderCost = AVAILABLE_RIDERS.filter((r) => selectedRiderIds.includes(r.id)).reduce(
+            (sum, r) => sum + r.price,
+            0
+        );
+
+        const totalAnnualBase = annualPremium + riderCost;
+        const taxAmount = totalAnnualBase * 0.18;
         const discountRate = frequencyOptions.find((option) => option.value === paymentFrequency)?.savings ?? 0;
-        const discountAmount = ((annualPremium + taxAmount) * discountRate) / 100;
-        const totalPayable = annualPremium + taxAmount - discountAmount;
+        const discountAmount = ((totalAnnualBase + taxAmount) * discountRate) / 100;
+        const totalPayable = totalAnnualBase + taxAmount - discountAmount;
         const installment = totalPayable / installmentsPerYear[paymentFrequency];
 
         return {
-            annualPremium,
+            annualPremium: totalAnnualBase,
             taxAmount,
             discountRate,
             discountAmount,
             totalPayable,
             installment,
+            riderCost,
         };
-    }, [calculation, paymentFrequency]);
+    }, [calculation, paymentFrequency, selectedRiderIds]);
 
     useEffect(() => {
         const loadSchemes = async () => {
             setIsLoadingSchemes(true);
             setErrorMessage('');
             try {
-                const availableSchemes = await schemeApi.getLifeSchemes();
+                const availableSchemes = await schemeApi.getLifeSchemes(categoryIdFilter);
                 setSchemes(availableSchemes);
 
                 if (availableSchemes.length === 0) {
-                    setErrorMessage('No active plan available at the moment.');
+                    setErrorMessage('No active plan available for this category at the moment.');
                     return;
                 }
 
@@ -160,7 +202,7 @@ const PremiumCalculator = () => {
         };
 
         void loadSchemes();
-    }, []);
+    }, [categoryIdFilter]);
 
     useEffect(() => {
         if (!selectedScheme) {
@@ -254,56 +296,10 @@ const PremiumCalculator = () => {
         }
     };
 
-    const initials = user?.full_name
-        ? user.full_name
-            .split(' ')
-            .map((part) => part[0])
-            .join('')
-            .slice(0, 2)
-            .toUpperCase()
-        : 'U';
-
     return (
-        <div className="premium-page">
-            <header className="premium-header">
-                <div className="premium-header__brand">
-                    <div className="premium-logo">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <path
-                                d="M12 3L4 6.5V11C4 16 7.5 20.6 12 22C16.5 20.6 20 16 20 11V6.5L12 3Z"
-                                stroke="currentColor"
-                                strokeWidth="1.8"
-                            />
-                            <path d="M12 7V15" stroke="currentColor" strokeWidth="1.8" />
-                            <path d="M9 10.5H15" stroke="currentColor" strokeWidth="1.8" />
-                        </svg>
-                    </div>
-                    <span>SecureLife</span>
-                </div>
-
-                <nav className="premium-header__nav">
-                    <button type="button" onClick={() => navigate('/user/policies')}>
-                        Policies
-                    </button>
-                    <button type="button" className="is-active">
-                        Calculators
-                    </button>
-                    <button type="button" onClick={() => navigate('/about')}>
-                        About Us
-                    </button>
-                </nav>
-
-                <div className="premium-header__actions">
-                    <span className="premium-help">Need help?</span>
-                    <Link to="/contact">Contact Agent</Link>
-                    <button type="button" className="premium-avatar" onClick={() => navigate('/user/profile')}>
-                        {initials}
-                    </button>
-                </div>
-            </header>
-
-            <main className="premium-main">
-                <section className="premium-steps">
+        <div className="min-h-screen bg-gradient-to-b from-[#f2f6fb] via-[#f5f7fb] to-[#eef2f9] text-[#111827] flex flex-col">
+            <main className="w-full max-w-[1680px] mx-auto my-6 px-6 lg:my-8 lg:px-8 flex-1">
+                <section className="grid grid-cols-1 sm:grid-cols-4 gap-5 mb-6">
                     {[
                         { step: 1, label: 'Select Plan' },
                         { step: 2, label: 'Calculate Premium' },
@@ -314,38 +310,65 @@ const PremiumCalculator = () => {
                         const isCurrent = item.step === stepIndex;
 
                         return (
-                            <div className="premium-step" key={item.step}>
-                                <span className={`premium-step__circle ${isDone ? 'is-done' : ''} ${isCurrent ? 'is-current' : ''}`}>
+                            <div className="flex items-center gap-3 relative after:content-[''] after:h-px after:bg-[#d8dee8] after:flex-1 last:after:hidden" key={item.step}>
+                                <span className={`w-9 h-9 rounded-full border-2 inline-flex items-center justify-center text-lg shrink-0 transition-colors ${isDone ? 'border-[#0b67db] bg-[#0b67db] text-white' :
+                                    isCurrent ? 'border-[#0b67db] text-[#0b67db]' :
+                                        'border-[#c1cedf] text-[#7a8798] bg-white'
+                                    }`}>
                                     {isDone ? '✓' : item.step}
                                 </span>
-                                <span className={`premium-step__label ${isCurrent ? 'is-current' : ''}`}>{item.label}</span>
+                                <span className={`text-base min-w-max transition-colors ${isCurrent ? 'text-[#0f172a] font-semibold' : 'text-[#64748b]'
+                                    }`}>{item.label}</span>
                             </div>
                         );
                     })}
                 </section>
 
-                {errorMessage ? <p className="premium-alert premium-alert--error">{errorMessage}</p> : null}
-                {confirmationMessage ? <p className="premium-alert premium-alert--success">{confirmationMessage}</p> : null}
+                {errorMessage ? (
+                    <p className="rounded-lg p-3.5 mb-4 text-sm bg-[#fff3f2] border border-[#fecaca] text-[#b91c1c]">
+                        {errorMessage}
+                    </p>
+                ) : null}
+                {confirmationMessage ? (
+                    <p className="rounded-lg p-3.5 mb-4 text-sm bg-[#edfff2] border border-[#a7f3d0] text-[#047857]">
+                        {confirmationMessage}
+                    </p>
+                ) : null}
 
-                <section className="premium-layout">
-                    <div className="premium-config-area">
-                        <div className="premium-plan-title">
-                            <div>
-                                <h1>{selectedScheme?.schemeName || 'Life Protection Plan'}</h1>
-                                <p>Premium Life Insurance Plan</p>
-                            </div>
-                            <div className="premium-tags">
-                                <span>Life Protection</span>
-                                <span>Investment Linked</span>
-                            </div>
-                        </div>
+                <div className="flex justify-between items-start gap-4 mb-6">
+                    <div>
+                        <h1 className="text-[46px] leading-[1.1] m-0 text-[#0f172a] font-bold">
+                            {selectedScheme?.schemeName || 'Life Protection Plan'}
+                        </h1>
+                        <p className="mt-2.5 mb-0 text-[#496489] text-lg">
+                            {selectedScheme?.description || 'Premium Life Insurance Plan'}
+                        </p>
+                    </div>
+                    <div className="flex gap-2.5 flex-wrap">
+                        <span className="border border-[#bfd6ff] bg-[#eef4ff] text-[#215fca] rounded-[14px] text-sm py-1 px-3">
+                            {selectedScheme?.categoryName || 'Universal'}
+                        </span>
+                        {selectedScheme?.profitRatio ? (
+                            <span className="border border-[#a8e3bf] bg-[#ebfff0] text-[#167d3f] rounded-[14px] text-sm py-1 px-3">
+                                {selectedScheme.profitRatio}% Profit Ratio
+                            </span>
+                        ) : null}
+                    </div>
+                </div>
 
-                        <div className="premium-config-card">
-                            <h2>Configure Your Plan</h2>
+                <div className="flex flex-col gap-8">
+                    <section className="grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-8 items-stretch">
+                        <div className="bg-white border border-[#d8e1ed] rounded-[22px] p-7 lg:p-8 shadow-[0_8px_22px_rgba(15,23,42,0.05)]">
+                            <h2 className="m-0 text-3xl lg:text-4xl font-bold text-[#0f172a]">
+                                Configure Your Plan
+                            </h2>
 
-                            <div className="premium-field-group">
-                                <label htmlFor="plan-selector">Policy Plan</label>
+                            <div className="mt-6">
+                                <label className="block mb-2 text-[#1e293b] font-semibold text-base" htmlFor="plan-selector">
+                                    Policy Plan
+                                </label>
                                 <select
+                                    className="w-full border border-[#c6d3e6] rounded-lg p-3.5 text-[17px] text-[#0f172a] bg-[#fcfdff] focus:outline focus:outline-2 focus:outline-[#0b67db]/20 focus:outline-offset-1"
                                     id="plan-selector"
                                     value={selectedSchemeId ?? ''}
                                     onChange={(event) => setSelectedSchemeId(Number(event.target.value))}
@@ -359,10 +382,13 @@ const PremiumCalculator = () => {
                                 </select>
                             </div>
 
-                            <div className="premium-field-group">
-                                <div className="premium-field-inline">
-                                    <label htmlFor="sum-assured-input">Sum Assured</label>
+                            <div className="mt-6">
+                                <div className="flex items-center justify-between gap-3">
+                                    <label className="block text-[#1e293b] font-semibold text-base" htmlFor="sum-assured-input">
+                                        Sum Assured
+                                    </label>
                                     <input
+                                        className="w-full max-w-[320px] text-right border border-[#c6d3e6] rounded-lg p-3.5 text-[17px] text-[#0f172a] bg-[#fcfdff] focus:outline focus:outline-2 focus:outline-[#0b67db]/20"
                                         id="sum-assured-input"
                                         type="text"
                                         value={`${formatCompactCurrency(sumAssured)} USD`}
@@ -374,7 +400,7 @@ const PremiumCalculator = () => {
                                 </div>
 
                                 <input
-                                    className="premium-range"
+                                    className="w-full mt-4 accent-[#0b67db] cursor-pointer"
                                     type="range"
                                     min={minSumAssured}
                                     max={maxSumAssured}
@@ -382,15 +408,18 @@ const PremiumCalculator = () => {
                                     value={sumAssured}
                                     onChange={(event) => setSumAssured(Number(event.target.value))}
                                 />
-                                <div className="premium-range-labels">
+                                <div className="mt-1 flex justify-between text-[#6f819a] text-sm">
                                     <span>{formatCompactCurrency(minSumAssured)}</span>
                                     <span>{formatCompactCurrency(maxSumAssured)}</span>
                                 </div>
                             </div>
 
-                            <div className="premium-field-group">
-                                <label htmlFor="term-select">Policy Term (Years)</label>
+                            <div className="mt-6">
+                                <label className="block mb-2 text-[#1e293b] font-semibold text-base" htmlFor="term-select">
+                                    Policy Term (Years)
+                                </label>
                                 <select
+                                    className="w-full border border-[#c6d3e6] rounded-lg p-3.5 text-[17px] text-[#0f172a] bg-[#fcfdff] focus:outline focus:outline-2 focus:outline-[#0b67db]/20"
                                     id="term-select"
                                     value={termYears}
                                     onChange={(event) => setTermYears(Number(event.target.value))}
@@ -401,108 +430,210 @@ const PremiumCalculator = () => {
                                         </option>
                                     ))}
                                 </select>
-                                <p className="premium-field-help">
+                                <p className="mt-2 text-[#6c7f9a] text-sm leading-relaxed">
                                     Choosing a longer term may reduce annual premium but extends the payment period.
                                 </p>
                             </div>
 
-                            <div className="premium-field-group">
-                                <label>Payment Frequency</label>
-                                <div className="premium-frequency-grid">
+                            <div className="mt-6">
+                                <label className="block mb-2 text-[#1e293b] font-semibold text-base">
+                                    Payment Frequency
+                                </label>
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                                     {frequencyOptions.map((option) => (
                                         <button
                                             type="button"
                                             key={option.value}
-                                            className={paymentFrequency === option.value ? 'is-selected' : ''}
+                                            className={`border rounded-xl p-3 cursor-pointer min-h-[88px] flex flex-col items-center justify-center text-[15px] transition-all ${paymentFrequency === option.value
+                                                ? 'border-[#1a71de] bg-[#eef4ff] text-[#145bc9] ring-2 ring-[#1a71de]/10'
+                                                : 'border-[#ced7e5] bg-white text-[#0f172a] hover:border-[#b1c0d6]'
+                                                }`}
                                             onClick={() => setPaymentFrequency(option.value)}
                                         >
-                                            <span>{option.label}</span>
-                                            {option.savings > 0 ? <small>Save {option.savings}%</small> : null}
+                                            <span className="font-semibold">{option.label}</span>
+                                            {option.savings > 0 ? (
+                                                <small className="mt-1 text-[#16a34a] font-bold text-xs uppercase tracking-wider">
+                                                    Save {option.savings}%
+                                                </small>
+                                            ) : null}
                                         </button>
                                     ))}
                                 </div>
                             </div>
                         </div>
 
-                        <div className="premium-riders-card">
-                            <div className="premium-riders-card__header">
-                                <h3>Riders & Add-ons</h3>
-                                <button type="button" disabled>
-                                    Next Step
-                                </button>
+                        <aside className="bg-white border border-[#d8e1ed] rounded-[22px] p-8 text-[#0f172a] shadow-[0_12px_40px_rgba(15,23,42,0.08)] flex flex-col h-full">
+                            <h2 className="mt-0 mb-6 text-2xl font-bold text-[#0f172a] border-b border-[#e2e8f0] pb-4">
+                                Premium Summary
+                            </h2>
+
+                            <div className="flex flex-col gap-4 mb-8">
+                                <div className="flex justify-between text-[15px] font-medium text-[#64748b]">
+                                    <span>Base Plan</span>
+                                    <strong className="text-[#0f172a] font-bold">{formatCurrency(calculation?.annualPremium ?? 0)}</strong>
+                                </div>
+                                {pricingBreakdown.riderCost > 0 && (
+                                    <div className="flex justify-between text-[15px] font-medium text-[#64748b]">
+                                        <span>Add-ons</span>
+                                        <strong className="text-[#0f172a] font-bold">{formatCurrency(pricingBreakdown.riderCost)}</strong>
+                                    </div>
+                                )}
+                                <div className="flex justify-between text-[15px] font-medium text-[#64748b]">
+                                    <span>Tax (GST 18%)</span>
+                                    <strong className="text-[#0f172a] font-bold">{formatCurrency(pricingBreakdown.taxAmount)}</strong>
+                                </div>
+                                <div className="flex justify-between text-[15px] font-medium text-[#64748b]">
+                                    <span>{paymentFrequency} Discount</span>
+                                    <strong className="text-[#c2410c] font-bold">-{formatCurrency(pricingBreakdown.discountAmount)}</strong>
+                                </div>
                             </div>
-                            <div className="premium-rider-row">Critical Illness Cover</div>
-                            <div className="premium-rider-row">Accidental Death Benefit</div>
-                        </div>
-                    </div>
 
-                    <aside className="premium-summary">
-                        <h2>Premium Summary</h2>
-
-                        <div className="premium-summary__rows">
-                            <div>
-                                <span>Base Premium</span>
-                                <strong>{formatCurrency(pricingBreakdown.annualPremium)}</strong>
+                            <div className="mt-auto bg-[#f8fafc] rounded-2xl p-6 flex justify-between items-center border border-[#e2e8f0]">
+                                <span className="text-xs text-[#64748b] font-bold uppercase tracking-wider">Total Payable</span>
+                                <div className="text-right">
+                                    <strong className="block text-3xl font-extrabold text-[#0f172a] leading-tight">
+                                        {formatCurrency(pricingBreakdown.totalPayable)}
+                                    </strong>
+                                    <small className="text-xs text-[#94a3b8]">per year</small>
+                                </div>
                             </div>
-                            <div>
-                                <span>Tax (GST 18%)</span>
-                                <strong>{formatCurrency(pricingBreakdown.taxAmount)}</strong>
+
+                            <div className="my-6 text-center bg-[#0b67db] p-5 rounded-2xl text-white shadow-lg shadow-[#0b67db]/30">
+                                <span className="block text-[13px] opacity-90 mb-1 font-medium">Premium per Installment</span>
+                                <strong className="block text-2xl font-extrabold leading-tight">
+                                    {formatCurrency(pricingBreakdown.installment)}
+                                </strong>
+                                <small className="block text-[11px] opacity-80 mt-1 uppercase tracking-wider font-bold">
+                                    Due: {paymentFrequency}
+                                </small>
                             </div>
-                            <div className="discount">
-                                <span>Yearly Discount</span>
-                                <strong>-{formatCurrency(pricingBreakdown.discountAmount)}</strong>
+
+                            <button
+                                type="button"
+                                className="w-full p-4.5 bg-[#10b981] text-white rounded-2xl text-[17px] font-bold cursor-pointer transition-all duration-200 shadow-[0_4px_12px_rgba(16,185,129,0.2)] hover:bg-[#059669] hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(16,185,129,0.3)] active:scale-[0.98] disabled:bg-[#64748b] disabled:cursor-not-allowed disabled:opacity-70 disabled:shadow-none disabled:transform-none"
+                                onClick={handleProceedToPayment}
+                                disabled={isSubmitting || isLoadingSchemes || isCalculating || !calculation}
+                            >
+                                {isSubmitting ? 'Processing...' : 'Proceed to Payment'}
+                            </button>
+
+                            <p className="mt-5 text-[11px] text-center text-[#64748b] leading-relaxed">
+                                By proceeding, you agree to the <Link to="/about" className="text-[#0b67db] font-semibold underline hover:no-underline">Terms & Conditions</Link>
+                            </p>
+
+                            <div className="mt-6 flex justify-around pt-5 border-t border-[#e2e8f0]">
+                                <span className="text-[11px] text-[#64748b] flex items-center gap-1.5 font-bold">
+                                    <span className="text-sm">🛡️</span> Secure Payment
+                                </span>
+                                <span className="text-[11px] text-[#64748b] flex items-center gap-1.5 font-bold">
+                                    <span className="text-sm">💬</span> 24/7 Support
+                                </span>
+                            </div>
+
+                            {isCalculating ? (
+                                <p className="mt-3 text-[#0b67db] text-[13px] text-center italic font-medium">Recalculating premium...</p>
+                            ) : null}
+                        </aside>
+                    </section>
+
+                    <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="bg-white border border-[#d8e1ed] rounded-[22px] p-7 lg:p-8 shadow-[0_8px_22px_rgba(15,23,42,0.05)]">
+                            <div className="flex items-center justify-between mb-6">
+                                <h3 className="m-0 text-[28px] font-bold text-[#0f172a]">Plan Benefits & Highlights</h3>
+                                <div className="bg-[#f0fdf4] text-[#166534] border border-[#bbf7d0] px-3 py-1 rounded-[12px] text-[13px] font-semibold">
+                                    Official Plan
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
+                                <div className="flex items-center gap-4 p-4 bg-[#f8fbff] border border-[#eef2f9] rounded-2xl transition-all duration-200 hover:-translate-y-0.5 hover:border-[#d1e3ff] group">
+                                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-2xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] group-hover:scale-110 transition-transform">📈</div>
+                                    <div>
+                                        <h4 className="m-0 text-sm text-[#64748b] uppercase tracking-wider text-[11px] font-bold">Profit Ratio</h4>
+                                        <p className="mt-0.5 text-lg font-bold text-[#0f172a]">
+                                            {selectedScheme?.profitRatio ? `${selectedScheme.profitRatio}% Expected` : 'Market Linked'}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-4 p-4 bg-[#f8fbff] border border-[#eef2f9] rounded-2xl transition-all duration-200 hover:-translate-y-0.5 hover:border-[#d1e3ff] group">
+                                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-2xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] group-hover:scale-110 transition-transform">🛡️</div>
+                                    <div>
+                                        <h4 className="m-0 text-sm text-[#64748b] uppercase tracking-wider text-[11px] font-bold">Term Flexibility</h4>
+                                        <p className="mt-0.5 text-lg font-bold text-[#0f172a]">{minTerm} to {maxTerm} Years</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-4 p-4 bg-[#f8fbff] border border-[#eef2f9] rounded-2xl transition-all duration-200 hover:-translate-y-0.5 hover:border-[#d1e3ff] group">
+                                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-2xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] group-hover:scale-110 transition-transform">💰</div>
+                                    <div>
+                                        <h4 className="m-0 text-sm text-[#64748b] uppercase tracking-wider text-[11px] font-bold">Investment</h4>
+                                        <p className="mt-0.5 text-lg font-bold text-[#0f172a] truncate w-full">
+                                            {formatCompactCurrency(minSumAssured)}+
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-4 p-4 bg-[#f8fbff] border border-[#eef2f9] rounded-2xl transition-all duration-200 hover:-translate-y-0.5 hover:border-[#d1e3ff] group">
+                                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-2xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] group-hover:scale-110 transition-transform">✨</div>
+                                    <div>
+                                        <h4 className="m-0 text-sm text-[#64748b] uppercase tracking-wider text-[11px] font-bold">Category</h4>
+                                        <p className="mt-0.5 text-lg font-bold text-[#0f172a]">{selectedScheme?.categoryName || 'Protection'}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="border-t border-dashed border-[#d8dee8] pt-6">
+                                <h4 className="mt-0 mb-3 text-base text-[#0f172a] font-bold">Detailed Description</h4>
+                                <p className="m-0 text-[#475569] leading-relaxed text-[15px]">
+                                    {selectedScheme?.description || 'This insurance scheme provides comprehensive coverage and financial security for you and your family.'}
+                                </p>
                             </div>
                         </div>
 
-                        <div className="premium-summary__total">
-                            <span>Total Payable</span>
-                            <div>
-                                <strong>{formatCurrency(pricingBreakdown.totalPayable)}</strong>
-                                <small>per year</small>
+                        <div className="bg-white border border-[#d8e1ed] rounded-[22px] p-7 lg:p-8 shadow-[0_8px_22px_rgba(15,23,42,0.05)]">
+                            <div className="flex items-center justify-between mb-1">
+                                <h3 className="m-0 text-[28px] font-bold text-[#0f172a]">Riders & Add-ons</h3>
+                                <div className="bg-[#f0fdf4] text-[#166534] border border-[#bbf7d0] px-3 py-1 rounded-[12px] text-[13px] font-semibold transition-all">
+                                    {selectedRiderIds.length} Selected
+                                </div>
+                            </div>
+                            <p className="mt-0 text-[#6c7f9a] text-sm mb-6">Customize your protection with optional benefit riders.</p>
+
+                            <div className="flex flex-col gap-3">
+                                {AVAILABLE_RIDERS.map((rider) => (
+                                    <div
+                                        key={rider.id}
+                                        className={`flex items-center gap-4 p-4 rounded-xl cursor-pointer transition-all duration-200 border group ${selectedRiderIds.includes(rider.id)
+                                            ? 'border-[#0b67db] bg-[#f0f7ff] border-2 shadow-sm'
+                                            : 'border-[#dce5f1] bg-white hover:border-[#0b67db] hover:bg-[#f8fbff]'
+                                            }`}
+                                        onClick={() => {
+                                            setSelectedRiderIds(prev =>
+                                                prev.includes(rider.id)
+                                                    ? prev.filter(id => id !== rider.id)
+                                                    : [...prev, rider.id]
+                                            );
+                                        }}
+                                    >
+                                        <div className={`w-6 h-6 border-2 rounded-md flex items-center justify-center text-sm transition-all duration-200 ${selectedRiderIds.includes(rider.id)
+                                            ? 'bg-[#0b67db] border-[#0b67db] text-white'
+                                            : 'bg-white border-[#cbd5e1] text-transparent'
+                                            }`}>
+                                            {selectedRiderIds.includes(rider.id) ? '✓' : ''}
+                                        </div>
+                                        <div className="text-2xl filter group-hover:scale-110 transition-transform">{rider.icon}</div>
+                                        <div className="flex-1">
+                                            <h4 className="m-0 text-base font-semibold text-[#0f172a]">{rider.name}</h4>
+                                            <p className="mt-0.5 text-xs text-[#64748b] leading-tight">{rider.description}</p>
+                                        </div>
+                                        <div className="font-bold text-[#10b981] text-[15px] whitespace-nowrap">
+                                            +${rider.price.toFixed(2)}
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
-
-                        <div className="premium-summary__installment">
-                            <span>Premium per Installment</span>
-                            <strong>{formatCurrency(pricingBreakdown.installment)}</strong>
-                            <small>Due: {paymentFrequency}</small>
-                        </div>
-
-                        <button
-                            type="button"
-                            className="premium-pay-button"
-                            onClick={handleProceedToPayment}
-                            disabled={isSubmitting || isLoadingSchemes || isCalculating || !calculation}
-                        >
-                            {isSubmitting ? 'Processing...' : 'Proceed to Payment'}
-                        </button>
-
-                        <p className="premium-summary__terms">
-                            By proceeding, you agree to the <Link to="/about">Terms & Conditions</Link>
-                        </p>
-
-                        <div className="premium-summary__meta">
-                            <span>Secure Payment</span>
-                            <span>24/7 Support</span>
-                        </div>
-
-                        {isCalculating ? <p className="premium-summary__status">Recalculating premium...</p> : null}
-                    </aside>
-                </section>
+                    </section>
+                </div>
             </main>
-
-            <footer className="premium-footer">
-                <div className="premium-footer__brand">
-                    <div className="premium-logo is-small" />
-                    <span>SecureLife</span>
-                </div>
-                <div className="premium-footer__links">
-                    <Link to="/about">Privacy Policy</Link>
-                    <Link to="/about">Terms of Service</Link>
-                    <Link to="/contact">Help Center</Link>
-                </div>
-                <p>© 2026 SecureLife. All rights reserved.</p>
-            </footer>
         </div>
     );
 };

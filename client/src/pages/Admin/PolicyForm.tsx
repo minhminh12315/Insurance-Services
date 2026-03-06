@@ -53,21 +53,21 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ policy, users, schemes, onSubmi
         <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-5 mb-8">
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Policy Number *</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Policy Number *</label>
                     <input
                         type="text"
                         name="policy_number"
-                        className="input"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                         value={formData.policy_number || ''}
                         onChange={handleChange}
                         required
                     />
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Status</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Status</label>
                     <select
                         name="policy_status"
-                        className="select"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                         value={formData.policy_status}
                         onChange={handleChange}
                     >
@@ -79,10 +79,10 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ policy, users, schemes, onSubmi
                     </select>
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Customer *</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Customer *</label>
                     <select
                         name="user_id"
-                        className="select"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                         value={formData.user_id || ''}
                         onChange={handleChange}
                         required
@@ -93,10 +93,10 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ policy, users, schemes, onSubmi
                     </select>
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Insurance Scheme *</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Insurance Scheme *</label>
                     <select
                         name="scheme_id"
-                        className="select"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                         value={formData.scheme_id || ''}
                         onChange={handleChange}
                         required
@@ -107,32 +107,32 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ policy, users, schemes, onSubmi
                     </select>
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Sum Assured ($)</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Sum Assured ($)</label>
                     <input
                         type="number"
                         name="sum_assured"
-                        className="input"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                         value={formData.sum_assured ?? ''}
                         onChange={handleChange}
                         required
                     />
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Premium Amount ($)</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Premium Amount ($)</label>
                     <input
                         type="number"
                         name="premium_amount"
-                        className="input"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                         value={formData.premium_amount ?? ''}
                         onChange={handleChange}
                         required
                     />
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Payment Frequency</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Payment Frequency</label>
                     <select
                         name="payment_frequency"
-                        className="select"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                         value={formData.payment_frequency}
                         onChange={handleChange}
                     >
@@ -143,39 +143,39 @@ const PolicyForm: React.FC<PolicyFormProps> = ({ policy, users, schemes, onSubmi
                     </select>
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Term (Years)</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Term (Years)</label>
                     <input
                         type="number"
                         name="term_years"
-                        className="input"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                         value={formData.term_years ?? ''}
                         onChange={handleChange}
                     />
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Start Date</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Start Date</label>
                     <input
                         type="date"
                         name="start_date"
-                        className="input"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                         value={formData.start_date || ''}
                         onChange={handleChange}
                     />
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Maturity Date</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Maturity Date</label>
                     <input
                         type="date"
                         name="maturity_date"
-                        className="input"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                         value={formData.maturity_date || ''}
                         onChange={handleChange}
                     />
                 </div>
             </div>
             <div className="flex gap-3 justify-end">
-                <button type="button" className="btn btn-secondary" onClick={onCancel}>Cancel</button>
-                <button type="submit" className="btn btn-primary">
+                <button type="button" className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors font-medium shadow-sm" onClick={onCancel}>Cancel</button>
+                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm">
                     {policy ? 'Update Policy' : 'Issue Policy'}
                 </button>
             </div>
