@@ -3,7 +3,7 @@ import { categoryApi, type InsuranceCategoryModel } from '../../services/insuran
 // import { insuranceCategories } from '../../data/fakeData';
 // import api from '../../services/api';
 import CategoryForm from './CategoryForm';
-import ConfirmationModal from '../../components/ConfirmationModal';
+import DeleteConfirm from '../../components/DeleteConfirm';
 
 const CategoryList = () => {
     const [categories, setCategories] = useState<InsuranceCategoryModel[]>([]);
@@ -17,11 +17,8 @@ const CategoryList = () => {
     const [totalItems, setTotalItems] = useState(0);
 
     // Deletion states
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [deletingId, setDeletingId] = useState<number | null>(null);
     const [successMessage, setSuccessMessage] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string>('');
-    const [isDeleting, setIsDeleting] = useState(false);
 
     const fetchCategories = useCallback(async () => {
         setLoading(true);
@@ -52,20 +49,13 @@ const CategoryList = () => {
         setPage(1); // Reset to first page on new search
     };
 
-    const handleDeleteClick = (id: number) => {
-        setDeletingId(id);
-        setShowDeleteModal(true);
-    };
 
-    const confirmDelete = async () => {
-        if (!deletingId) return;
-
-        setIsDeleting(true);
+    const confirmDelete = async (id: number) => {
         setErrorMessage('');
         setSuccessMessage('');
 
         try {
-            const success = await categoryApi.deleteCategory(deletingId);
+            const success = await categoryApi.deleteCategory(id);
             if (success) {
                 setSuccessMessage('Category deleted successfully');
                 fetchCategories();
@@ -76,9 +66,6 @@ const CategoryList = () => {
         } catch (error: any) {
             setErrorMessage(error.response?.data?.message || 'Failed to delete category. Please try again.');
         } finally {
-            setIsDeleting(false);
-            setShowDeleteModal(false);
-            setDeletingId(null);
         }
     };
 
@@ -171,9 +158,15 @@ const CategoryList = () => {
                                 <td className="p-4 border-b border-slate-50">
                                     <div className="flex justify-end gap-2">
                                         <button className="px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors text-sm font-medium" onClick={() => { setEditingCategory(category); setShowModal(true); }}>Edit</button>
-                                        <button className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors" onClick={() => handleDeleteClick(category.categoryId)}>
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
-                                        </button>
+                                        <DeleteConfirm
+                                            onConfirm={() => confirmDelete(category.categoryId)}
+                                            title="Delete Category?"
+                                            message="Are you sure? This will affect all associated insurance schemes."
+                                        >
+                                            <button className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
+                                            </button>
+                                        </DeleteConfirm>
                                     </div>
                                 </td>
                             </tr>
@@ -243,15 +236,6 @@ const CategoryList = () => {
                 </div>
             )}
 
-            <ConfirmationModal
-                isOpen={showDeleteModal}
-                title="Delete Category"
-                message="Are you sure you want to delete this category? This will affect all associated insurance schemes. This action cannot be undone."
-                onConfirm={confirmDelete}
-                onCancel={() => setShowDeleteModal(false)}
-                confirmLabel={isDeleting ? "Deleting..." : "Delete"}
-                isDanger={true}
-            />
         </div>
     );
 };

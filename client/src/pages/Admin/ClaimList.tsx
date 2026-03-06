@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { fakeClaims, fakePolicies, fakeUsers } from '../../data/fakeData';
 // import api from '../../services/api';
 import type { Claim, ClaimStatus, Policy, User } from '../../types';
-import ConfirmationModal from '../../components/ConfirmationModal';
+import DeleteConfirm from '../../components/DeleteConfirm';
 
 const ClaimList = () => {
     const [claims, setClaims] = useState<Claim[]>(fakeClaims);
@@ -11,9 +11,7 @@ const ClaimList = () => {
     const [statusFilter, setStatusFilter] = useState<string>('');
     const [loading] = useState(false);
 
-    // Deletion and Status States
-    const [showConfirmModal, setShowConfirmModal] = useState(false);
-    const [confirmAction, setConfirmAction] = useState<{ type: 'delete' | 'status', id: number, status?: ClaimStatus } | null>(null);
+    // Feedback States
     const [successMessage, setSuccessMessage] = useState<string>('');
 
     // useEffect(() => {
@@ -38,30 +36,17 @@ const ClaimList = () => {
 
     const filteredClaims = claims.filter(c => !statusFilter || c.status === statusFilter);
 
-    const handleDeleteClick = (id: number) => {
-        setConfirmAction({ type: 'delete', id });
-        setShowConfirmModal(true);
-    };
 
-    const handleStatusClick = (id: number, newStatus: ClaimStatus) => {
-        setConfirmAction({ type: 'status', id, status: newStatus });
-        setShowConfirmModal(true);
-    };
-
-    const handleConfirm = () => {
-        if (!confirmAction) return;
-
-        if (confirmAction.type === 'delete') {
-            setClaims(claims.filter(c => c.claim_id !== confirmAction.id));
-            setSuccessMessage('Claim removed successfully');
-        } else if (confirmAction.type === 'status' && confirmAction.status) {
-            setClaims(claims.map(c => c.claim_id === confirmAction.id ? { ...c, status: confirmAction.status! } : c));
-            setSuccessMessage(`Claim marked as ${confirmAction.status}`);
-        }
-
+    const confirmDelete = (id: number) => {
+        setClaims(claims.filter(c => c.claim_id !== id));
+        setSuccessMessage('Claim removed successfully');
         setTimeout(() => setSuccessMessage(''), 3000);
-        setShowConfirmModal(false);
-        setConfirmAction(null);
+    };
+
+    const confirmStatus = (id: number, status: ClaimStatus) => {
+        setClaims(claims.map(c => c.claim_id === id ? { ...c, status } : c));
+        setSuccessMessage(`Claim marked as ${status}`);
+        setTimeout(() => setSuccessMessage(''), 3000);
     };
 
     const getStatusBadge = (status: ClaimStatus) => {
@@ -141,17 +126,25 @@ const ClaimList = () => {
                                 <td className="p-4 border-b border-slate-50">
                                     <div className="flex justify-end gap-2">
                                         {c.status === 'Submitted' && (
-                                            <button className="px-3 py-1.5 bg-amber-100 text-amber-700 rounded-lg hover:bg-amber-200 transition-colors text-sm font-medium" onClick={() => handleStatusClick(c.claim_id, 'Under Review')}>Review</button>
+                                            <DeleteConfirm onConfirm={() => confirmStatus(c.claim_id, 'Under Review')} title="Review Claim?" message="Mark this claim as under review?" confirmLabel="Sure">
+                                                <button className="px-3 py-1.5 bg-amber-100 text-amber-700 rounded-lg hover:bg-amber-200 transition-colors text-sm font-medium">Review</button>
+                                            </DeleteConfirm>
                                         )}
                                         {(c.status === 'Submitted' || c.status === 'Under Review') && (
                                             <>
-                                                <button className="px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg hover:bg-emerald-200 transition-colors text-sm font-medium" onClick={() => handleStatusClick(c.claim_id, 'Approved')}>Approve</button>
-                                                <button className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium" onClick={() => handleStatusClick(c.claim_id, 'Rejected')}>Reject</button>
+                                                <DeleteConfirm onConfirm={() => confirmStatus(c.claim_id, 'Approved')} title="Approve Claim?" message="Are you sure you want to approve this claim?" confirmLabel="Approve">
+                                                    <button className="px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg hover:bg-emerald-200 transition-colors text-sm font-medium">Approve</button>
+                                                </DeleteConfirm>
+                                                <DeleteConfirm onConfirm={() => confirmStatus(c.claim_id, 'Rejected')} title="Reject Claim?" message="Are you sure you want to reject this claim?" confirmLabel="Reject">
+                                                    <button className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium">Reject</button>
+                                                </DeleteConfirm>
                                             </>
                                         )}
-                                        <button className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors" onClick={() => handleDeleteClick(c.claim_id)}>
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
-                                        </button>
+                                        <DeleteConfirm onConfirm={() => confirmDelete(c.claim_id)} title="Remove Claim?" message="Permanentely hide this claim from the dashboard?" confirmLabel="Remove">
+                                            <button className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
+                                            </button>
+                                        </DeleteConfirm>
                                     </div>
                                 </td>
                             </tr>
@@ -159,17 +152,6 @@ const ClaimList = () => {
                     </tbody>
                 </table>
             </div>
-            <ConfirmationModal
-                isOpen={showConfirmModal}
-                title={confirmAction?.type === 'delete' ? "Remove Claim" : "Update Status"}
-                message={confirmAction?.type === 'delete'
-                    ? "Are you sure you want to remove this claim? This will permanentely hide it from the dashboard."
-                    : `Are you sure you want to mark this claim as ${confirmAction?.status}?`}
-                onConfirm={handleConfirm}
-                onCancel={() => setShowConfirmModal(false)}
-                confirmLabel={confirmAction?.type === 'delete' ? "Remove" : "Yes, Update"}
-                isDanger={confirmAction?.type === 'delete' || confirmAction?.status === 'Rejected'}
-            />
         </div>
     );
 };

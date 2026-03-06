@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { fakeLoans, fakePolicies, fakeUsers } from '../../data/fakeData';
 // import api from '../../services/api';
 import type { PolicyLoan, LoanStatus, Policy, User } from '../../types';
-import ConfirmationModal from '../../components/ConfirmationModal';
+import DeleteConfirm from '../../components/DeleteConfirm';
 
 const LoanList = () => {
     const [loans, setLoans] = useState<PolicyLoan[]>(fakeLoans);
@@ -10,9 +10,7 @@ const LoanList = () => {
     const [users] = useState<User[]>(fakeUsers);
     const [loading] = useState(false);
 
-    // Confirmation states
-    const [showConfirmModal, setShowConfirmModal] = useState(false);
-    const [confirmAction, setConfirmAction] = useState<{ type: 'delete' | 'status', id: number, status?: LoanStatus } | null>(null);
+    // Feedback states
     const [successMessage, setSuccessMessage] = useState<string>('');
 
     // useEffect(() => {
@@ -35,30 +33,17 @@ const LoanList = () => {
     //     fetchData();
     // }, []);
 
-    const handleDeleteClick = (id: number) => {
-        setConfirmAction({ type: 'delete', id });
-        setShowConfirmModal(true);
-    };
 
-    const handleStatusClick = (id: number, newStatus: LoanStatus) => {
-        setConfirmAction({ type: 'status', id, status: newStatus });
-        setShowConfirmModal(true);
-    };
-
-    const handleConfirm = () => {
-        if (!confirmAction) return;
-
-        if (confirmAction.type === 'delete') {
-            setLoans(loans.filter(l => l.loan_id !== confirmAction.id));
-            setSuccessMessage('Loan request cleared successfully');
-        } else if (confirmAction.type === 'status' && confirmAction.status) {
-            setLoans(loans.map(l => l.loan_id === confirmAction.id ? { ...l, loan_status: confirmAction.status! } : l));
-            setSuccessMessage(`Loan marked as ${confirmAction.status}`);
-        }
-
+    const confirmDelete = (id: number) => {
+        setLoans(loans.filter(l => l.loan_id !== id));
+        setSuccessMessage('Loan request cleared successfully');
         setTimeout(() => setSuccessMessage(''), 3000);
-        setShowConfirmModal(false);
-        setConfirmAction(null);
+    };
+
+    const confirmStatus = (id: number, status: LoanStatus) => {
+        setLoans(loans.map(l => l.loan_id === id ? { ...l, loan_status: status } : l));
+        setSuccessMessage(`Loan marked as ${status}`);
+        setTimeout(() => setSuccessMessage(''), 3000);
     };
 
     const getStatusBadge = (status: LoanStatus) => {
@@ -129,16 +114,24 @@ const LoanList = () => {
                                     <div className="flex justify-end gap-2">
                                         {l.loan_status === 'Requested' && (
                                             <>
-                                                <button className="px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg hover:bg-emerald-200 transition-colors text-sm font-medium" onClick={() => handleStatusClick(l.loan_id, 'Approved')}>Approve</button>
-                                                <button className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium" onClick={() => handleStatusClick(l.loan_id, 'Rejected')}>Reject</button>
+                                                <DeleteConfirm onConfirm={() => confirmStatus(l.loan_id, 'Approved')} title="Approve Loan?" message="Are you sure you want to approve this loan request?" confirmLabel="Approve">
+                                                    <button className="px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg hover:bg-emerald-200 transition-colors text-sm font-medium">Approve</button>
+                                                </DeleteConfirm>
+                                                <DeleteConfirm onConfirm={() => confirmStatus(l.loan_id, 'Rejected')} title="Reject Loan?" message="Are you sure you want to reject this loan request?" confirmLabel="Reject">
+                                                    <button className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium">Reject</button>
+                                                </DeleteConfirm>
                                             </>
                                         )}
                                         {l.loan_status === 'Approved' && (
-                                            <button className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium" onClick={() => handleStatusClick(l.loan_id, 'Repaid')}>Mark Repaid</button>
+                                            <DeleteConfirm onConfirm={() => confirmStatus(l.loan_id, 'Repaid')} title="Mark Repaid?" message="Are you sure you want to mark this loan as repaid?" confirmLabel="Repaid">
+                                                <button className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium">Mark Repaid</button>
+                                            </DeleteConfirm>
                                         )}
-                                        <button className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors" onClick={() => handleDeleteClick(l.loan_id)}>
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
-                                        </button>
+                                        <DeleteConfirm onConfirm={() => confirmDelete(l.loan_id)} title="Clear Loan?" message="Are you sure you want to clear this loan request from the system?" confirmLabel="Clear">
+                                            <button className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
+                                            </button>
+                                        </DeleteConfirm>
                                     </div>
                                 </td>
                             </tr>
@@ -146,17 +139,6 @@ const LoanList = () => {
                     </tbody>
                 </table>
             </div>
-            <ConfirmationModal
-                isOpen={showConfirmModal}
-                title={confirmAction?.type === 'delete' ? "Clear Loan Request" : "Update Status"}
-                message={confirmAction?.type === 'delete'
-                    ? "Are you sure you want to clear this loan request from the system? This action cannot be undone."
-                    : `Are you sure you want to change this loan's status to ${confirmAction?.status}?`}
-                onConfirm={handleConfirm}
-                onCancel={() => setShowConfirmModal(false)}
-                confirmLabel={confirmAction?.type === 'delete' ? "Clear Request" : "Update"}
-                isDanger={confirmAction?.type === 'delete' || confirmAction?.status === 'Rejected'}
-            />
         </div>
     );
 };
