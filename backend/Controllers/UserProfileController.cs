@@ -30,7 +30,7 @@ public class UserProfileController : ControllerBase
 
         var profile = await _userService.GetUserProfileAsync(userId);
         if (profile == null)
-            return NotFound(new { success = false, message = "User not found" });
+            return NotFound(new { success = false, message = $"User not found (ID: {userId})" });
 
         return Ok(new { success = true, data = profile });
     }
@@ -50,7 +50,7 @@ public class UserProfileController : ControllerBase
 
         var profile = await _userService.UpdateUserProfileAsync(userId, dto);
         if (profile == null)
-            return NotFound(new { success = false, message = "User not found" });
+            return NotFound(new { success = false, message = $"User not found (ID: {userId})" });
 
         return Ok(new { success = true, message = "Profile updated successfully", data = profile });
     }

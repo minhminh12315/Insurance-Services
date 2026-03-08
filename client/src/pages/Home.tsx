@@ -390,7 +390,7 @@ const Home = () => {
                                     </p>
                                     <div className="mt-auto">
                                         <Link
-                                            to="/calculator"
+                                            to={`/calculator?categoryId=${category.categoryId}`}
                                             className="inline-block bg-[#f0f7ff] text-[#015fc9] px-6 py-3 rounded-[10px] font-semibold text-sm transition-all duration-300 hover:bg-[#015fc9] hover:text-white"
                                         >
                                             Read More & Get Quote

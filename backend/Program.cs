@@ -16,6 +16,8 @@ builder.Services.AddDbContext<InsuranceDbContext>(options =>
 // Add Authentication Service
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IInsuranceCategoryService, InsuranceCategoryService>();
+// Also register the concrete type because some controllers request the concrete implementation directly
 builder.Services.AddScoped<InsuranceCategoryService>();
 builder.Services.AddScoped<IInsuranceSchemeService, InsuranceSchemeService>();
 builder.Services.AddScoped<IPolicyService, PolicyService>();

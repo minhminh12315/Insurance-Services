@@ -28,10 +28,12 @@ import MyPolicies from './pages/User/MyPolicies';
 import UserPolicyDetail from './pages/User/UserPolicyDetail';
 import UserProfile from './pages/User/Profile';
 import PremiumCalculator from './pages/User/PremiumCalculator';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         {/* Root redirects to home */}
         <Route path="/" element={<Navigate to="/home" replace />} />
@@ -39,6 +41,9 @@ function App() {
         {/* Public Routes */}
         <Route path="/home" element={<PublicLayout />}>
           <Route index element={<Home />} />
+        </Route>
+        <Route path="/calculator" element={<PublicLayout />}>
+          <Route index element={<PremiumCalculator />} />
         </Route>
         <Route path="/about" element={<PublicLayout />}>
           <Route index element={<About />} />
@@ -86,10 +91,6 @@ function App() {
             <Route path="policies/:id" element={<UserPolicyDetail />} />
             <Route path="profile" element={<UserProfile />} />
           </Route>
-        </Route>
-
-        <Route path="/calculator" element={<ProtectedRoute requiredRole="Customer" />}>
-          <Route index element={<PremiumCalculator />} />
         </Route>
 
         {/* 404 Catch-all */}

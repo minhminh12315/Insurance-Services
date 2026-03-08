@@ -8,6 +8,14 @@ interface ApiResponse<T> {
     data: T;
 }
 
+export interface PaginatedResponse<T> {
+    items: T;
+    totalCount: number;
+    pageNumber: number;
+    pageSize: number;
+    totalPages: number;
+}
+
 interface LoginApiResponse {
     success: boolean;
     message: string;
@@ -82,9 +90,28 @@ export interface CreatePolicyPayload {
     termYears: number;
     paymentFrequency: PremiumFrequency;
     sumAssured: number;
-    lifeDetails: {
+    lifeDetails?: {
         nomineeName: string;
         nomineeRelation: string;
+    };
+    medicalDetails?: {
+        preExistingDiseases?: string;
+        hospitalNetworkTier?: string;
+        isFamilyFloater?: boolean;
+    };
+    motorDetails?: {
+        vehicleRegNumber: string;
+        vehicleModel: string;
+        vehicleType?: string;
+        engineNumber?: string;
+        chassisNumber?: string;
+        manufacturingYear?: number;
+    };
+    homeDetails?: {
+        propertyAddress: string;
+        propertyValue?: number;
+        structureType?: string;
+        builtYear?: number;
     };
 }
 
@@ -208,18 +235,42 @@ export const authApi = {
 };
 
 export const schemeApi = {
-    async getLifeSchemes(): Promise<InsuranceSchemeModel[]> {
-        const { data } = await api.get<ApiResponse<InsuranceSchemeModel[]>>('/insurancescheme', {
-            params: { isActive: true },
+    async getLifeSchemes(categoryId?: number): Promise<InsuranceSchemeModel[]> {
+        const { data } = await api.get<ApiResponse<PaginatedResponse<InsuranceSchemeModel[]>>>('/insurancescheme', {
+            params: { isActive: true, pageSize: 100, categoryId },
         });
 
-        const lifeSchemes = data.data.filter((scheme) => isLifeCategory(scheme.categoryName));
-        return lifeSchemes.length > 0 ? lifeSchemes : data.data;
+        const schemes = data.data.items || [];
+        if (categoryId) return schemes;
+        const lifeSchemes = schemes.filter((scheme) => isLifeCategory(scheme.categoryName));
+        return lifeSchemes.length > 0 ? lifeSchemes : schemes;
     },
 
     async calculatePremium(payload: CalculatePremiumPayload): Promise<PremiumCalculationModel> {
         const { data } = await api.post<ApiResponse<PremiumCalculationModel>>('/insurancescheme/calculate-premium', payload);
         return data.data;
+    },
+
+    async getAdminSchemes(page = 1, pageSize = 10, search = '', categoryId?: number): Promise<PaginatedResponse<InsuranceSchemeModel[]>> {
+        const { data } = await api.get<ApiResponse<PaginatedResponse<InsuranceSchemeModel[]>>>('/insurancescheme', {
+            params: { page, pageSize, search, categoryId },
+        });
+        return data.data;
+    },
+
+    async createScheme(payload: Partial<InsuranceSchemeModel>): Promise<InsuranceSchemeModel> {
+        const { data } = await api.post<ApiResponse<InsuranceSchemeModel>>('/insurancescheme', payload);
+        return data.data;
+    },
+
+    async updateScheme(id: number, payload: Partial<InsuranceSchemeModel>): Promise<InsuranceSchemeModel> {
+        const { data } = await api.put<ApiResponse<InsuranceSchemeModel>>(`/insurancescheme/${id}`, payload);
+        return data.data;
+    },
+
+    async deleteScheme(id: number): Promise<boolean> {
+        const { data } = await api.delete<ApiResponse<any>>(`/insurancescheme/${id}`);
+        return data.success;
     },
 };
 
@@ -273,6 +324,18 @@ export const categoryApi = {
         const { data } = await api.get<ApiResponse<InsuranceCategoryModel[]>>('/insurancecategory');
         return data.data;
     },
+
+    async getAdminCategories(page = 1, pageSize = 10, search = ''): Promise<PaginatedResponse<InsuranceCategoryModel[]>> {
+        const { data } = await api.get<PaginatedResponse<InsuranceCategoryModel[]>>('/InsuranceCategories', {
+            params: { page, pageSize, search },
+        });
+        return data;
+    },
+
+    async deleteCategory(id: number): Promise<boolean> {
+        const { data } = await api.delete<ApiResponse<any>>(`/insurancecategory/${id}`);
+        return data.success;
+    },
 };
 
 // News API
@@ -295,9 +358,30 @@ export const newsApi = {
 // Scheme API - Get all active schemes
 export const schemeFullApi = {
     async getAllActiveSchemes(): Promise<InsuranceSchemeModel[]> {
-        const { data } = await api.get<ApiResponse<InsuranceSchemeModel[]>>('/insurancescheme', {
-            params: { isActive: true },
+        const { data } = await api.get<ApiResponse<PaginatedResponse<InsuranceSchemeModel[]>>>('/insurancescheme', {
+            params: { isActive: true, pageSize: 100 },
         });
-        return data.data;
+        return data.data.items || [];
+    },
+};
+// User Profile API
+export interface UpdateUserProfileDto {
+    fullName?: string;
+    phoneNumber?: string;
+    dateOfBirth?: string;
+    gender?: string;
+    address?: string;
+    city?: string;
+}
+
+export const userApi = {
+    async getMyProfile(): Promise<User> {
+        const { data } = await api.get<ApiResponse<BackendUser>>('/userprofile/me');
+        return mapBackendUser(data.data);
+    },
+
+    async updateProfile(payload: UpdateUserProfileDto): Promise<User> {
+        const { data } = await api.put<ApiResponse<BackendUser>>('/userprofile/me', payload);
+        return mapBackendUser(data.data);
     },
 };

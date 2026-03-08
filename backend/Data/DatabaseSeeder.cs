@@ -10,7 +10,7 @@ public static class DatabaseSeeder
     public static async Task SeedAsync(InsuranceDbContext context)
     {
         // Clear existing data (optional - comment out if you want to keep existing data)
-         //await ClearDataAsync(context);
+        await ClearDataAsync(context);
 
         // Check if data already exists
         if (await context.Users.AnyAsync())
