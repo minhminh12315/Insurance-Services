@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -268,6 +269,22 @@ const PremiumCalculator = () => {
 
     const handleProceedToPayment = async () => {
         if (!selectedScheme || !user || !calculation) {
+            return;
+        }
+
+        const result = await Swal.fire({
+            title: 'CONFIRM PAYMENT',
+            text: `Are you sure you want to proceed with the payment of ${formatCurrency(pricingBreakdown.installment)} for the insurance package ${selectedScheme.schemeName}?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#10b981',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Confirm Payment',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true,
+        });
+
+        if (!result.isConfirmed) {
             return;
         }
 
