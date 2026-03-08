@@ -115,6 +115,31 @@ public class PremiumPaymentService : IPremiumPaymentService
 
         return await GetPaymentByIdAsync(paymentId);
     }
+    
+    public async Task<PremiumPaymentDto?> GetPaymentByOrderCodeAsync(string orderCode)
+    {
+        var payment = await _context.PremiumPayments
+            .Include(p => p.Policy)
+            .Include(p => p.User)
+            .FirstOrDefaultAsync(p => p.OrderCode == orderCode);
+
+        if (payment == null)
+            return null;
+
+        return new PremiumPaymentDto
+        {
+            PaymentId = payment.PaymentId,
+            PolicyId = payment.PolicyId,
+            PolicyNumber = payment.Policy.PolicyNumber,
+            UserId = payment.UserId,
+            UserName = payment.User.FullName,
+            AmountPaid = payment.AmountPaid,
+            PaymentDate = payment.PaymentDate,
+            PaymentMethod = payment.PaymentMethod,
+            TransactionReference = payment.TransactionReference,
+            Status = payment.Status
+        };
+    }
 }
 
 public class PolicyLoanService : IPolicyLoanService

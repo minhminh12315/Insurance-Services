@@ -65,16 +65,9 @@ namespace InsuranceService.API.Controllers
 
             await _context.SaveChangesAsync();
 
-            var response = new VNPayResponse
-            {
-                Success = success,
-                Message = success ? "Payment successful" : "Payment failed",
-                VnPayResponseCode = vnp_ResponseCode,
-                VnPayTransactionNo = vnp_TransactionNo,
-                VnPayTxnRef = vnp_TxnRef
-            };
-
-            return Ok(response);
+            // Redirect to frontend payment result page
+            string frontendUrl = "http://localhost:3000/user/payment-result";
+            return Redirect($"{frontendUrl}?txnRef={vnp_TxnRef}&status={(success ? "success" : "failed")}");
         }
 
         [HttpGet("ipn")]

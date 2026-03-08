@@ -26,6 +26,7 @@ import MyPolicies from './pages/User/MyPolicies';
 import UserPolicyDetail from './pages/User/UserPolicyDetail';
 import UserProfile from './pages/User/Profile';
 import PremiumCalculator from './pages/User/PremiumCalculator';
+import PaymentResult from './pages/User/PaymentResult';
 import ScrollToTop from './components/ScrollToTop';
 
 function App() {
@@ -80,6 +81,7 @@ function App() {
             <Route path="policies" element={<MyPolicies />} />
             <Route path="policies/:id" element={<UserPolicyDetail />} />
             <Route path="profile" element={<UserProfile />} />
+            <Route path="payment-result" element={<PaymentResult />} />
           </Route>
         </Route>
 

@@ -9,6 +9,7 @@ public interface IPremiumPaymentService
     Task<IEnumerable<PremiumPaymentDto>> GetUserPaymentsAsync(int userId);
     Task<PremiumPaymentDto> CreatePaymentAsync(int userId, CreatePaymentDto dto);
     Task<PremiumPaymentDto?> UpdatePaymentStatusAsync(int paymentId, UpdatePaymentStatusDto dto);
+    Task<PremiumPaymentDto?> GetPaymentByOrderCodeAsync(string orderCode);
 }
 
 public interface IPolicyLoanService

@@ -303,6 +303,11 @@ export const paymentApi = {
         const { data } = await api.get<ApiResponse<PaymentModel[]>>('/premiumpayment/my-payments');
         return data.data;
     },
+
+    async getPaymentByOrderCode(orderCode: string): Promise<PaymentModel> {
+        const { data } = await api.get<ApiResponse<PaymentModel>>(`/premiumpayment/by-order/${orderCode}`);
+        return data.data;
+    },
 };
 
 export const vnPayApi = {

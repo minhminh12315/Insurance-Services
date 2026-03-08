@@ -53,6 +53,21 @@ public class PremiumPaymentController : ControllerBase
         return Ok(new { success = true, data = payments });
     }
 
+    [HttpGet("by-order/{orderCode}")]
+    public async Task<ActionResult> GetPaymentByOrderCode(string orderCode)
+    {
+        var payment = await _paymentService.GetPaymentByOrderCodeAsync(orderCode);
+        if (payment == null)
+            return NotFound(new { success = false, message = "Payment not found" });
+
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        
+        if (payment.UserId.ToString() != userIdClaim)
+            return Forbid();
+
+        return Ok(new { success = true, data = payment });
+    }
+
     [HttpPost]
     public async Task<ActionResult> CreatePayment([FromBody] CreatePaymentDto dto)
     {

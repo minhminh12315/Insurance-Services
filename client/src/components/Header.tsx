@@ -29,7 +29,7 @@ const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) => {
 
     const handleLogout = () => {
         logout();
-        navigate('/login');
+        navigate('/');
     };
 
     const initials = user?.full_name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || '';
