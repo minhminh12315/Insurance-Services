@@ -14,6 +14,10 @@ public class ClaimDto
     public string Reason { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
     public string? AdminComment { get; set; }
+    public string? DocumentPath { get; set; }
+    public string? DocumentUrl { get; set; }
+    public DateTime? CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }
 
 public class CreateClaimDto

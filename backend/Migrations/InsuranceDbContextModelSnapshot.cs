@@ -43,6 +43,17 @@ namespace InsuranceService.API.Migrations
                         .HasColumnType("date")
                         .HasColumnName("claim_date");
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<string>("DocumentPath")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("document_path");
+
                     b.Property<int>("PolicyId")
                         .HasColumnType("int")
                         .HasColumnName("policy_id");
@@ -59,6 +70,10 @@ namespace InsuranceService.API.Migrations
                         .HasDefaultValue("Submitted")
                         .HasColumnName("status");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int")
                         .HasColumnName("user_id");
@@ -71,6 +86,75 @@ namespace InsuranceService.API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Claims");
+                });
+
+            modelBuilder.Entity("InsuranceService.API.Models.ClaimApprovalHistory", b =>
+                {
+                    b.Property<int>("ApprovalId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("approval_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ApprovalId"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("action");
+
+                    b.Property<DateTime>("ActionDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("action_date")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<decimal?>("ApprovedAmount")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("approved_amount");
+
+                    b.Property<int>("ApprovedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("approved_by");
+
+                    b.Property<int>("ClaimId")
+                        .HasColumnType("int")
+                        .HasColumnName("claim_id");
+
+                    b.Property<string>("Comments")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("comments");
+
+                    b.Property<string>("DocumentsVerified")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("documents_verified");
+
+                    b.Property<string>("NewStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("new_status");
+
+                    b.Property<string>("PreviousStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("previous_status");
+
+                    b.Property<string>("RejectionReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("rejection_reason");
+
+                    b.HasKey("ApprovalId");
+
+                    b.HasIndex("ApprovedBy");
+
+                    b.HasIndex("ClaimId");
+
+                    b.ToTable("ClaimApprovalHistories");
                 });
 
             modelBuilder.Entity("InsuranceService.API.Models.InsuranceCategory", b =>
@@ -165,6 +249,77 @@ namespace InsuranceService.API.Migrations
                     b.ToTable("InsuranceSchemes");
                 });
 
+            modelBuilder.Entity("InsuranceService.API.Models.LoanRepaymentSchedule", b =>
+                {
+                    b.Property<int>("ScheduleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("schedule_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ScheduleId"));
+
+                    b.Property<int?>("DaysOverdue")
+                        .HasColumnType("int")
+                        .HasColumnName("days_overdue");
+
+                    b.Property<DateOnly>("DueDate")
+                        .HasColumnType("date")
+                        .HasColumnName("due_date");
+
+                    b.Property<int>("InstallmentNumber")
+                        .HasColumnType("int")
+                        .HasColumnName("installment_number");
+
+                    b.Property<decimal>("InterestAmount")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("interest_amount");
+
+                    b.Property<bool>("IsPaid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_paid");
+
+                    b.Property<decimal?>("LateFee")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("late_fee");
+
+                    b.Property<int>("LoanId")
+                        .HasColumnType("int")
+                        .HasColumnName("loan_id");
+
+                    b.Property<decimal>("OutstandingBalance")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("outstanding_balance");
+
+                    b.Property<decimal?>("PaidAmount")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("paid_amount");
+
+                    b.Property<DateTime?>("PaidDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("paid_date");
+
+                    b.Property<string>("PaymentReference")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("payment_reference");
+
+                    b.Property<decimal>("PrincipalAmount")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("principal_amount");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("total_amount");
+
+                    b.HasKey("ScheduleId");
+
+                    b.HasIndex("LoanId");
+
+                    b.ToTable("LoanRepaymentSchedules");
+                });
+
             modelBuilder.Entity("InsuranceService.API.Models.NewsAndAnnouncement", b =>
                 {
                     b.Property<int>("NewsId")
@@ -201,6 +356,133 @@ namespace InsuranceService.API.Migrations
                     b.HasIndex("AuthorId");
 
                     b.ToTable("NewsAndAnnouncements");
+                });
+
+            modelBuilder.Entity("InsuranceService.API.Models.Notification", b =>
+                {
+                    b.Property<int>("NotificationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("notification_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotificationId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<bool>("EmailSent")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("email_sent");
+
+                    b.Property<DateTime?>("EmailSentAt")
+                        .HasColumnType("datetime")
+                        .HasColumnName("email_sent_at");
+
+                    b.Property<bool>("IsRead")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_read");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("message");
+
+                    b.Property<string>("NotificationType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("notification_type");
+
+                    b.Property<DateTime?>("ReadAt")
+                        .HasColumnType("datetime")
+                        .HasColumnName("read_at");
+
+                    b.Property<int?>("RelatedEntityId")
+                        .HasColumnType("int")
+                        .HasColumnName("related_entity_id");
+
+                    b.Property<string>("RelatedEntityType")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("related_entity_type");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("title");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("NotificationId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("InsuranceService.API.Models.PaymentReceipt", b =>
+                {
+                    b.Property<int>("ReceiptId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("receipt_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReceiptId"));
+
+                    b.Property<bool>("EmailSent")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("email_sent");
+
+                    b.Property<DateTime?>("EmailSentAt")
+                        .HasColumnType("datetime")
+                        .HasColumnName("email_sent_at");
+
+                    b.Property<DateTime>("GeneratedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("generated_at")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int>("PaymentId")
+                        .HasColumnType("int")
+                        .HasColumnName("payment_id");
+
+                    b.Property<string>("ReceiptHtml")
+                        .HasColumnType("ntext")
+                        .HasColumnName("receipt_html");
+
+                    b.Property<string>("ReceiptNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("receipt_number");
+
+                    b.Property<string>("ReceiptPdfPath")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("receipt_pdf_path");
+
+                    b.HasKey("ReceiptId");
+
+                    b.HasIndex("PaymentId");
+
+                    b.HasIndex("ReceiptNumber")
+                        .IsUnique();
+
+                    b.ToTable("PaymentReceipts");
                 });
 
             modelBuilder.Entity("InsuranceService.API.Models.Policy", b =>
@@ -277,6 +559,93 @@ namespace InsuranceService.API.Migrations
                         .IsUnique();
 
                     b.ToTable("Policies");
+                });
+
+            modelBuilder.Entity("InsuranceService.API.Models.PolicyBeneficiary", b =>
+                {
+                    b.Property<int>("BeneficiaryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("beneficiary_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BeneficiaryId"));
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("address");
+
+                    b.Property<string>("BeneficiaryName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("beneficiary_name");
+
+                    b.Property<decimal>("BenefitPercentage")
+                        .HasColumnType("decimal(5, 2)")
+                        .HasColumnName("benefit_percentage");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date")
+                        .HasColumnName("date_of_birth");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("email");
+
+                    b.Property<string>("IdentificationNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("identification_number");
+
+                    b.Property<string>("IdentificationType")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("identification_type");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_active");
+
+                    b.Property<bool>("IsPrimary")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_primary");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("phone_number");
+
+                    b.Property<int>("PolicyId")
+                        .HasColumnType("int")
+                        .HasColumnName("policy_id");
+
+                    b.Property<string>("Relationship")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("relationship");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("BeneficiaryId");
+
+                    b.HasIndex("PolicyId");
+
+                    b.ToTable("PolicyBeneficiaries");
                 });
 
             modelBuilder.Entity("InsuranceService.API.Models.PolicyDetailsHome", b =>
@@ -362,6 +731,25 @@ namespace InsuranceService.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DetailId"));
 
+                    b.Property<decimal?>("AnnualLimit")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("annual_limit");
+
+                    b.Property<string>("CardTier")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("card_tier");
+
+                    b.Property<decimal?>("DentalLimit")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("dental_limit");
+
+                    b.Property<bool?>("HasDirectBilling")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("has_direct_billing");
+
                     b.Property<string>("HospitalNetworkTier")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
@@ -373,6 +761,14 @@ namespace InsuranceService.API.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("is_family_floater");
 
+                    b.Property<decimal?>("MaternityLimit")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("maternity_limit");
+
+                    b.Property<decimal?>("OutpatientLimit")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("outpatient_limit");
+
                     b.Property<int?>("PolicyId")
                         .HasColumnType("int")
                         .HasColumnName("policy_id");
@@ -380,6 +776,26 @@ namespace InsuranceService.API.Migrations
                     b.Property<string>("PreExistingDiseases")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("pre_existing_diseases");
+
+                    b.Property<decimal?>("RoomAndBoardLimit")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("room_and_board_limit");
+
+                    b.Property<decimal?>("SurgeryLimit")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("surgery_limit");
+
+                    b.Property<decimal?>("UsedAmount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(15, 2)")
+                        .HasDefaultValue(0m)
+                        .HasColumnName("used_amount");
+
+                    b.Property<int?>("WaitingPeriodDays")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(30)
+                        .HasColumnName("waiting_period_days");
 
                     b.HasKey("DetailId")
                         .HasName("PK__PolicyDe__38E9A22431A48E84");
@@ -494,6 +910,234 @@ namespace InsuranceService.API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("PolicyLoans");
+                });
+
+            modelBuilder.Entity("InsuranceService.API.Models.PolicyRenewal", b =>
+                {
+                    b.Property<int>("RenewalId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("renewal_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RenewalId"));
+
+                    b.Property<DateOnly>("NewMaturityDate")
+                        .HasColumnType("date")
+                        .HasColumnName("new_maturity_date");
+
+                    b.Property<decimal>("NewPremium")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("new_premium");
+
+                    b.Property<int>("PolicyId")
+                        .HasColumnType("int")
+                        .HasColumnName("policy_id");
+
+                    b.Property<DateOnly>("PreviousMaturityDate")
+                        .HasColumnType("date")
+                        .HasColumnName("previous_maturity_date");
+
+                    b.Property<decimal>("PreviousPremium")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("previous_premium");
+
+                    b.Property<DateTime?>("ProcessedAt")
+                        .HasColumnType("datetime")
+                        .HasColumnName("processed_at");
+
+                    b.Property<int?>("ProcessedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("processed_by");
+
+                    b.Property<DateOnly>("RenewalDate")
+                        .HasColumnType("date")
+                        .HasColumnName("renewal_date");
+
+                    b.Property<string>("RenewalNotes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("renewal_notes");
+
+                    b.Property<string>("RenewalStatus")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasDefaultValue("Pending")
+                        .HasColumnName("renewal_status");
+
+                    b.Property<int>("RenewalTermYears")
+                        .HasColumnType("int")
+                        .HasColumnName("renewal_term_years");
+
+                    b.Property<DateTime?>("RequestedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("requested_at")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("RenewalId");
+
+                    b.HasIndex("PolicyId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PolicyRenewals");
+                });
+
+            modelBuilder.Entity("InsuranceService.API.Models.PolicyRider", b =>
+                {
+                    b.Property<int>("RiderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("rider_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RiderId"));
+
+                    b.Property<decimal?>("CoverageAmount")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("coverage_amount");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("description");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_active");
+
+                    b.Property<int>("PolicyId")
+                        .HasColumnType("int")
+                        .HasColumnName("policy_id");
+
+                    b.Property<string>("RiderName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("rider_name");
+
+                    b.Property<decimal>("RiderPremium")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("rider_premium");
+
+                    b.Property<string>("RiderType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("rider_type");
+
+                    b.HasKey("RiderId");
+
+                    b.HasIndex("PolicyId");
+
+                    b.ToTable("PolicyRiders");
+                });
+
+            modelBuilder.Entity("InsuranceService.API.Models.PolicySurrender", b =>
+                {
+                    b.Property<int>("SurrenderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("surrender_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SurrenderId"));
+
+                    b.Property<string>("AdminNotes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("admin_notes");
+
+                    b.Property<decimal>("NetPayable")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("net_payable");
+
+                    b.Property<string>("PaymentMethod")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("payment_method");
+
+                    b.Property<string>("PaymentReference")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("payment_reference");
+
+                    b.Property<int>("PolicyHeldMonths")
+                        .HasColumnType("int")
+                        .HasColumnName("policy_held_months");
+
+                    b.Property<int>("PolicyHeldYears")
+                        .HasColumnType("int")
+                        .HasColumnName("policy_held_years");
+
+                    b.Property<int>("PolicyId")
+                        .HasColumnType("int")
+                        .HasColumnName("policy_id");
+
+                    b.Property<DateTime?>("ProcessedAt")
+                        .HasColumnType("datetime")
+                        .HasColumnName("processed_at");
+
+                    b.Property<int?>("ProcessedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("processed_by");
+
+                    b.Property<DateOnly>("RequestDate")
+                        .HasColumnType("date")
+                        .HasColumnName("request_date");
+
+                    b.Property<DateTime?>("RequestedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("requested_at")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<decimal>("SurrenderCharges")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("surrender_charges");
+
+                    b.Property<string>("SurrenderReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("surrender_reason");
+
+                    b.Property<string>("SurrenderStatus")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasDefaultValue("Pending")
+                        .HasColumnName("surrender_status");
+
+                    b.Property<decimal>("SurrenderValue")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("surrender_value");
+
+                    b.Property<decimal>("TotalPremiumPaid")
+                        .HasColumnType("decimal(15, 2)")
+                        .HasColumnName("total_premium_paid");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("SurrenderId");
+
+                    b.HasIndex("PolicyId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PolicySurrenders");
                 });
 
             modelBuilder.Entity("InsuranceService.API.Models.PremiumPayment", b =>
@@ -713,6 +1357,27 @@ namespace InsuranceService.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("InsuranceService.API.Models.ClaimApprovalHistory", b =>
+                {
+                    b.HasOne("InsuranceService.API.Models.User", "Approver")
+                        .WithMany()
+                        .HasForeignKey("ApprovedBy")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_ClaimApprovalHistory_Users");
+
+                    b.HasOne("InsuranceService.API.Models.Claim", "Claim")
+                        .WithMany()
+                        .HasForeignKey("ClaimId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_ClaimApprovalHistory_Claims");
+
+                    b.Navigation("Approver");
+
+                    b.Navigation("Claim");
+                });
+
             modelBuilder.Entity("InsuranceService.API.Models.InsuranceScheme", b =>
                 {
                     b.HasOne("InsuranceService.API.Models.InsuranceCategory", "Category")
@@ -723,6 +1388,18 @@ namespace InsuranceService.API.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("InsuranceService.API.Models.LoanRepaymentSchedule", b =>
+                {
+                    b.HasOne("InsuranceService.API.Models.PolicyLoan", "Loan")
+                        .WithMany()
+                        .HasForeignKey("LoanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_LoanRepaymentSchedule_PolicyLoans");
+
+                    b.Navigation("Loan");
+                });
+
             modelBuilder.Entity("InsuranceService.API.Models.NewsAndAnnouncement", b =>
                 {
                     b.HasOne("InsuranceService.API.Models.User", "Author")
@@ -731,6 +1408,30 @@ namespace InsuranceService.API.Migrations
                         .HasConstraintName("FK__NewsAndAn__autho__14270015");
 
                     b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("InsuranceService.API.Models.Notification", b =>
+                {
+                    b.HasOne("InsuranceService.API.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_Notifications_Users");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("InsuranceService.API.Models.PaymentReceipt", b =>
+                {
+                    b.HasOne("InsuranceService.API.Models.PremiumPayment", "Payment")
+                        .WithMany()
+                        .HasForeignKey("PaymentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_PaymentReceipts_PremiumPayments");
+
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("InsuranceService.API.Models.Policy", b =>
@@ -750,6 +1451,18 @@ namespace InsuranceService.API.Migrations
                     b.Navigation("Scheme");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("InsuranceService.API.Models.PolicyBeneficiary", b =>
+                {
+                    b.HasOne("InsuranceService.API.Models.Policy", "Policy")
+                        .WithMany()
+                        .HasForeignKey("PolicyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_PolicyBeneficiaries_Policies");
+
+                    b.Navigation("Policy");
                 });
 
             modelBuilder.Entity("InsuranceService.API.Models.PolicyDetailsHome", b =>
@@ -809,6 +1522,60 @@ namespace InsuranceService.API.Migrations
                         .HasForeignKey("UserId")
                         .IsRequired()
                         .HasConstraintName("FK__PolicyLoa__user___10566F31");
+
+                    b.Navigation("Policy");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("InsuranceService.API.Models.PolicyRenewal", b =>
+                {
+                    b.HasOne("InsuranceService.API.Models.Policy", "Policy")
+                        .WithMany()
+                        .HasForeignKey("PolicyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_PolicyRenewals_Policies");
+
+                    b.HasOne("InsuranceService.API.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_PolicyRenewals_Users");
+
+                    b.Navigation("Policy");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("InsuranceService.API.Models.PolicyRider", b =>
+                {
+                    b.HasOne("InsuranceService.API.Models.Policy", "Policy")
+                        .WithMany()
+                        .HasForeignKey("PolicyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_PolicyRiders_Policies");
+
+                    b.Navigation("Policy");
+                });
+
+            modelBuilder.Entity("InsuranceService.API.Models.PolicySurrender", b =>
+                {
+                    b.HasOne("InsuranceService.API.Models.Policy", "Policy")
+                        .WithMany()
+                        .HasForeignKey("PolicyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_PolicySurrenders_Policies");
+
+                    b.HasOne("InsuranceService.API.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_PolicySurrenders_Users");
 
                     b.Navigation("Policy");
 

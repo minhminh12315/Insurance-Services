@@ -90,7 +90,8 @@ public class PremiumPaymentService : IPremiumPaymentService
             PaymentDate = DateTime.UtcNow,
             PaymentMethod = dto.PaymentMethod,
             TransactionReference = dto.TransactionReference ?? $"TXN-{DateTime.Now:yyyyMMddHHmmss}-{Guid.NewGuid().ToString().Substring(0, 8).ToUpper()}",
-            Status = "Completed"
+            Status = "Pending",
+            OrderCode = $"PAY-{userId}-{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}",
         };
 
         _context.PremiumPayments.Add(payment);

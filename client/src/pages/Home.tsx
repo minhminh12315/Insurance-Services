@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { categoryApi, newsApi, type InsuranceCategoryModel, type NewsModel } from '../services/insuranceApi';
 import icon06 from '../assets/icon-06-primary.png';
 import icon03 from '../assets/icon-03-primary.png';
 import icon04 from '../assets/icon-04-primary.png';
@@ -13,7 +14,35 @@ import carousel2 from '../assets/carousel-2.jpg';
 import carousel12 from '../assets/carousel-12.jpg';
 
 const Home = () => {
+    // Fallback data in case API fails or database is not seeded
+    const fallbackCategories: InsuranceCategoryModel[] = [
+        {
+            categoryId: 1,
+            categoryName: 'Bảo hiểm nhân thọ',
+            description: 'Bảo vệ tài chính cho gia đình bạn với các gói bảo hiểm nhân thọ linh hoạt và quyền lợi cao.',
+        },
+        {
+            categoryId: 2,
+            categoryName: 'Bảo hiểm y tế',
+            description: 'Chi trả chi phí khám chữa bệnh, phẫu thuật và nằm viện với mạng lưới bệnh viện rộng khắp.',
+        },
+        {
+            categoryId: 3,
+            categoryName: 'Bảo hiểm xe cơ giới',
+            description: 'Bảo vệ phương tiện của bạn trước mọi rủi ro về tai nạn, mất cắp và hư hỏng.',
+        },
+        {
+            categoryId: 4,
+            categoryName: 'Bảo hiểm nhà ở',
+            description: 'Bảo vệ ngôi nhà và tài sản của bạn trước thiên tai, hỏa hoạn và các rủi ro khác.',
+        },
+    ];
+
     const [currentSlide, setCurrentSlide] = useState(0);
+    const [categories, setCategories] = useState<InsuranceCategoryModel[]>([]);
+    const [news, setNews] = useState<NewsModel[]>([]);
+    const [isLoadingCategories, setIsLoadingCategories] = useState(true);
+    const [isLoadingNews, setIsLoadingNews] = useState(true);
 
     const heroSlides = [
         {
@@ -27,6 +56,53 @@ const Home = () => {
             image: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1920&h=1080&fit=crop',
         },
     ];
+
+    // Map category names to icons
+    const getCategoryIcon = (categoryName: string) => {
+        const name = categoryName.toLowerCase();
+        if (name.includes('life') || name.includes('nhân thọ')) return lifeIcon;
+        if (name.includes('health') || name.includes('y tế') || name.includes('sức khỏe')) return healthIcon;
+        if (name.includes('home') || name.includes('nhà') || name.includes('căn hộ')) return homeIcon;
+        if (name.includes('vehicle') || name.includes('motor') || name.includes('xe') || name.includes('ô tô')) return vehicleIcon;
+        return lifeIcon; // default
+    };
+
+    // Fetch categories and news on component mount
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const data = await categoryApi.getAllCategories();
+                // If API returns data, use it; otherwise use fallback
+                if (data && data.length > 0) {
+                    setCategories(data);
+                } else {
+                    console.log('No categories from API, using fallback data');
+                    setCategories(fallbackCategories);
+                }
+            } catch (error) {
+                console.error('Failed to fetch categories:', error);
+                // Use fallback data when API fails
+                setCategories(fallbackCategories);
+            } finally {
+                setIsLoadingCategories(false);
+            }
+        };
+
+        const fetchNews = async () => {
+            try {
+                const data = await newsApi.getAllNews();
+                // Get latest 3 news items
+                setNews(data.slice(0, 3));
+            } catch (error) {
+                console.error('Failed to fetch news:', error);
+            } finally {
+                setIsLoadingNews(false);
+            }
+        };
+
+        fetchCategories();
+        fetchNews();
+    }, []);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -42,28 +118,8 @@ const Home = () => {
         { number: '1234', label: 'Team Members', color: '#ff6b6b' },
     ];
 
-    const services = [
-        {
-            icon: lifeIcon,
-            title: 'Life Insurance',
-            description: 'Aliqu diam amet eos erat ipsum et lorem et sit, sed stet lorem sit clita duo justo erat amet',
-        },
-        {
-            icon: healthIcon,
-            title: 'Health Insurance',
-            description: 'Aliqu diam amet eos erat ipsum et lorem et sit, sed stet lorem sit clita duo justo erat amet',
-        },
-        {
-            icon: homeIcon,
-            title: 'Home Insurance',
-            description: 'Aliqu diam amet eos erat ipsum et lorem et sit, sed stet lorem sit clita duo justo erat amet',
-        },
-        {
-            icon: vehicleIcon,
-            title: 'Vehicle Insurance',
-            description: 'Aliqu diam amet eos erat ipsum et lorem et sit, sed stet lorem sit clita duo justo erat amet',
-        },
-    ];
+    // Remove hardcoded services - now using dynamic categories
+    // const services = [...];
 
     const features = [
         { icon: icon06, title: 'Easy Process', delay: '0.1s' },
@@ -301,38 +357,49 @@ const Home = () => {
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-[30px]">
-                        {services.map((service, index) => (
-                            <div
-                                key={index}
-                                className="bg-white p-8 rounded-[20px] shadow-[0_10px_40px_rgba(0,0,0,0.05)] transition-all duration-300 hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)] flex flex-col"
-                            >
-                                <div className="flex items-center gap-5 mb-6">
-                                    <div className="w-[60px] h-[60px] bg-[#015fc9] rounded-[10px] flex items-center justify-center shrink-0">
-                                        <img
-                                            src={service.icon}
-                                            alt=""
-                                            className="w-10 h-10 object-contain brightness-0 invert"
-                                        />
+                    {isLoadingCategories ? (
+                        <div className="text-center py-10">
+                            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[#015fc9] border-t-transparent"></div>
+                            <p className="mt-4 text-[#666]">Loading insurance services...</p>
+                        </div>
+                    ) : categories.length === 0 ? (
+                        <div className="text-center py-10">
+                            <p className="text-[#666]">No insurance services available at the moment.</p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-[30px]">
+                            {categories.map((category) => (
+                                <div
+                                    key={category.categoryId}
+                                    className="bg-white p-8 rounded-[20px] shadow-[0_10px_40px_rgba(0,0,0,0.05)] transition-all duration-300 hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)] flex flex-col"
+                                >
+                                    <div className="flex items-center gap-5 mb-6">
+                                        <div className="w-[60px] h-[60px] bg-[#015fc9] rounded-[10px] flex items-center justify-center shrink-0">
+                                            <img
+                                                src={getCategoryIcon(category.categoryName)}
+                                                alt={category.categoryName}
+                                                className="w-10 h-10 object-contain brightness-0 invert"
+                                            />
+                                        </div>
+                                        <h4 className="text-2xl font-bold text-[#0a1628] leading-tight">
+                                            {category.categoryName}
+                                        </h4>
                                     </div>
-                                    <h4 className="text-2xl font-bold text-[#0a1628] leading-tight">
-                                        {service.title}
-                                    </h4>
+                                    <p className="text-[#666] leading-[1.8] mb-8">
+                                        {category.description || 'Comprehensive coverage for your protection needs.'}
+                                    </p>
+                                    <div className="mt-auto">
+                                        <Link
+                                            to="/calculator"
+                                            className="inline-block bg-[#f0f7ff] text-[#015fc9] px-6 py-3 rounded-[10px] font-semibold text-sm transition-all duration-300 hover:bg-[#015fc9] hover:text-white"
+                                        >
+                                            Read More & Get Quote
+                                        </Link>
+                                    </div>
                                 </div>
-                                <p className="text-[#666] leading-[1.8] mb-8">
-                                    {service.description}
-                                </p>
-                                <div className="mt-auto">
-                                    <Link
-                                        to={`/services/${service.title.toLowerCase().replace(' ', '-')}`}
-                                        className="inline-block bg-[#f0f7ff] text-[#015fc9] px-6 py-3 rounded-[10px] font-semibold text-sm transition-all duration-300 hover:bg-[#015fc9] hover:text-white"
-                                    >
-                                        Read More
-                                    </Link>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </section>
 

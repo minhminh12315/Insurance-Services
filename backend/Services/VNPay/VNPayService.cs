@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text;
 using System.Security.Cryptography;
 using System.Net;
@@ -15,6 +15,7 @@ namespace InsuranceService.API.Services.VNPay
     {
         private readonly VNPaySettings _settings;
         private readonly InsuranceDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public VNPayService(IOptions<VNPaySettings> settings, InsuranceDbContext context)
         {
@@ -34,23 +35,36 @@ namespace InsuranceService.API.Services.VNPay
                 _context.SaveChanges();
             }
 
+            // if (request.Amount < 5 * 1000 || request.Amount > 1 * 1000 * 1000 * 1000)
+            // {
+            //     throw new ArgumentException("Số tiền thanh toán phải nằm trong khoảng 5.000 (VND) đến 1.000.000.000 (VND).", nameof(request.Money));
+            // }
+
+            // if (string.IsNullOrWhiteSpace(request.Description))
+            // {
+            //     throw new ArgumentException("Không được để trống mô tả giao dịch.", nameof(request.Description));
+            // }
+
+            var remoteIpAddress = context.Connection.RemoteIpAddress;
+            string ipAddress = remoteIpAddress != null
+                ? (remoteIpAddress.IsIPv4MappedToIPv6 ? remoteIpAddress.MapToIPv4().ToString() : remoteIpAddress.ToString())
+                : "127.0.0.1";
+
             var vnpay = new VnPayLibrary();
-            vnpay.AddRequestData("vnp_Version", "2.1.0");
+            vnpay.AddRequestData("vnp_Version", _settings.Version);
             vnpay.AddRequestData("vnp_Command", "pay");
             vnpay.AddRequestData("vnp_TmnCode", _settings.TmnCode);
             vnpay.AddRequestData("vnp_Amount", ((long)(request.Amount * 100)).ToString());
-            vnpay.AddRequestData("vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss"));
+            vnpay.AddRequestData("vnp_CreateDate",DateTime.UtcNow.AddHours(7).ToString("yyyyMMddHHmmss"));
             vnpay.AddRequestData("vnp_CurrCode", "VND");
-            vnpay.AddRequestData("vnp_IpAddr", context.Connection.RemoteIpAddress?.ToString() ?? "127.0.0.1");
+            vnpay.AddRequestData("vnp_IpAddr", ipAddress);
             vnpay.AddRequestData("vnp_Locale", "vn");
-            vnpay.AddRequestData("vnp_OrderInfo", request.OrderDescription);
-            vnpay.AddRequestData("vnp_OrderType", "other");
+            vnpay.AddRequestData("vnp_OrderInfo", request.OrderDescription.Trim());
+            vnpay.AddRequestData("vnp_OrderType", _settings.OrderType);
             vnpay.AddRequestData("vnp_ReturnUrl", _settings.ReturnUrl);
-            vnpay.AddRequestData("vnp_TxnRef", payment?.OrderCode ?? Guid.NewGuid().ToString());
+            vnpay.AddRequestData("vnp_TxnRef", payment?.OrderCode ?? DateTime.Now.Ticks.ToString());
 
             string paymentUrl = vnpay.CreateRequestUrl(_settings.BaseUrl, _settings.HashSecret);
-
-
 
             return paymentUrl;
         }
@@ -95,27 +109,23 @@ namespace InsuranceService.API.Services.VNPay
 
         public string CreateRequestUrl(string baseUrl, string vnp_HashSecret)
         {
-            var data = new StringBuilder();
-            foreach (var kv in _requestData)
+            var queryBuilder = new StringBuilder();
+
+            foreach (var (key, value) in _requestData.Where(kv => !string.IsNullOrEmpty(kv.Value)))
             {
-                if (!string.IsNullOrEmpty(kv.Value))
-                {
-                    data.Append(WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value) + "&");
-                }
+                queryBuilder.Append($"{WebUtility.UrlEncode(key)}={WebUtility.UrlEncode(value)}&");
             }
 
-            string queryString = data.ToString();
-            baseUrl += "?" + queryString;
-            string signData = queryString;
-            if (signData.Length > 0)
+            if (queryBuilder.Length > 0)
             {
-                signData = signData.Remove(data.Length - 1);
+                queryBuilder.Length--;
             }
 
-            string vnp_SecureHash = HmacSha512(vnp_HashSecret, signData);
-            baseUrl += "vnp_SecureHash=" + vnp_SecureHash;
+            string queryString = queryBuilder.ToString();
 
-            return baseUrl;
+            string secureHash = HmacSha512(vnp_HashSecret,queryString);
+
+            return $"{baseUrl}?{queryString}&vnp_SecureHash={WebUtility.UrlEncode(secureHash)}";
         }
 
         public bool ValidateSignature(string inputHash, string secretKey)
@@ -128,44 +138,41 @@ namespace InsuranceService.API.Services.VNPay
         private string GetResponseData()
         {
             var data = new StringBuilder();
+
             if (_responseData.ContainsKey("vnp_SecureHashType"))
-            {
                 _responseData.Remove("vnp_SecureHashType");
-            }
+
             if (_responseData.ContainsKey("vnp_SecureHash"))
-            {
                 _responseData.Remove("vnp_SecureHash");
-            }
+
             foreach (var kv in _responseData)
             {
                 if (!string.IsNullOrEmpty(kv.Value))
                 {
+                    // QUAN TRỌNG: Dữ liệu trả về (IQueryCollection) đã bị ASP.NET Core decode.
+                    // Để tạo lại mã băm chính xác, bạn phải UrlEncode lại nó.
                     data.Append(WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value) + "&");
                 }
             }
 
-            // Remove last '&'
             if (data.Length > 0)
-            {
                 data.Remove(data.Length - 1, 1);
-            }
+
             return data.ToString();
         }
 
         private string HmacSha512(string key, string inputData)
         {
-            var hash = new StringBuilder();
-            byte[] keyBytes = Encoding.UTF8.GetBytes(key);
-            byte[] inputBytes = Encoding.UTF8.GetBytes(inputData);
-            using (var hmac = new HMACSHA512(keyBytes))
+            if (string.IsNullOrEmpty(inputData))
             {
-                byte[] hashValue = hmac.ComputeHash(inputBytes);
-                foreach (var theByte in hashValue)
-                {
-                    hash.Append(theByte.ToString("x2"));
-                }
+                throw new ArgumentNullException(nameof(inputData));
             }
-            return hash.ToString();
+
+            var keyBytes = Encoding.UTF8.GetBytes(key);
+            var inputBytes = Encoding.UTF8.GetBytes(inputData);
+          
+            using var hmac = new HMACSHA512(keyBytes);
+            return BitConverter.ToString(hmac.ComputeHash(inputBytes)).Replace("-", string.Empty);
         }
     }
 

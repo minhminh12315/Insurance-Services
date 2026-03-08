@@ -1,6 +1,7 @@
 using InsuranceService.API.Data;
 using InsuranceService.API.Models;
 using InsuranceService.API.Services;
+using InsuranceService.API.Services.VNPay;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -22,6 +23,29 @@ builder.Services.AddScoped<IClaimService, ClaimService>();
 builder.Services.AddScoped<IPremiumPaymentService, PremiumPaymentService>();
 builder.Services.AddScoped<IPolicyLoanService, PolicyLoanService>();
 builder.Services.AddScoped<INewsService, NewsService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IFileStorageService, FileStorageService>();
+builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IPolicyRiderService, PolicyRiderService>();
+
+// Medium Priority Features Services
+builder.Services.AddScoped<IPolicyRenewalService, PolicyRenewalService>();
+builder.Services.AddScoped<IBeneficiaryService, BeneficiaryService>();
+builder.Services.AddScoped<IClaimApprovalService, ClaimApprovalService>();
+builder.Services.AddScoped<IPaymentReceiptService, PaymentReceiptService>();
+builder.Services.AddScoped<IPolicySurrenderService, PolicySurrenderService>();
+builder.Services.AddScoped<ILoanRepaymentService, LoanRepaymentService>();
+
+// Configure VNPay Settings
+builder.Services.Configure<VNPaySettings>(builder.Configuration.GetSection("VNPay"));
+builder.Services.AddScoped<IVNPayService, VNPayService>();
+
+// Configure Email Settings
+builder.Services.Configure<InsuranceService.API.DTOs.EmailSettings>(
+    builder.Configuration.GetSection("EmailSettings"));
+
 // Swagger services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

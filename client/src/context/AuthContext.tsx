@@ -1,9 +1,11 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import type { User } from '../types';
+import type { AuthSession } from '../services/authStorage';
+import { clearAuthSession, getStoredUser, setAuthSession } from '../services/authStorage';
 
 interface AuthContextType {
     user: User | null;
-    login: (user: User) => void;
+    login: (session: AuthSession) => void;
     logout: () => void;
     isAuthenticated: boolean;
 }
@@ -14,24 +16,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-        const stored = localStorage.getItem('insurance_user');
-        if (stored) {
-            try {
-                setUser(JSON.parse(stored));
-            } catch {
-                localStorage.removeItem('insurance_user');
-            }
+        const storedUser = getStoredUser();
+        if (storedUser) {
+            setUser(storedUser);
         }
     }, []);
 
-    const login = (userData: User) => {
-        setUser(userData);
-        localStorage.setItem('insurance_user', JSON.stringify(userData));
+    const login = (session: AuthSession) => {
+        setUser(session.user);
+        setAuthSession(session);
     };
 
     const logout = () => {
         setUser(null);
-        localStorage.removeItem('insurance_user');
+        clearAuthSession();
     };
 
     return (

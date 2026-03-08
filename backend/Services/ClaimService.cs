@@ -7,10 +7,17 @@ namespace InsuranceService.API.Services;
 public class ClaimService : IClaimService
 {
     private readonly InsuranceDbContext _context;
+    private readonly INotificationService _notificationService;
+    private readonly IFileStorageService _fileStorageService;
 
-    public ClaimService(InsuranceDbContext context)
+    public ClaimService(
+        InsuranceDbContext context,
+        INotificationService notificationService,
+        IFileStorageService fileStorageService)
     {
         _context = context;
+        _notificationService = notificationService;
+        _fileStorageService = fileStorageService;
     }
 
     public async Task<IEnumerable<ClaimDto>> GetAllClaimsAsync(int? userId = null, string? status = null)
@@ -37,7 +44,11 @@ public class ClaimService : IClaimService
             ClaimAmount = c.ClaimAmount,
             Reason = c.Reason,
             Status = c.Status,
-            AdminComment = c.AdminComment
+            AdminComment = c.AdminComment,
+            DocumentPath = c.DocumentPath,
+            DocumentUrl = !string.IsNullOrEmpty(c.DocumentPath) ? _fileStorageService.GetFileUrl(c.DocumentPath) : null,
+            CreatedAt = c.CreatedAt,
+            UpdatedAt = c.UpdatedAt
         }).ToListAsync();
     }
 
@@ -62,7 +73,11 @@ public class ClaimService : IClaimService
             ClaimAmount = claim.ClaimAmount,
             Reason = claim.Reason,
             Status = claim.Status,
-            AdminComment = claim.AdminComment
+            AdminComment = claim.AdminComment,
+            DocumentPath = claim.DocumentPath,
+            DocumentUrl = !string.IsNullOrEmpty(claim.DocumentPath) ? _fileStorageService.GetFileUrl(claim.DocumentPath) : null,
+            CreatedAt = claim.CreatedAt,
+            UpdatedAt = claim.UpdatedAt
         };
     }
 
@@ -94,7 +109,8 @@ public class ClaimService : IClaimService
             ClaimDate = DateOnly.FromDateTime(DateTime.Today),
             ClaimAmount = dto.ClaimAmount,
             Reason = dto.Reason,
-            Status = "Submitted"
+            Status = "Submitted",
+            CreatedAt = DateTime.UtcNow
         };
 
         _context.Claims.Add(claim);
@@ -113,6 +129,23 @@ public class ClaimService : IClaimService
         if (!validStatuses.Contains(dto.Status))
             throw new InvalidOperationException($"Invalid status. Must be one of: {string.Join(", ", validStatuses)}");
 
+        var oldStatus = claim.Status;
+        claim.Status = dto.Status;
+        claim.AdminComment = dto.AdminComment;
+        claim.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        // Send notification if status changed
+        if (oldStatus != dto.Status)
+        {
+            await _notificationService.CreateClaimStatusNotificationAsync(
+                claim.UserId,
+                claim.ClaimId,
+                dto.Status,
+                dto.AdminComment
+            );
+        }
         claim.Status = dto.Status;
         claim.AdminComment = dto.AdminComment;
 

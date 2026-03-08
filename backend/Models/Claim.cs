@@ -20,6 +20,12 @@ public partial class Claim
     public string? Status { get; set; }
 
     public string? AdminComment { get; set; }
+    
+    public string? DocumentPath { get; set; }
+    
+    public DateTime? CreatedAt { get; set; }
+    
+    public DateTime? UpdatedAt { get; set; }
 
     public virtual Policy Policy { get; set; } = null!;
 

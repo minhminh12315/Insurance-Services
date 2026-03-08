@@ -27,6 +27,7 @@ import NotFound from './pages/NotFound';
 import MyPolicies from './pages/User/MyPolicies';
 import UserPolicyDetail from './pages/User/UserPolicyDetail';
 import UserProfile from './pages/User/Profile';
+import PremiumCalculator from './pages/User/PremiumCalculator';
 
 function App() {
   return (
@@ -85,6 +86,10 @@ function App() {
             <Route path="policies/:id" element={<UserPolicyDetail />} />
             <Route path="profile" element={<UserProfile />} />
           </Route>
+        </Route>
+
+        <Route path="/calculator" element={<ProtectedRoute requiredRole="Customer" />}>
+          <Route index element={<PremiumCalculator />} />
         </Route>
 
         {/* 404 Catch-all */}

@@ -1,34 +1,36 @@
-import axios from 'axios';
+import axios, { type AxiosError } from 'axios';
+import { AUTH_REFRESH_TOKEN_KEY, clearAuthSession, getAccessToken } from './authStorage';
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL?.trim() || 'http://localhost:5000/api';
 
 const api = axios.create({
-    baseURL: 'http://localhost:3000',
+    baseURL: BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
-// Add a request interceptor
-api.interceptors.request.use(
-    (config) => {
-        // You can add auth tokens here if needed in the future
-        // const token = localStorage.getItem('token');
-        // if (token) {
-        //     config.headers.Authorization = `Bearer ${token}`;
-        // }
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
+api.interceptors.request.use((config) => {
+    const token = getAccessToken();
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
     }
-);
+    return config;
+});
 
-// Add a response interceptor
 api.interceptors.response.use(
     (response) => response,
-    (error) => {
-        console.error('API Error:', error.response || error.message);
-        // Here we could dispatch a global error notification
-        return Promise.reject(error);
+    (error: AxiosError<{ message?: string }>) => {
+        if (error.response?.status === 401) {
+            clearAuthSession();
+            localStorage.removeItem(AUTH_REFRESH_TOKEN_KEY);
+        }
+
+        const fallbackMessage = error.message || 'Unexpected API error';
+        const serverMessage = error.response?.data?.message;
+        const errorToThrow = new Error(serverMessage || fallbackMessage);
+
+        return Promise.reject(errorToThrow);
     }
 );
 
