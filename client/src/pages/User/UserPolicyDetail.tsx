@@ -89,10 +89,10 @@ const UserPolicyDetail = () => {
     }
 
     return (
-        <div className="max-w-5xl mx-auto pb-16">
+        <div className="max-w-5xl mx-auto pb-16 px-4 sm:px-0">
             <button
                 onClick={() => navigate('/user/policies')}
-                className="mb-6 flex items-center gap-2 text-slate-500 hover:text-slate-800 font-medium transition-colors"
+                className="mb-6 py-2 flex items-center gap-2 text-slate-500 hover:text-slate-800 font-medium transition-colors"
             >
                 ← Back to Policies
             </button>
@@ -101,8 +101,8 @@ const UserPolicyDetail = () => {
                 <div className="mb-6 p-4 rounded-xl border border-red-100 bg-red-50 text-red-600 text-sm">{errorMessage}</div>
             ) : null}
 
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-6">
-                <div className="flex flex-wrap justify-between gap-6">
+            <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                     <div>
                         <span
                             className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${policy.policyStatus === 'Active'
@@ -112,50 +112,50 @@ const UserPolicyDetail = () => {
                         >
                             {policy.policyStatus || 'Unknown'}
                         </span>
-                        <h1 className="text-2xl font-bold text-slate-900 mt-3">{policy.schemeName}</h1>
+                        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mt-3">{policy.schemeName}</h1>
                         <p className="text-slate-500 font-mono text-sm mt-1">{policy.policyNumber}</p>
                     </div>
-                    <div className="text-right">
-                        <p className="text-sm text-slate-500 mb-1">Sum Assured</p>
-                        <p className="text-3xl font-bold text-[#015fc9]">${policy.sumAssured.toLocaleString('en-US')}</p>
-                        <p className="text-sm text-slate-500 mt-2">Premium: ${policy.premiumAmount.toLocaleString('en-US')} / {policy.paymentFrequency}</p>
+                    <div className="text-left sm:text-right">
+                        <p className="text-xs sm:text-sm text-slate-500 mb-1">Sum Assured</p>
+                        <p className="text-2xl sm:text-3xl font-bold text-[#015fc9]">${policy.sumAssured.toLocaleString('en-US')}</p>
+                        <p className="text-xs sm:text-sm text-slate-500 mt-2">Premium: ${policy.premiumAmount.toLocaleString('en-US')} / {policy.paymentFrequency}</p>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-slate-100">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mt-6 pt-6 border-t border-slate-100">
                     <div>
-                        <p className="text-xs text-slate-400 uppercase tracking-wider">Category</p>
+                        <p className="text-[10px] text-slate-400 uppercase tracking-wider">Category</p>
                         <p className="text-sm font-semibold text-slate-700">{policy.categoryName}</p>
                     </div>
                     <div>
-                        <p className="text-xs text-slate-400 uppercase tracking-wider">Start Date</p>
+                        <p className="text-[10px] text-slate-400 uppercase tracking-wider">Start Date</p>
                         <p className="text-sm font-semibold text-slate-700">{new Date(policy.startDate).toLocaleDateString()}</p>
                     </div>
                     <div>
-                        <p className="text-xs text-slate-400 uppercase tracking-wider">Maturity Date</p>
+                        <p className="text-[10px] text-slate-400 uppercase tracking-wider">Maturity Date</p>
                         <p className="text-sm font-semibold text-slate-700">{new Date(policy.maturityDate).toLocaleDateString()}</p>
                     </div>
                 </div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-6">
-                <h2 className="text-lg font-bold text-slate-800 mb-4">Policy Details</h2>
+            <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 mb-6">
+                <h2 className="text-base sm:text-lg font-bold text-slate-800 mb-4">Policy Details</h2>
                 {policyDetailsEntries.length === 0 ? (
                     <p className="text-sm text-slate-500">No additional detail is attached to this policy.</p>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {policyDetailsEntries.map((item) => (
                             <div key={item.label} className="border border-slate-100 rounded-xl p-3 bg-slate-50">
-                                <p className="text-xs text-slate-400 uppercase tracking-wider">{item.label}</p>
-                                <p className="text-sm font-medium text-slate-700 mt-1">{item.value}</p>
+                                <p className="text-[10px] text-slate-400 uppercase tracking-wider font-bold">{item.label}</p>
+                                <p className="text-sm font-medium text-slate-700 mt-1 break-words">{item.value}</p>
                             </div>
                         ))}
                     </div>
                 )}
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <h2 className="text-lg font-bold text-slate-800 mb-4">Payment History</h2>
+            <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h2 className="text-base sm:text-lg font-bold text-slate-800 mb-4">Payment History</h2>
                 {payments.length === 0 ? (
                     <p className="text-sm text-slate-500">No payment record for this policy yet.</p>
                 ) : (

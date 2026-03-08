@@ -9,41 +9,41 @@ const UserDashboard = () => {
     const myClaims = fakeClaims.filter(c => c.user_id === user?.user_id);
 
     return (
-        <div className="p-8">
-            <div className="mb-8">
-                <h1 className="text-[28px] font-bold text-slate-800 mb-1">
+        <div className="p-0 sm:p-4 lg:p-8">
+            <div className="mb-6 lg:mb-8 px-4 sm:px-0">
+                <h1 className="text-2xl lg:text-[28px] font-bold text-slate-800 mb-1">
                     Welcome back, {user?.full_name}! 👋
                 </h1>
-                <p className="text-slate-500 text-[15px]">
+                <p className="text-slate-500 text-sm lg:text-[15px]">
                     Here's an overview of your insurance portfolio.
                 </p>
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-                <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-7 rounded-2xl shadow-lg shadow-blue-500/20 text-white">
-                    <div className="text-sm opacity-90 mb-2">Active Policies</div>
-                    <div className="text-[32px] font-bold">{myPolicies.length}</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5 mb-8 px-4 sm:px-0">
+                <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-5 lg:p-7 rounded-2xl shadow-lg shadow-blue-500/10 text-white">
+                    <div className="text-xs lg:text-sm opacity-90 mb-1 lg:mb-2">Active Policies</div>
+                    <div className="text-2xl lg:text-[32px] font-bold">{myPolicies.length}</div>
                 </div>
-                <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 p-7 rounded-2xl shadow-lg shadow-emerald-500/20 text-white">
-                    <div className="text-sm opacity-90 mb-2">Total Payments</div>
-                    <div className="text-[32px] font-bold">{myPayments.length}</div>
+                <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 p-5 lg:p-7 rounded-2xl shadow-lg shadow-emerald-500/10 text-white">
+                    <div className="text-xs lg:text-sm opacity-90 mb-1 lg:mb-2">Total Payments</div>
+                    <div className="text-2xl lg:text-[32px] font-bold">{myPayments.length}</div>
                 </div>
-                <div className="bg-gradient-to-br from-amber-500 to-amber-600 p-7 rounded-2xl shadow-lg shadow-amber-500/20 text-white">
-                    <div className="text-sm opacity-90 mb-2">Claims Filed</div>
-                    <div className="text-[32px] font-bold">{myClaims.length}</div>
+                <div className="bg-gradient-to-br from-amber-500 to-amber-600 p-5 lg:p-7 rounded-2xl shadow-lg shadow-amber-500/10 text-white">
+                    <div className="text-xs lg:text-sm opacity-90 mb-1 lg:mb-2">Claims Filed</div>
+                    <div className="text-2xl lg:text-[32px] font-bold">{myClaims.length}</div>
                 </div>
-                <div className="bg-gradient-to-br from-violet-500 to-violet-600 p-7 rounded-2xl shadow-lg shadow-violet-500/20 text-white">
-                    <div className="text-sm opacity-90 mb-2">Total Coverage</div>
-                    <div className="text-[32px] font-bold">
+                <div className="bg-gradient-to-br from-violet-500 to-violet-600 p-5 lg:p-7 rounded-2xl shadow-lg shadow-violet-500/10 text-white">
+                    <div className="text-xs lg:text-sm opacity-90 mb-1 lg:mb-2">Total Coverage</div>
+                    <div className="text-2xl lg:text-[32px] font-bold">
                         ${myPolicies.reduce((sum, p) => sum + p.sum_assured, 0).toLocaleString()}
                     </div>
                 </div>
             </div>
 
             {/* Recent Activity */}
-            <div className="bg-white rounded-2xl p-7 shadow-sm border border-slate-200">
-                <h2 className="text-lg font-semibold text-slate-800 mb-5">
+            <div className="bg-white rounded-2xl p-5 lg:p-7 shadow-sm border border-slate-200 mx-4 sm:mx-0">
+                <h2 className="text-base lg:text-lg font-semibold text-slate-800 mb-5">
                     Recent Policies
                 </h2>
                 {myPolicies.length === 0 ? (

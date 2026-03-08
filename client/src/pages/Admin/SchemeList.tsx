@@ -127,12 +127,12 @@ const SchemeList = () => {
                     </div>
                 )}
             </div>
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                 <div>
-                    <h1 className="text-[28px] font-extrabold text-slate-800 mb-2">Insurance Schemes</h1>
-                    <p className="text-slate-500 text-[15px]">Configure and monitor specific insurance products and their terms</p>
+                    <h1 className="text-[24px] md:text-[28px] font-extrabold text-slate-800 mb-2">Insurance Schemes</h1>
+                    <p className="text-slate-500 text-[14px] md:text-[15px]">Configure and monitor specific insurance products and their terms</p>
                 </div>
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center shadow-sm" onClick={() => { setEditingScheme(null); setShowModal(true); }}>
+                <button className="w-full sm:w-auto px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center shadow-sm" onClick={() => { setEditingScheme(null); setShowModal(true); }}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="mr-2">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     </svg>
@@ -140,23 +140,23 @@ const SchemeList = () => {
                 </button>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5 mb-6">
-                <div className="flex gap-4 flex-wrap">
-                    <div className="flex-1 min-w-[300px] relative">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 md:p-5 mb-6">
+                <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1 relative">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" className="absolute left-3.5 top-1/2 -translate-y-1/2">
                             <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
                         </svg>
                         <input
                             type="text"
-                            placeholder="Search schemes by name or description..."
-                            className="w-full px-4 py-2 pl-11 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm"
+                            placeholder="Search schemes by name..."
+                            className="w-full px-4 py-2 pl-11 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                             value={searchTerm}
                             onChange={handleSearchChange}
                         />
                     </div>
-                    <div className="w-[220px]">
+                    <div className="w-full md:w-[220px]">
                         <select
-                            className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm"
+                            className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                             value={categoryFilter}
                             onChange={handleCategoryFilterChange}
                         >
@@ -232,28 +232,28 @@ const SchemeList = () => {
                 </table>
             </div>
 
-            <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                <div className="text-sm text-slate-500 font-medium">
+            <div className="mt-6 flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <div className="text-sm text-slate-500 font-medium order-2 md:order-1">
                     Showing <span className="font-bold text-slate-700">{totalItems === 0 ? 0 : (page - 1) * pageSize + 1}</span> to{' '}
                     <span className="font-bold text-slate-700">{Math.min(page * pageSize, totalItems)}</span> of{' '}
                     <span className="font-bold text-slate-700">{totalItems}</span> schemes
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex items-center gap-2 order-1 md:order-2 w-full md:w-auto justify-center">
                     <button
                         onClick={() => setPage(p => Math.max(1, p - 1))}
                         disabled={page === 1 || loading}
-                        className="px-4 py-2 border border-slate-200 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
+                        className="px-3 py-2 border border-slate-200 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-40 transition-all shadow-sm"
                     >
-                        Previous
+                        Prev
                     </button>
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1 overflow-x-auto max-w-[150px] sm:max-w-none px-1">
                         {[...Array(totalPages)].map((_, i) => (
                             <button
                                 key={i}
                                 onClick={() => setPage(i + 1)}
-                                className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-bold transition-all ${page === i + 1
-                                    ? 'bg-blue-600 text-white shadow-md shadow-blue-200 border border-blue-600'
+                                className={`w-8 h-8 md:w-9 md:h-9 flex items-center justify-center rounded-lg text-xs md:text-sm font-bold shrink-0 transition-all ${page === i + 1
+                                    ? 'bg-blue-600 text-white shadow-md border border-blue-600'
                                     : 'text-slate-600 hover:bg-slate-50 border border-slate-200'
                                     }`}
                             >
@@ -264,7 +264,7 @@ const SchemeList = () => {
                     <button
                         onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                         disabled={page === totalPages || loading || totalPages === 0}
-                        className="px-4 py-2 border border-slate-200 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
+                        className="px-3 py-2 border border-slate-200 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-40 transition-all shadow-sm"
                     >
                         Next
                     </button>
@@ -272,10 +272,10 @@ const SchemeList = () => {
             </div>
 
             {showModal && (
-                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
-                    <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8" onClick={e => e.stopPropagation()}>
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[1100] flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8" onClick={e => e.stopPropagation()}>
                         <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-[22px] font-extrabold text-slate-800">
+                            <h2 className="text-[20px] md:text-[22px] font-extrabold text-slate-800">
                                 {editingScheme ? 'Edit Insurance Scheme' : 'Launch New Scheme'}
                             </h2>
                             <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors">

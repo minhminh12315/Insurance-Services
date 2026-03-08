@@ -12,8 +12,8 @@ const MyPayments = () => {
     };
 
     return (
-        <div className="max-w-6xl mx-auto">
-            <h1 className="text-2xl font-bold text-slate-900 mb-8 flex items-center gap-2">
+        <div className="max-w-6xl mx-auto px-4 sm:px-0">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-6 sm:mb-8 flex items-center gap-2">
                 💳 My Payments
             </h1>
 
@@ -29,7 +29,7 @@ const MyPayments = () => {
                             <thead>
                                 <tr className="bg-slate-50 border-b-2 border-slate-100">
                                     {['Policy', 'Date', 'Amount', 'Method', 'Reference', 'Status'].map(h => (
-                                        <th key={h} className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                        <th key={h} className="px-4 lg:px-6 py-4 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
                                             {h}
                                         </th>
                                     ))}
@@ -41,13 +41,13 @@ const MyPayments = () => {
                                     const statusClass = statusColors[payment.status] || 'bg-slate-100 text-slate-600';
                                     return (
                                         <tr key={payment.payment_id} className="hover:bg-slate-50 transition-colors">
-                                            <td className="px-6 py-4 font-bold text-slate-900">{policy?.policy_number || 'N/A'}</td>
-                                            <td className="px-6 py-4 text-slate-600">{payment.payment_date}</td>
-                                            <td className="px-6 py-4 font-bold text-slate-900">${payment.amount_paid}</td>
-                                            <td className="px-6 py-4 text-slate-600">{payment.payment_method || 'N/A'}</td>
-                                            <td className="px-6 py-4 text-slate-400 font-mono text-xs">{payment.transaction_reference || '—'}</td>
-                                            <td className="px-6 py-4">
-                                                <span className={`px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide ${statusClass}`}>
+                                            <td className="px-4 lg:px-6 py-4 font-bold text-slate-900 text-sm">{policy?.policy_number || 'N/A'}</td>
+                                            <td className="px-4 lg:px-6 py-4 text-slate-600 text-sm">{payment.payment_date}</td>
+                                            <td className="px-4 lg:px-6 py-4 font-bold text-slate-900 text-sm">${payment.amount_paid}</td>
+                                            <td className="px-4 lg:px-6 py-4 text-slate-600 text-sm">{payment.payment_method || 'N/A'}</td>
+                                            <td className="px-4 lg:px-6 py-4 text-slate-400 font-mono text-[10px] sm:text-xs">{payment.transaction_reference || '—'}</td>
+                                            <td className="px-4 lg:px-6 py-4">
+                                                <span className={`px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-wide ${statusClass}`}>
                                                     {payment.status}
                                                 </span>
                                             </td>

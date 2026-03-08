@@ -92,12 +92,12 @@ const UserList = () => {
                     </div>
                 )}
             </div>
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                 <div>
-                    <h1 className="text-[28px] font-extrabold text-slate-800 mb-2">User Management</h1>
-                    <p className="text-slate-500 text-[15px]">Manage system administrators, staff, and customers</p>
+                    <h1 className="text-[24px] md:text-[28px] font-extrabold text-slate-800 mb-2">User Management</h1>
+                    <p className="text-slate-500 text-[14px] md:text-[15px]">Manage system administrators, staff, and customers</p>
                 </div>
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center shadow-sm" onClick={() => { setEditingUser(null); setShowModal(true); }}>
+                <button className="w-full sm:w-auto px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center shadow-sm" onClick={() => { setEditingUser(null); setShowModal(true); }}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mr-2">
                         <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><line x1="19" y1="8" x2="19" y2="14" /><line x1="22" y1="11" x2="16" y2="11" />
                     </svg>
@@ -105,9 +105,9 @@ const UserList = () => {
                 </button>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5 mb-6">
-                <div className="flex gap-4 flex-wrap">
-                    <div className="flex-1 min-w-[300px] relative">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 md:p-5 mb-6">
+                <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1 relative">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" className="absolute left-3.5 top-1/2 -translate-y-1/2">
                             <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
                         </svg>
@@ -119,7 +119,7 @@ const UserList = () => {
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
-                    <div className="w-[200px]">
+                    <div className="w-full md:w-[200px]">
                         <select
                             className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                             value={roleFilter}
@@ -190,9 +190,9 @@ const UserList = () => {
 
             {/* Modal */}
             {showModal && (
-                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
-                    <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-[600px] p-8" onClick={e => e.stopPropagation()}>
-                        <h2 className="text-[22px] font-extrabold text-slate-800 mb-6">
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[1100] flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
+                    <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8" onClick={e => e.stopPropagation()}>
+                        <h2 className="text-[20px] md:text-[22px] font-extrabold text-slate-800 mb-6">
                             {editingUser ? 'Edit User' : 'Add New User'}
                         </h2>
                         <UserForm

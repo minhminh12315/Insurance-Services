@@ -58,46 +58,46 @@ const Profile = () => {
     return (
         <div className="p-8 max-w-7xl mx-auto">
             {/* Page Header */}
-            <div className="mb-10">
-                <h1 className="text-3xl font-bold text-slate-900 mb-2">My Profile</h1>
-                <p className="text-slate-500 text-base font-medium">
+            <div className="mb-6 md:mb-10">
+                <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">My Profile</h1>
+                <p className="text-slate-500 text-sm md:text-base font-medium">
                     View and manage your account details
                 </p>
             </div>
 
 
             {/* Profile Card */}
-            <div className="bg-gradient-to-br from-[#015fc9] to-[#007bff] rounded-[24px] p-10 flex flex-col md:flex-row items-center gap-8 mb-10 text-white relative overflow-hidden shadow-xl shadow-blue-200">
+            <div className="bg-gradient-to-br from-[#015fc9] to-[#007bff] rounded-2xl md:rounded-[24px] p-6 md:p-10 flex flex-col md:flex-row items-center gap-6 md:gap-8 mb-8 md:mb-10 text-white relative overflow-hidden shadow-xl shadow-blue-200">
                 {/* Decorative circles */}
-                <div className="absolute top-[-30px] right-[-30px] w-48 h-48 rounded-full bg-white/10 blur-xl" />
-                <div className="absolute bottom-[-50px] left-[20%] w-64 h-64 rounded-full bg-white/5 blur-2xl" />
+                <div className="absolute top-[-30px] right-[-30px] w-32 h-32 md:w-48 md:h-48 rounded-full bg-white/10 blur-xl" />
+                <div className="absolute bottom-[-50px] left-[20%] w-48 h-48 md:w-64 md:h-64 rounded-full bg-white/5 blur-2xl" />
 
                 {/* Avatar */}
-                <div className="w-24 h-24 rounded-2xl bg-white/20 flex items-center justify-center text-4xl font-bold shrink-0 border-4 border-white/30 backdrop-blur-sm z-10">
+                <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-white/20 flex items-center justify-center text-3xl md:text-4xl font-bold shrink-0 border-4 border-white/30 backdrop-blur-sm z-10">
                     {initials}
                 </div>
 
                 {/* Info */}
                 <div className="relative z-10 text-center md:text-left">
-                    <h2 className="text-3xl font-bold mb-2">
+                    <h2 className="text-2xl md:text-3xl font-bold mb-1 md:mb-2">
                         {user?.full_name || 'Admin User'}
                     </h2>
-                    <p className="text-white/80 text-lg mb-4">
+                    <p className="text-white/80 text-base md:text-lg mb-3 md:mb-4">
                         {user?.email || ''}
                     </p>
-                    <span className="inline-block px-5 py-1.5 rounded-full bg-white/20 text-sm font-bold backdrop-blur-sm uppercase tracking-wider">
+                    <span className="inline-block px-4 md:px-5 py-1 md:py-1.5 rounded-full bg-white/20 text-xs md:text-sm font-bold backdrop-blur-sm uppercase tracking-wider">
                         {user?.role || 'Admin'}
                     </span>
                 </div>
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-1 mb-8 bg-slate-100 p-1 rounded-xl w-fit">
+            <div className="flex gap-1 mb-6 md:mb-8 bg-slate-100 p-1 rounded-xl w-full sm:w-fit">
                 {(['overview', 'edit'] as const).map(tab => (
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
-                        className={`px-8 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === tab
+                        className={`flex-1 sm:flex-none px-4 md:px-8 py-2 md:py-2.5 rounded-lg text-xs md:text-sm font-bold transition-all ${activeTab === tab
                             ? 'bg-white text-slate-900 shadow-sm'
                             : 'text-slate-500 hover:text-slate-700'
                             }`}
@@ -111,10 +111,10 @@ const Profile = () => {
             {activeTab === 'overview' ? (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 text-left">
                     {/* Personal Information */}
-                    <div className="bg-white rounded-[20px] border border-slate-200 p-8 shadow-sm">
-                        <h3 className="text-xl font-bold text-slate-900 mb-8 flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#015fc9" strokeWidth="2.5">
+                    <div className="bg-white rounded-2xl md:rounded-[20px] border border-slate-200 p-6 md:p-8 shadow-sm">
+                        <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-6 md:mb-8 flex items-center gap-3">
+                            <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#015fc9" strokeWidth="2.5" className="md:w-5 md:h-5">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                                     <circle cx="12" cy="7" r="4" />
                                 </svg>
@@ -138,11 +138,11 @@ const Profile = () => {
                     </div>
 
                     {/* Address & Account Info */}
-                    <div className="flex flex-col gap-8 text-left">
-                        <div className="bg-white rounded-[20px] border border-slate-200 p-8 shadow-sm text-left">
-                            <h3 className="text-xl font-bold text-slate-900 mb-8 flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#015fc9" strokeWidth="2.5">
+                    <div className="flex flex-col gap-6 md:gap-8 text-left">
+                        <div className="bg-white rounded-2xl md:rounded-[20px] border border-slate-200 p-6 md:p-8 shadow-sm text-left">
+                            <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-6 md:mb-8 flex items-center gap-3">
+                                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#015fc9" strokeWidth="2.5" className="md:w-5 md:h-5">
                                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                                         <circle cx="12" cy="10" r="3" />
                                     </svg>
@@ -156,16 +156,16 @@ const Profile = () => {
                                 ].map((item, i) => (
                                     <div key={i} className={`flex justify-between py-4 ${i < 1 ? 'border-b border-slate-50' : ''}`}>
                                         <span className="text-slate-500 text-sm font-medium">{item.label}</span>
-                                        <span className="text-slate-900 text-sm font-bold">{item.value}</span>
+                                        <span className="text-slate-900 text-sm font-bold text-right ml-4">{item.value}</span>
                                     </div>
                                 ))}
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-[20px] border border-slate-200 p-8 shadow-sm">
-                            <h3 className="text-xl font-bold text-slate-900 mb-8 flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#015fc9" strokeWidth="2.5">
+                        <div className="bg-white rounded-2xl md:rounded-[20px] border border-slate-200 p-6 md:p-8 shadow-sm">
+                            <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-6 md:mb-8 flex items-center gap-3">
+                                <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#015fc9" strokeWidth="2.5" className="md:w-5 md:h-5">
                                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                                         <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                                     </svg>
@@ -188,9 +188,9 @@ const Profile = () => {
                 </div>
             ) : (
                 /* Edit Profile Form */
-                <div className="bg-white rounded-[20px] border border-slate-200 p-10 shadow-sm max-w-4xl text-left">
-                    <form onSubmit={handleSave} className="space-y-8">
-                   
+                <div className="bg-white rounded-2xl md:rounded-[20px] border border-slate-200 p-6 md:p-10 shadow-sm max-w-4xl text-left">
+                    <form onSubmit={handleSave} className="space-y-6 md:space-y-8">
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1 text-left">Full Name</label>
@@ -263,7 +263,7 @@ const Profile = () => {
                                 className="w-full px-5 py-3 rounded-xl border border-slate-200 focus:border-[#015fc9] focus:ring-4 focus:ring-blue-50 outline-none transition-all text-slate-700 font-medium"
                             />
                         </div>
-                             {/* Notification Messages inside Form */}
+                        {/* Notification Messages inside Form */}
                         {errorMessage ? (
                             <div className="p-4 rounded-xl border border-red-100 bg-red-50 text-red-600 text-sm font-medium animate-in fade-in zoom-in-95 duration-300">
                                 <div className="flex items-center gap-2 text-left">
@@ -287,24 +287,24 @@ const Profile = () => {
                                 </div>
                             </div>
                         ) : null}
-                        <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-4">
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="flex-1 py-4 bg-gradient-to-r from-[#015fc9] to-[#007bff] text-white rounded-xl font-bold text-base shadow-lg shadow-blue-200 hover:opacity-90 transition-all hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+                                className="w-full sm:flex-1 py-3 md:py-4 bg-gradient-to-r from-[#015fc9] to-[#007bff] text-white rounded-xl font-bold text-sm md:text-base shadow-lg shadow-blue-200 hover:opacity-90 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                             >
-                                {isSubmitting ? 'Saving Changes...' : 'Save Changes'}
+                                {isSubmitting ? 'Saving...' : 'Save Changes'}
                             </button>
                             <button
                                 type="button"
                                 disabled={isSubmitting}
                                 onClick={() => setActiveTab('overview')}
-                                className="flex-1 py-4 bg-slate-50 text-slate-600 rounded-xl font-bold text-base border border-slate-200 hover:bg-slate-100 transition-all disabled:opacity-50"
+                                className="w-full sm:flex-1 py-3 md:py-4 bg-slate-50 text-slate-600 rounded-xl font-bold text-sm md:text-base border border-slate-200 hover:bg-slate-100 transition-all disabled:opacity-50"
                             >
                                 Cancel
                             </button>
                         </div>
-                        
+
                     </form>
                 </div>
             )}

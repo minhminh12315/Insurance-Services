@@ -1,25 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
+import carousel12 from '../assets/carousel-12.jpg';
 
-const PublicHeader = () => {
+const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [isPagesDropdownOpen, setIsPagesDropdownOpen] = useState(false);
     const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-    const dropdownRef = useRef<HTMLDivElement>(null);
     const profileDropdownRef = useRef<HTMLDivElement>(null);
     const location = useLocation();
-
-
 
     // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-                setIsPagesDropdownOpen(false);
-            }
             if (profileDropdownRef.current && !profileDropdownRef.current.contains(e.target as Node)) {
                 setIsProfileDropdownOpen(false);
             }
@@ -30,7 +24,6 @@ const PublicHeader = () => {
 
     // Close dropdowns on route change
     useEffect(() => {
-        setIsPagesDropdownOpen(false);
         setIsProfileDropdownOpen(false);
     }, [location.pathname]);
 
@@ -45,13 +38,7 @@ const PublicHeader = () => {
         { name: 'Home', path: '/home' },
         { name: 'About Us', path: '/about' },
         { name: 'Our Services', path: '/services' },
-    ];
-
-    const pagesDropdown = [
-        { name: 'Features', path: '/features' },
         { name: 'Appointment', path: '/appointment' },
-        { name: 'Team Members', path: '/team' },
-        { name: 'Testimonial', path: '/testimonial' },
     ];
 
     const isActive = (path: string) => location.pathname === path;
@@ -59,28 +46,43 @@ const PublicHeader = () => {
 
     return (
         <header
-            className="sticky top-0 left-0 right-0 z-[1000] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.1)] transition-all duration-300 ease-in-out"
+            className="sticky top-0 left-0 right-0 z-[1000] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.15)] transition-all duration-300 ease-in-out"
         >
             <div className={`${isAdminPage ? 'max-w-[1600px]' : 'max-w-[1200px]'} mx-auto px-5 flex items-center justify-between h-20`}>
+                {/* Sidebar Toggle for Admin pages (Mobile/Tablet) */}
+                {isAdminPage && (
+                    <button
+                        onClick={onToggleSidebar}
+                        className="lg:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors mr-2 order-first"
+                        aria-label="Toggle Sidebar"
+                    >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                )}
+
                 {/* Logo */}
                 <Link
                     to="/home"
-                    className="flex items-center no-underline gap-2.5"
+                    className={`flex items-center no-underline gap-2.5 ${isAdminPage ? 'mr-auto lg:mr-0' : ''}`}
                 >
-                    <div className="w-[45px] h-[45px] bg-gradient-to-br from-[#015fc9] to-[#007bff] rounded-lg flex items-center justify-center">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                    <div className="w-[40px] h-[40px] md:w-[45px] md:h-[45px] bg-gradient-to-br from-[#015fc9] to-[#007bff] rounded-lg flex items-center justify-center">
+                        <svg width="20" height="20" md-width="24" md-height="24" viewBox="0 0 24 24" fill="white">
                             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="white" strokeWidth="2" fill="none" />
                         </svg>
                     </div>
                     <span
-                        className="text-[28px] font-bold text-[#015fc9]"
+                        className="text-[20px] md:text-[28px] font-bold text-[#015fc9] hidden sm:block"
                     >
                         INSLIFE
                     </span>
                 </Link>
 
                 {/* Desktop Navigation */}
-                <nav className="flex items-center gap-9 desktop-nav">
+                <nav className="hidden lg:flex items-center gap-9">
                     {navLinks.map((link) => (
                         <Link
                             key={link.path}
@@ -93,32 +95,6 @@ const PublicHeader = () => {
                             {link.name}
                         </Link>
                     ))}
-
-                    {/* Pages Dropdown */}
-                    <div ref={dropdownRef} className="relative">
-                        <button
-                            onClick={() => setIsPagesDropdownOpen(!isPagesDropdownOpen)}
-                            className="bg-none border-none font-medium text-[15px] cursor-pointer flex items-center gap-1.5 text-[#333333] hover:text-[#015fc9]"
-                        >
-                            Pages
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M7 10l5 5 5-5H7z" />
-                            </svg>
-                        </button>
-                        {isPagesDropdownOpen && (
-                            <div className="absolute top-full left-0 bg-white rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.15)] min-w-[200px] py-2.5 mt-2.5">
-                                {pagesDropdown.map((item) => (
-                                    <Link
-                                        key={item.path}
-                                        to={item.path}
-                                        className="block px-5 py-2.5 text-[#333333] no-underline text-sm transition-colors duration-300 ease hover:bg-[#f5f5f5]"
-                                    >
-                                        {item.name}
-                                    </Link>
-                                ))}
-                            </div>
-                        )}
-                    </div>
 
                     <Link
                         to="/contact"
@@ -281,15 +257,17 @@ const PublicHeader = () => {
                     </Link>
                 )}
 
-                {/* Mobile Menu Button */}
-                <button
-                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    className="hidden mobile-menu-btn bg-none border-none cursor-pointer p-2.5 text-[#333333]"
-                >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
-                    </svg>
-                </button>
+                {/* Mobile Menu Button - Only for Public Pages */}
+                {!isAdminPage && (
+                    <button
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        className="lg:hidden bg-none border-none cursor-pointer p-2.5 text-[#333333]"
+                    >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+                        </svg>
+                    </button>
+                )}
             </div>
 
             {/* Mobile Menu */}
@@ -305,16 +283,7 @@ const PublicHeader = () => {
                             {link.name}
                         </Link>
                     ))}
-                    {pagesDropdown.map((item) => (
-                        <Link
-                            key={item.path}
-                            to={item.path}
-                            className="block py-4 text-[#333333] no-underline font-medium border-b border-gray-100"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                            {item.name}
-                        </Link>
-                    ))}
+
                     <Link
                         to="/contact"
                         className="block py-4 text-[#333333] no-underline font-medium"
@@ -328,4 +297,33 @@ const PublicHeader = () => {
     );
 };
 
-export default PublicHeader;
+export default Header;
+
+// --- Combined PageHeader Component ---
+interface PageHeaderProps {
+    title: string;
+    currentPage: string;
+    parentPage?: string;
+}
+
+export const PageHeader = ({ title, currentPage, parentPage = 'Pages' }: PageHeaderProps) => {
+    return (
+        <section
+            className="bg-cover bg-center py-[100px_0_100px] text-[#0a1628] relative h-[400px] flex flex-col justify-center border-b border-[#eee]"
+            style={{ backgroundImage: `url(${carousel12})` }}
+        >
+            <div className="ml-5 md:ml-[10%] lg:ml-[20%] px-5">
+                <h1 className="text-[48px] font-bold mb-5">{title}</h1>
+                <nav className="flex items-center gap-2.5 text-[15px]">
+                    <Link to="/home" className="text-[#0a1628]/80 no-underline hover:text-[#015fc9]">
+                        Home
+                    </Link>
+                    <span className="text-[#0a1628]/50">/</span>
+                    <span className="text-[#0a1628]/50">{parentPage}</span>
+                    <span className="text-[#0a1628]/50">/</span>
+                    <span className="text-[#015fc9] font-semibold">{currentPage}</span>
+                </nav>
+            </div>
+        </section>
+    );
+};

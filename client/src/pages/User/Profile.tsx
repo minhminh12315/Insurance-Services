@@ -29,47 +29,47 @@ const Profile = () => {
     const labelClasses = "block text-[13px] font-semibold text-slate-600 mb-1.5";
 
     return (
-        <div className="p-8">
+        <div className="p-4 sm:p-6 lg:p-8">
             {/* Page Header */}
-            <div className="mb-8">
-                <h1 className="text-[28px] font-bold text-slate-900">My Profile</h1>
-                <p className="text-slate-500 text-[15px] mt-1">
+            <div className="mb-6 lg:mb-8">
+                <h1 className="text-2xl lg:text-[28px] font-bold text-slate-900">My Profile</h1>
+                <p className="text-slate-500 text-sm lg:text-[15px] mt-1">
                     View and manage your account details
                 </p>
             </div>
 
             {/* Profile Card */}
-            <div className="bg-gradient-to-br from-[#015fc9] to-[#007bff] rounded-[20px] p-10 flex items-center gap-[30px] mb-8 text-white relative overflow-hidden">
+            <div className="bg-gradient-to-br from-[#015fc9] to-[#007bff] rounded-2xl sm:rounded-[20px] p-6 sm:p-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-[30px] mb-8 text-white relative overflow-hidden text-center sm:text-left">
                 {/* Decorative circles */}
                 <div className="absolute -top-[30px] -right-[30px] w-[150px] h-[150px] rounded-full bg-white/10" />
                 <div className="absolute -bottom-[50px] right-[80px] w-[200px] h-[200px] rounded-full bg-white/5" />
 
                 {/* Avatar */}
-                <div className="w-[90px] h-[90px] rounded-[20px] bg-white/20 flex items-center justify-center text-[32px] font-bold shrink-0 border-[3px] border-white/30">
+                <div className="w-20 h-20 sm:w-[90px] sm:h-[90px] rounded-[20px] bg-white/20 flex items-center justify-center text-2xl sm:text-[32px] font-bold shrink-0 border-[3px] border-white/30">
                     {initials}
                 </div>
 
                 {/* Info */}
                 <div className="relative z-[1]">
-                    <h2 className="text-[26px] font-bold mb-1">
+                    <h2 className="text-xl sm:text-[26px] font-bold mb-1">
                         {user?.full_name || 'Admin User'}
                     </h2>
-                    <p className="opacity-85 text-[15px] mb-2">
+                    <p className="opacity-85 text-sm sm:text-[15px] mb-3 sm:mb-2">
                         {user?.email || ''}
                     </p>
-                    <span className="inline-block px-[14px] py-1 rounded-full bg-white/20 text-[13px] font-medium">
+                    <span className="inline-block px-3.5 py-1 rounded-full bg-white/20 text-xs sm:text-[13px] font-medium">
                         {user?.role || 'Admin'}
                     </span>
                 </div>
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-1 mb-6 bg-slate-100 p-1 rounded-xl w-fit">
+            <div className="flex gap-1 mb-8 sm:mb-6 bg-slate-100 p-1 rounded-xl w-full sm:w-fit overflow-x-auto overflow-hidden">
                 {(['overview', 'edit'] as const).map(tab => (
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
-                        className={`px-6 py-2.5 rounded-lg font-semibold text-sm cursor-pointer transition-all capitalize ${activeTab === tab
+                        className={`flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg font-semibold text-xs sm:text-sm cursor-pointer transition-all capitalize whitespace-nowrap ${activeTab === tab
                             ? 'bg-white text-slate-900 shadow-sm'
                             : 'bg-transparent text-slate-500 hover:text-slate-700'
                             }`}
@@ -147,10 +147,9 @@ const Profile = () => {
                     </div>
                 </div>
             ) : (
-                /* Edit Profile Form */
-                <div className="bg-white rounded-2xl border border-slate-200 p-8 max-w-[800px]">
+                <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-8 max-w-[800px]">
                     <form onSubmit={handleSave}>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-6">
                             <div>
                                 <label className={labelClasses}>Full Name</label>
                                 <input name="full_name" value={formData.full_name} onChange={handleChange} className={inputClasses} />
@@ -185,17 +184,17 @@ const Profile = () => {
                             <label className={labelClasses}>Address</label>
                             <input name="address" value={formData.address} onChange={handleChange} className={inputClasses} />
                         </div>
-                        <div className="flex gap-3">
+                        <div className="flex flex-col sm:flex-row gap-3">
                             <button
                                 type="submit"
-                                className="px-8 py-3 bg-gradient-to-br from-[#015fc9] to-[#007bff] text-white border-none rounded-xl font-semibold text-sm cursor-pointer transition-all shadow-lg shadow-blue-600/30 hover:-translate-y-0.5"
+                                className="w-full sm:w-auto px-8 py-3 bg-gradient-to-br from-[#015fc9] to-[#007bff] text-white border-none rounded-xl font-semibold text-sm cursor-pointer transition-all shadow-lg shadow-blue-600/30 hover:-translate-y-0.5"
                             >
                                 Save Changes
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setActiveTab('overview')}
-                                className="px-8 py-3 bg-transparent text-slate-500 border border-slate-200 rounded-xl font-semibold text-sm cursor-pointer transition-all hover:bg-slate-50"
+                                className="w-full sm:w-auto px-8 py-3 bg-transparent text-slate-500 border border-slate-200 rounded-xl font-semibold text-sm cursor-pointer transition-all hover:bg-slate-50"
                             >
                                 Cancel
                             </button>

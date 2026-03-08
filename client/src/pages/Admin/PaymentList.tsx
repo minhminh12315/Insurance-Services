@@ -78,14 +78,14 @@ const PaymentList = () => {
                     </div>
                 )}
             </div>
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                 <div>
-                    <h1 className="text-[28px] font-extrabold text-slate-800 mb-2">Premium Payments</h1>
-                    <p className="text-slate-500 text-[15px]">Track and manage all customer premium transactions</p>
+                    <h1 className="text-[24px] md:text-[28px] font-extrabold text-slate-800 mb-2">Premium Payments</h1>
+                    <p className="text-slate-500 text-[14px] md:text-[15px]">Track and manage all customer premium transactions</p>
                 </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5 mb-6">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 md:p-5 mb-6">
                 <input
                     type="text"
                     placeholder="Search by Transaction Ref or Policy ID..."

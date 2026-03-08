@@ -82,15 +82,15 @@ const ClaimList = () => {
                     </div>
                 )}
             </div>
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                 <div>
-                    <h1 className="text-[28px] font-extrabold text-slate-800 mb-2">Claims Management</h1>
-                    <p className="text-slate-500 text-[15px]">Process and review insurance claims submitted by customers</p>
+                    <h1 className="text-[24px] md:text-[28px] font-extrabold text-slate-800 mb-2">Claims Management</h1>
+                    <p className="text-slate-500 text-[14px] md:text-[15px]">Process and review insurance claims submitted by customers</p>
                 </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5 mb-6">
-                <select className="w-[200px] px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 md:p-5 mb-6">
+                <select className="w-full sm:w-[200px] px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
                     <option value="">All Statuses</option>
                     <option value="Submitted">Submitted</option>
                     <option value="Under Review">Under Review</option>
