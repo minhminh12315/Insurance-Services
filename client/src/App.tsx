@@ -20,7 +20,6 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
 import Contact from './pages/Contact';
-import Appointment from './pages/Appointment';
 import NotFound from './pages/NotFound';
 import MyPolicies from './pages/User/MyPolicies';
 import UserPolicyDetail from './pages/User/UserPolicyDetail';
@@ -52,9 +51,6 @@ function App() {
         </Route>
         <Route path="/contact" element={<PublicLayout />}>
           <Route index element={<Contact />} />
-        </Route>
-        <Route path="/appointment" element={<PublicLayout />}>
-          <Route index element={<Appointment />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

@@ -390,3 +390,19 @@ export const userApi = {
         return mapBackendUser(data.data);
     },
 };
+
+// Interaction API
+export interface ContactPayload {
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+}
+
+export const interactionApi = {
+    async submitContact(payload: ContactPayload): Promise<ApiResponse<any>> {
+        const { data } = await api.post<ApiResponse<any>>('/publicinteraction/contact', payload);
+        return data;
+    },
+};
+

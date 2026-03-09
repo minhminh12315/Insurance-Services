@@ -84,8 +84,8 @@ const PublicFooter = () => {
                                 </div>
                                 <div>
                                     <p className="text-white/70 text-sm leading-[1.6]">
-                                        123 Street, District 1<br />
-                                        Ho Chi Minh City, Vietnam
+                                        285 Doi Can Street, Ba Dinh District<br />
+                                        Hanoi, Vietnam
                                     </p>
                                 </div>
                             </div>
@@ -170,7 +170,7 @@ const PublicFooter = () => {
                             Get the latest updates and offers directly in your inbox
                         </p>
                     </div>
-                
+
                 </div>
 
                 {/* Copyright */}

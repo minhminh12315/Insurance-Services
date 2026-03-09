@@ -1,6 +1,52 @@
+import { useState } from 'react';
 import { PageHeader } from '../components/Header';
+import { interactionApi } from '../services/insuranceApi';
+import Swal from 'sweetalert2';
 
 const Contact = () => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        subject: '',
+        message: '',
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+
+        try {
+            const response = await interactionApi.submitContact(formData);
+            if (response.success) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: response.message || 'Your message has been sent successfully!',
+                    icon: 'success',
+                });
+                setFormData({ name: '', email: '', subject: '', message: '' });
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: response.message || 'Failed to send message.',
+                    icon: 'error',
+                });
+            }
+        } catch (error: any) {
+            Swal.fire({
+                title: 'Error!',
+                text: error?.response?.data?.message || 'Something went wrong. Please try again later.',
+                icon: 'error',
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <div>
             {/* Page Header */}
@@ -18,34 +64,51 @@ const Contact = () => {
                             We're here to help! Fill out the form below and our team will get back to you as soon as possible.
                         </p>
 
-                        <form className="flex flex-col gap-4 sm:gap-5">
+                        <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-5">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                                 <input
+                                    name="name"
                                     type="text"
                                     placeholder="Your Name"
+                                    value={formData.name}
+                                    onChange={handleChange}
                                     className="p-4 sm:p-[18px_20px] rounded-[10px] border border-[#e0e0e0] text-[15px] outline-none transition-colors duration-300 bg-[#f8f9fa] focus:border-[#015fc9]"
+                                    required
                                 />
                                 <input
+                                    name="email"
                                     type="email"
                                     placeholder="Your Email"
+                                    value={formData.email}
+                                    onChange={handleChange}
                                     className="p-4 sm:p-[18px_20px] rounded-[10px] border border-[#e0e0e0] text-[15px] outline-none transition-colors duration-300 bg-[#f8f9fa] focus:border-[#015fc9]"
+                                    required
                                 />
                             </div>
                             <input
+                                name="subject"
                                 type="text"
                                 placeholder="Subject"
+                                value={formData.subject}
+                                onChange={handleChange}
                                 className="p-4 sm:p-[18px_20px] rounded-[10px] border border-[#e0e0e0] text-[15px] outline-none transition-colors duration-300 bg-[#f8f9fa] focus:border-[#015fc9]"
+                                required
                             />
                             <textarea
+                                name="message"
                                 placeholder="Message"
+                                value={formData.message}
+                                onChange={handleChange}
                                 rows={6}
                                 className="p-4 sm:p-[18px_20px] rounded-[10px] border border-[#e0e0e0] text-[15px] outline-none transition-colors duration-300 bg-[#f8f9fa] resize-y focus:border-[#015fc9]"
+                                required
                             />
                             <button
                                 type="submit"
-                                className="bg-[linear-gradient(135deg,#015fc9_0%,#007bff_100%)] text-white px-8 sm:px-10 py-4 sm:py-[18px] rounded-[50px] border-none font-semibold text-base cursor-pointer transition-all duration-300 self-start shadow-[0_4px_15px_rgba(1,95,201,0.3)] hover:shadow-[0_8px_25px_rgba(1,95,201,0.4)] hover:md:-translate-y-[3px]"
+                                disabled={isLoading}
+                                className="bg-[linear-gradient(135deg,#015fc9_0%,#007bff_100%)] text-white px-8 sm:px-10 py-4 sm:py-[18px] rounded-[50px] border-none font-semibold text-base cursor-pointer transition-all duration-300 self-start shadow-[0_4px_15px_rgba(1,95,201,0.3)] hover:shadow-[0_8px_25px_rgba(1,95,201,0.4)] hover:md:-translate-y-[3px] disabled:opacity-70 disabled:cursor-not-allowed"
                             >
-                                Send Message
+                                {isLoading ? 'Sending...' : 'Send Message'}
                             </button>
                         </form>
                     </div>

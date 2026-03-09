@@ -38,7 +38,6 @@ const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) => {
         { name: 'Home', path: '/home' },
         { name: 'About Us', path: '/about' },
         { name: 'Our Services', path: '/services' },
-        { name: 'Appointment', path: '/appointment' },
     ];
 
     const isActive = (path: string) => location.pathname === path;
@@ -308,7 +307,7 @@ interface PageHeaderProps {
     parentPage?: string;
 }
 
-export const PageHeader = ({ title, currentPage, parentPage = 'Pages' }: PageHeaderProps) => {
+export const PageHeader = ({ title, currentPage }: PageHeaderProps) => {
     return (
         <section
             className="bg-cover bg-center py-[100px_0_100px] text-[#0a1628] relative h-[400px] flex flex-col justify-center border-b border-[#eee]"
@@ -320,8 +319,6 @@ export const PageHeader = ({ title, currentPage, parentPage = 'Pages' }: PageHea
                     <Link to="/home" className="text-[#0a1628]/80 no-underline hover:text-[#015fc9]">
                         Home
                     </Link>
-                    <span className="text-[#0a1628]/50">/</span>
-                    <span className="text-[#0a1628]/50">{parentPage}</span>
                     <span className="text-[#0a1628]/50">/</span>
                     <span className="text-[#015fc9] font-semibold">{currentPage}</span>
                 </nav>
