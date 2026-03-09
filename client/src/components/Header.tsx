@@ -66,7 +66,7 @@ const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) => {
 
                 {/* Logo */}
                 <Link
-                    to="/home"
+                    to={isAdminPage ? '/admin' : '/home'}
                     className={`flex items-center no-underline gap-2.5 ${isAdminPage ? 'mr-auto lg:mr-0' : ''}`}
                 >
                     <div className="w-[40px] h-[40px] md:w-[45px] md:h-[45px] bg-gradient-to-br from-[#015fc9] to-[#007bff] rounded-lg flex items-center justify-center">
@@ -82,27 +82,29 @@ const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) => {
                 </Link>
 
                 {/* Desktop Navigation */}
-                <nav className="hidden lg:flex items-center gap-9">
-                    {navLinks.map((link) => (
-                        <Link
-                            key={link.path}
-                            to={link.path}
-                            className={`no-underline font-medium text-[15px] transition-colors duration-300 ease relative ${isActive(link.path)
-                                ? 'text-[#015fc9]'
-                                : 'text-[#333333] hover:text-[#015fc9]'
-                                }`}
-                        >
-                            {link.name}
-                        </Link>
-                    ))}
+                {!isAdminPage && (
+                    <nav className="hidden lg:flex items-center gap-9">
+                        {navLinks.map((link) => (
+                            <Link
+                                key={link.path}
+                                to={link.path}
+                                className={`no-underline font-medium text-[15px] transition-colors duration-300 ease relative ${isActive(link.path)
+                                    ? 'text-[#015fc9]'
+                                    : 'text-[#333333] hover:text-[#015fc9]'
+                                    }`}
+                            >
+                                {link.name}
+                            </Link>
+                        ))}
 
-                    <Link
-                        to="/contact"
-                        className="no-underline font-medium text-[15px] text-[#333333] hover:text-[#015fc9]"
-                    >
-                        Contact Us
-                    </Link>
-                </nav>
+                        <Link
+                            to="/contact"
+                            className="no-underline font-medium text-[15px] text-[#333333] hover:text-[#015fc9]"
+                        >
+                            Contact Us
+                        </Link>
+                    </nav>
+                )}
 
                 {/* Profile / Login */}
                 {user ? (
