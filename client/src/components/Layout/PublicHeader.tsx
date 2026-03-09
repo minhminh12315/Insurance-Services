@@ -5,7 +5,6 @@ import { useAuth } from '../../context/AuthContext';
 const PublicHeader = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
-    const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isPagesDropdownOpen, setIsPagesDropdownOpen] = useState(false);
     const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
@@ -13,13 +12,7 @@ const PublicHeader = () => {
     const profileDropdownRef = useRef<HTMLDivElement>(null);
     const location = useLocation();
 
-    useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -62,15 +55,13 @@ const PublicHeader = () => {
     ];
 
     const isActive = (path: string) => location.pathname === path;
-    const isHomePage = location.pathname === '/home' || location.pathname === '/';
-    const useSolidHeader = isScrolled || !isHomePage;
+    const isAdminPage = location.pathname.startsWith('/admin');
 
     return (
         <header
-            className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-300 ease-in-out ${useSolidHeader ? 'bg-white shadow-[0_2px_10px_rgba(0,0,0,0.1)]' : 'bg-transparent shadow-none'
-                }`}
+            className="sticky top-0 left-0 right-0 z-[1000] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.1)] transition-all duration-300 ease-in-out"
         >
-            <div className="max-w-[1200px] mx-auto px-5 flex items-center justify-between h-20">
+            <div className={`${isAdminPage ? 'max-w-[1600px]' : 'max-w-[1200px]'} mx-auto px-5 flex items-center justify-between h-20`}>
                 {/* Logo */}
                 <Link
                     to="/home"
@@ -82,8 +73,7 @@ const PublicHeader = () => {
                         </svg>
                     </div>
                     <span
-                        className={`text-[28px] font-bold ${useSolidHeader ? 'text-[#015fc9]' : 'text-white'
-                            }`}
+                        className="text-[28px] font-bold text-[#015fc9]"
                     >
                         INSLIFE
                     </span>
@@ -97,9 +87,7 @@ const PublicHeader = () => {
                             to={link.path}
                             className={`no-underline font-medium text-[15px] transition-colors duration-300 ease relative ${isActive(link.path)
                                 ? 'text-[#015fc9]'
-                                : useSolidHeader
-                                    ? 'text-[#333333] hover:text-[#015fc9]'
-                                    : 'text-white hover:text-[#e0e0e0]'
+                                : 'text-[#333333] hover:text-[#015fc9]'
                                 }`}
                         >
                             {link.name}
@@ -110,8 +98,7 @@ const PublicHeader = () => {
                     <div ref={dropdownRef} className="relative">
                         <button
                             onClick={() => setIsPagesDropdownOpen(!isPagesDropdownOpen)}
-                            className={`bg-none border-none font-medium text-[15px] cursor-pointer flex items-center gap-1.5 ${useSolidHeader ? 'text-[#333333] hover:text-[#015fc9]' : 'text-white hover:text-[#e0e0e0]'
-                                }`}
+                            className="bg-none border-none font-medium text-[15px] cursor-pointer flex items-center gap-1.5 text-[#333333] hover:text-[#015fc9]"
                         >
                             Pages
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
@@ -135,8 +122,7 @@ const PublicHeader = () => {
 
                     <Link
                         to="/contact"
-                        className={`no-underline font-medium text-[15px] ${useSolidHeader ? 'text-[#333333] hover:text-[#015fc9]' : 'text-white hover:text-[#e0e0e0]'
-                            }`}
+                        className="no-underline font-medium text-[15px] text-[#333333] hover:text-[#015fc9]"
                     >
                         Contact Us
                     </Link>
@@ -147,15 +133,28 @@ const PublicHeader = () => {
                     <div ref={profileDropdownRef} className="relative">
                         <div
                             onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                            className={`w-[42px] h-[42px] rounded-full bg-gradient-to-br from-[#015fc9] to-[#007bff] flex items-center justify-center text-white font-semibold text-sm cursor-pointer transition-all duration-300 ease ${isProfileDropdownOpen ? 'shadow-[0_0_0_3px_rgba(1,95,201,0.3)]' : 'shadow-none'
+                            className={`flex items-center gap-2 px-2 py-1.5 rounded-full hover:bg-slate-100 transition-all duration-300 ease cursor-pointer ${isProfileDropdownOpen ? 'bg-slate-100' : 'bg-transparent'
                                 }`}
                         >
-                            {initials || (
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                    <circle cx="12" cy="7" r="4" />
-                                </svg>
-                            )}
+                            <div className="w-[38px] h-[38px] rounded-full bg-gradient-to-br from-[#015fc9] to-[#007bff] flex items-center justify-center text-white font-semibold text-xs shadow-sm">
+                                {initials || (
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                        <circle cx="12" cy="7" r="4" />
+                                    </svg>
+                                )}
+                            </div>
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.5"
+                                className={`transition-transform duration-300 text-slate-600 ${isProfileDropdownOpen ? 'rotate-180' : ''}`}
+                            >
+                                <path d="M6 9l6 6 6-6" />
+                            </svg>
                         </div>
                         {isProfileDropdownOpen && (
                             <div className="absolute top-[calc(100%+12px)] right-0 bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.15)] min-w-[240px] p-1.5 z-[200]">
@@ -178,7 +177,20 @@ const PublicHeader = () => {
                                             onClick: () => navigate('/admin/profile'),
                                         },
                                         {
-                                            label: 'Dashboard',
+                                            label: 'My Policies',
+                                            icon: (
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                                    <polyline points="14 2 14 8 20 8" />
+                                                    <line x1="16" y1="13" x2="8" y2="13" />
+                                                    <line x1="16" y1="17" x2="8" y2="17" />
+                                                    <polyline points="10 9 9 9 8 9" />
+                                                </svg>
+                                            ),
+                                            onClick: () => navigate('/user/policies'),
+                                        },
+                                        {
+                                            label: 'Admin Dashboard',
                                             icon: (
                                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                                     <rect x="3" y="3" width="7" height="7" />
@@ -272,8 +284,7 @@ const PublicHeader = () => {
                 {/* Mobile Menu Button */}
                 <button
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    className={`hidden mobile-menu-btn bg-none border-none cursor-pointer p-2.5 ${useSolidHeader ? 'text-[#333333]' : 'text-white'
-                        }`}
+                    className="hidden mobile-menu-btn bg-none border-none cursor-pointer p-2.5 text-[#333333]"
                 >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />

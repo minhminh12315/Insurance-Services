@@ -16,9 +16,9 @@ namespace InsuranceService.API.Controllers
     [ApiController]
     public class InsuranceCategoriesController : ControllerBase
     {
-        private readonly InsuranceCategoryService _service;
+    private readonly IInsuranceCategoryService _service;
 
-        public InsuranceCategoriesController(InsuranceCategoryService service)
+        public InsuranceCategoriesController(IInsuranceCategoryService service)
         {
             _service = service;
         }

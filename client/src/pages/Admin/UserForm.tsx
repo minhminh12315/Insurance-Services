@@ -43,11 +43,11 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
         <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-5 mb-8">
                 <div className="col-span-2">
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Full Name *</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Full Name *</label>
                     <input
                         type="text"
                         name="full_name"
-                        className="input"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                         value={formData.full_name}
                         onChange={handleChange}
                         required
@@ -55,11 +55,11 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
                     />
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Email Address *</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Email Address *</label>
                     <input
                         type="email"
                         name="email"
-                        className="input"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                         value={formData.email}
                         onChange={handleChange}
                         required
@@ -67,21 +67,21 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
                     />
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Phone Number</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Phone Number</label>
                     <input
                         type="text"
                         name="phone_number"
-                        className="input"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                         value={formData.phone_number || ''}
                         onChange={handleChange}
                         placeholder="0901234567"
                     />
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Role</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Role</label>
                     <select
                         name="role"
-                        className="select"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                         value={formData.role}
                         onChange={handleChange}
                     >
@@ -91,10 +91,10 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
                     </select>
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Gender</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Gender</label>
                     <select
                         name="gender"
-                        className="select"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                         value={formData.gender || ''}
                         onChange={handleChange}
                     >
@@ -104,31 +104,31 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
                     </select>
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Date of Birth</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Date of Birth</label>
                     <input
                         type="date"
                         name="date_of_birth"
-                        className="input"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                         value={formData.date_of_birth}
                         onChange={handleChange}
                     />
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">City</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">City</label>
                     <input
                         type="text"
                         name="city"
-                        className="input"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                         value={formData.city || ''}
                         onChange={handleChange}
                         placeholder="e.g. Ho Chi Minh"
                     />
                 </div>
                 <div className="col-span-2">
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Address</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Address</label>
                     <textarea
                         name="address"
-                        className="input h-20 resize-none"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white h-20 resize-none px-4 py-2 border border-slate-200 rounded-lg"
                         value={formData.address || ''}
                         onChange={handleChange}
                         placeholder="Street address, apartment, etc."
@@ -136,8 +136,8 @@ const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel }) => {
                 </div>
             </div>
             <div className="flex gap-3 justify-end">
-                <button type="button" className="btn btn-secondary" onClick={onCancel}>Cancel</button>
-                <button type="submit" className="btn btn-primary">
+                <button type="button" className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors font-medium shadow-sm" onClick={onCancel}>Cancel</button>
+                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm">
                     {user ? 'Update User' : 'Create User'}
                 </button>
             </div>

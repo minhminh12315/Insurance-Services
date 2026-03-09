@@ -2,12 +2,16 @@ import { useState } from 'react';
 import { fakeLoans, fakePolicies, fakeUsers } from '../../data/fakeData';
 // import api from '../../services/api';
 import type { PolicyLoan, LoanStatus, Policy, User } from '../../types';
+import DeleteConfirm from '../../components/DeleteConfirm';
 
 const LoanList = () => {
     const [loans, setLoans] = useState<PolicyLoan[]>(fakeLoans);
     const [policies] = useState<Policy[]>(fakePolicies);
     const [users] = useState<User[]>(fakeUsers);
     const [loading] = useState(false);
+
+    // Feedback states
+    const [successMessage, setSuccessMessage] = useState<string>('');
 
     // useEffect(() => {
     //     const fetchData = async () => {
@@ -29,25 +33,27 @@ const LoanList = () => {
     //     fetchData();
     // }, []);
 
-    const handleDelete = (id: number) => {
-        if (window.confirm('Cancel this loan request?')) {
-            setLoans(loans.filter(l => l.loan_id !== id));
-        }
+
+    const confirmDelete = (id: number) => {
+        setLoans(loans.filter(l => l.loan_id !== id));
+        setSuccessMessage('Loan request cleared successfully');
+        setTimeout(() => setSuccessMessage(''), 3000);
     };
 
-    const handleUpdateStatus = (id: number, newStatus: LoanStatus) => {
-        if (window.confirm(`Mark this loan as ${newStatus}?`)) {
-            setLoans(loans.map(l => l.loan_id === id ? { ...l, loan_status: newStatus } : l));
-        }
+    const confirmStatus = (id: number, status: LoanStatus) => {
+        setLoans(loans.map(l => l.loan_id === id ? { ...l, loan_status: status } : l));
+        setSuccessMessage(`Loan marked as ${status}`);
+        setTimeout(() => setSuccessMessage(''), 3000);
     };
 
     const getStatusBadge = (status: LoanStatus) => {
+        const baseClass = "px-2.5 py-0.5 rounded-full text-xs font-semibold text-center";
         switch (status) {
-            case 'Approved': return <span className="badge badge-success">Approved</span>;
-            case 'Requested': return <span className="badge badge-warning">Requested</span>;
-            case 'Rejected': return <span className="badge badge-danger">Rejected</span>;
-            case 'Repaid': return <span className="badge badge-primary">Repaid</span>;
-            default: return <span className="badge">{status}</span>;
+            case 'Approved': return <span className={`${baseClass} bg-emerald-100 text-emerald-600 font-semibold text-center`}>Approved</span>;
+            case 'Requested': return <span className={`${baseClass} bg-amber-100 text-amber-600 font-semibold text-center`}>Requested</span>;
+            case 'Rejected': return <span className={`${baseClass} bg-red-100 text-red-600 font-semibold text-center`}>Rejected</span>;
+            case 'Repaid': return <span className={`${baseClass} bg-blue-100 text-blue-600 font-semibold text-center`}>Repaid</span>;
+            default: return <span className={`${baseClass} bg-slate-100 text-slate-600 font-semibold text-center`}>{status}</span>;
         }
     };
 
@@ -59,7 +65,20 @@ const LoanList = () => {
     }
 
     return (
-        <div>
+        <div className="relative">
+            {/* Global Notification Banner */}
+            <div className="fixed top-24 right-6 z-[110] flex flex-col gap-3 min-w-[320px] max-w-md pointer-events-none">
+                {successMessage && (
+                    <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 shadow-xl shadow-emerald-500/10 flex items-center gap-3 text-emerald-600 animate-in slide-in-from-right duration-500 pointer-events-auto">
+                        <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                        </div>
+                        <p className="text-sm font-bold">{successMessage}</p>
+                    </div>
+                )}
+            </div>
             <div className="flex justify-between items-center mb-8">
                 <div>
                     <h1 className="text-[28px] font-extrabold text-slate-800 mb-2">Policy Loans</h1>
@@ -67,44 +86,52 @@ const LoanList = () => {
                 </div>
             </div>
 
-            <div className="glass-card table-container bg-white border border-slate-200">
-                <table className="table">
+            <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm bg-white">
+                <table className="w-full text-left border-collapse text-[14px]">
                     <thead>
                         <tr>
-                            <th className="bg-slate-50">Loan ID</th>
-                            <th className="bg-slate-50">Policy</th>
-                            <th className="bg-slate-50">Customer</th>
-                            <th className="bg-slate-50">Loan Amount</th>
-                            <th className="bg-slate-50">Interest</th>
-                            <th className="bg-slate-50">Applied</th>
-                            <th className="bg-slate-50">Status</th>
-                            <th className="text-right bg-slate-50">Actions</th>
+                            <th className="bg-slate-50 p-4 font-semibold text-slate-700 border-b border-slate-100">Loan ID</th>
+                            <th className="bg-slate-50 p-4 font-semibold text-slate-700 border-b border-slate-100">Policy</th>
+                            <th className="bg-slate-50 p-4 font-semibold text-slate-700 border-b border-slate-100">Customer</th>
+                            <th className="bg-slate-50 p-4 font-semibold text-slate-700 border-b border-slate-100">Loan Amount</th>
+                            <th className="bg-slate-50 p-4 font-semibold text-slate-700 border-b border-slate-100">Interest</th>
+                            <th className="bg-slate-50 p-4 font-semibold text-slate-700 border-b border-slate-100">Applied</th>
+                            <th className="bg-slate-50 p-4 font-semibold text-slate-700 border-b border-slate-100">Status</th>
+                            <th className="text-right bg-slate-50 p-4 font-semibold text-slate-700 border-b border-slate-100">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {loans.map((l) => (
                             <tr key={l.loan_id}>
-                                <td><span className="font-semibold text-slate-600">#LN-{l.loan_id.toString().padStart(4, '0')}</span></td>
-                                <td><span className="font-bold text-blue-600">{getPolicyNum(l.policy_id)}</span></td>
-                                <td>{getUserName(l.user_id)}</td>
-                                <td className="font-bold text-slate-800">${l.loan_amount.toLocaleString()}</td>
-                                <td>{l.interest_rate}%</td>
-                                <td>{new Date(l.application_date).toLocaleDateString()}</td>
-                                <td>{getStatusBadge(l.loan_status)}</td>
-                                <td>
+                                <td className="p-4 border-b border-slate-50"><span className="font-semibold text-slate-600">#LN-{l.loan_id.toString().padStart(4, '0')}</span></td>
+                                <td className="p-4 border-b border-slate-50"><span className="font-bold text-blue-600">{getPolicyNum(l.policy_id)}</span></td>
+                                <td className="p-4 border-b border-slate-50">{getUserName(l.user_id)}</td>
+                                <td className="p-4 border-b border-slate-50 font-bold text-slate-800">${l.loan_amount.toLocaleString()}</td>
+                                <td className="p-4 border-b border-slate-50">{l.interest_rate}%</td>
+                                <td className="p-4 border-b border-slate-50">{new Date(l.application_date).toLocaleDateString()}</td>
+                                <td className="p-4 border-b border-slate-50">{getStatusBadge(l.loan_status)}</td>
+                                <td className="p-4 border-b border-slate-50">
                                     <div className="flex justify-end gap-2">
                                         {l.loan_status === 'Requested' && (
                                             <>
-                                                <button className="btn btn-success btn-sm" onClick={() => handleUpdateStatus(l.loan_id, 'Approved')}>Approve</button>
-                                                <button className="btn btn-danger btn-sm" onClick={() => handleUpdateStatus(l.loan_id, 'Rejected')}>Reject</button>
+                                                <DeleteConfirm onConfirm={() => confirmStatus(l.loan_id, 'Approved')} title="Approve Loan?" message="Are you sure you want to approve this loan request?" confirmLabel="Approve">
+                                                    <button className="px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg hover:bg-emerald-200 transition-colors text-sm font-medium">Approve</button>
+                                                </DeleteConfirm>
+                                                <DeleteConfirm onConfirm={() => confirmStatus(l.loan_id, 'Rejected')} title="Reject Loan?" message="Are you sure you want to reject this loan request?" confirmLabel="Reject">
+                                                    <button className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium">Reject</button>
+                                                </DeleteConfirm>
                                             </>
                                         )}
                                         {l.loan_status === 'Approved' && (
-                                            <button className="btn btn-primary btn-sm" onClick={() => handleUpdateStatus(l.loan_id, 'Repaid')}>Mark Repaid</button>
+                                            <DeleteConfirm onConfirm={() => confirmStatus(l.loan_id, 'Repaid')} title="Mark Repaid?" message="Are you sure you want to mark this loan as repaid?" confirmLabel="Repaid">
+                                                <button className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium">Mark Repaid</button>
+                                            </DeleteConfirm>
                                         )}
-                                        <button className="btn btn-danger btn-sm p-1.5" onClick={() => handleDelete(l.loan_id)}>
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
-                                        </button>
+                                        <DeleteConfirm onConfirm={() => confirmDelete(l.loan_id)} title="Clear Loan?" message="Are you sure you want to clear this loan request from the system?" confirmLabel="Clear">
+                                            <button className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
+                                            </button>
+                                        </DeleteConfirm>
                                     </div>
                                 </td>
                             </tr>

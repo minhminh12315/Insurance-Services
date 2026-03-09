@@ -1,33 +1,30 @@
 import React, { useState, useEffect } from 'react';
-// import { insuranceCategories } from '../../data/fakeData';
-import type { InsuranceScheme, InsuranceCategory } from '../../types';
+import { type InsuranceSchemeModel, type InsuranceCategoryModel } from '../../services/insuranceApi';
 
 interface SchemeFormProps {
-    scheme: InsuranceScheme | null;
-    categories: InsuranceCategory[];
-    onSubmit: (schemeData: Partial<InsuranceScheme>) => void;
+    scheme: InsuranceSchemeModel | null;
+    categories: InsuranceCategoryModel[];
+    onSubmit: (schemeData: Partial<InsuranceSchemeModel>) => void;
     onCancel: () => void;
 }
 
 const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, onCancel }) => {
-    const [formData, setFormData] = useState<Partial<InsuranceScheme>>({
-        scheme_name: '',
-        category_id: categories[0]?.category_id || 0,
+    const [formData, setFormData] = useState<Partial<InsuranceSchemeModel>>({
+        schemeName: '',
+        categoryId: categories[0]?.categoryId || 0,
         description: '',
-        min_term: 1,
-        max_term: 20,
-        min_investment_amount: 1000,
-        max_investment_amount: 100000,
-        profit_ratio: 5,
-        new_launch_date: new Date().toISOString().split('T')[0],
-        is_active: true,
+        minTerm: 1,
+        maxTerm: 20,
+        minInvestmentAmount: 1000,
+        maxInvestmentAmount: 100000,
+        profitRatio: 5,
+        isActive: true,
     });
 
     useEffect(() => {
         if (scheme) {
             setFormData({
                 ...scheme,
-                new_launch_date: scheme.new_launch_date ? new Date(scheme.new_launch_date).toISOString().split('T')[0] : '',
             });
         }
     }, [scheme]);
@@ -37,8 +34,8 @@ const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, o
 
         let finalValue: any = value;
         if (type === 'number') finalValue = value === '' ? 0 : parseFloat(value);
-        if (name === 'category_id') finalValue = value === '' ? 0 : parseInt(value);
-        if (name === 'is_active') finalValue = value === 'true';
+        if (name === 'categoryId') finalValue = value === '' ? 0 : parseInt(value);
+        if (name === 'isActive') finalValue = value === 'true';
 
         setFormData(prev => ({ ...prev, [name]: finalValue }));
     };
@@ -52,38 +49,38 @@ const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, o
         <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-5 mb-8">
                 <div className="col-span-2">
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Scheme Name *</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Scheme Name *</label>
                     <input
                         type="text"
-                        name="scheme_name"
-                        className="input"
-                        value={formData.scheme_name || ''}
+                        name="schemeName"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                        value={formData.schemeName || ''}
                         onChange={handleChange}
                         required
                         placeholder="e.g. Premium Health Shield"
                     />
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Category *</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Category *</label>
                     <select
-                        name="category_id"
-                        className="select"
-                        value={formData.category_id || ''}
+                        name="categoryId"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                        value={formData.categoryId || ''}
                         onChange={handleChange}
                         required
                     >
                         <option value="">Select Category</option>
                         {categories.map(cat => (
-                            <option key={cat.category_id} value={cat.category_id}>{cat.category_name}</option>
+                            <option key={cat.categoryId} value={cat.categoryId}>{cat.categoryName}</option>
                         ))}
                     </select>
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Status</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Status</label>
                     <select
-                        name="is_active"
-                        className="select"
-                        value={formData.is_active ? 'true' : 'false'}
+                        name="isActive"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                        value={formData.isActive ? 'true' : 'false'}
                         onChange={handleChange}
                     >
                         <option value="true">Active</option>
@@ -91,71 +88,61 @@ const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, o
                     </select>
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Min Term (Years)</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Min Term (Years)</label>
                     <input
                         type="number"
-                        name="min_term"
-                        className="input"
-                        value={formData.min_term ?? ''}
+                        name="minTerm"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                        value={formData.minTerm ?? ''}
                         onChange={handleChange}
                     />
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Max Term (Years)</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Max Term (Years)</label>
                     <input
                         type="number"
-                        name="max_term"
-                        className="input"
-                        value={formData.max_term ?? ''}
+                        name="maxTerm"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                        value={formData.maxTerm ?? ''}
                         onChange={handleChange}
                     />
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Min Investment ($)</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Min Investment ($)</label>
                     <input
                         type="number"
-                        name="min_investment_amount"
-                        className="input"
-                        value={formData.min_investment_amount ?? ''}
+                        name="minInvestmentAmount"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                        value={formData.minInvestmentAmount ?? ''}
                         onChange={handleChange}
                     />
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Max Investment ($)</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Max Investment ($)</label>
                     <input
                         type="number"
-                        name="max_investment_amount"
-                        className="input"
-                        value={formData.max_investment_amount ?? ''}
+                        name="maxInvestmentAmount"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                        value={formData.maxInvestmentAmount ?? ''}
                         onChange={handleChange}
                     />
                 </div>
                 <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Profit Ratio (%)</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Profit Ratio (%)</label>
                     <input
                         type="number"
                         step="0.1"
-                        name="profit_ratio"
-                        className="input"
-                        value={formData.profit_ratio ?? ''}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div>
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Launch Date</label>
-                    <input
-                        type="date"
-                        name="new_launch_date"
-                        className="input"
-                        value={formData.new_launch_date || ''}
+                        name="profitRatio"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                        value={formData.profitRatio ?? ''}
                         onChange={handleChange}
                     />
                 </div>
                 <div className="col-span-2">
-                    <label className="block mb-2 text-[13px] font-semibold text-slate-500">Description</label>
+                    <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Description</label>
                     <textarea
                         name="description"
-                        className="input h-20 resize-none"
+                        className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white h-20 resize-none"
                         value={formData.description || ''}
                         onChange={handleChange}
                         placeholder="Detail the scheme benefits..."
@@ -163,8 +150,8 @@ const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, o
                 </div>
             </div>
             <div className="flex gap-3 justify-end">
-                <button type="button" className="btn btn-secondary" onClick={onCancel}>Cancel</button>
-                <button type="submit" className="btn btn-primary">
+                <button type="button" className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors font-medium shadow-sm" onClick={onCancel}>Cancel</button>
+                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm">
                     {scheme ? 'Update Scheme' : 'Create Scheme'}
                 </button>
             </div>

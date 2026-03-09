@@ -44,6 +44,53 @@ public class InsuranceSchemeService : IInsuranceSchemeService
         }).ToListAsync();
     }
 
+    public async Task<PagedResult<InsuranceSchemeDto>> GetAdminSchemesAsync(int pageNumber, int pageSize, string searchTerm, int? categoryId = null)
+    {
+        var query = _context.InsuranceSchemes
+            .Include(s => s.Category)
+            .Include(s => s.Policies)
+            .AsQueryable();
+
+        if (categoryId.HasValue)
+            query = query.Where(s => s.CategoryId == categoryId.Value);
+
+        if (!string.IsNullOrEmpty(searchTerm))
+        {
+            query = query.Where(s => s.SchemeName.Contains(searchTerm) || (s.Description != null && s.Description.Contains(searchTerm)));
+        }
+
+        var totalCount = await query.CountAsync();
+
+        var schemes = await query
+            .OrderByDescending(s => s.SchemeId) // Newest first
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .Select(s => new InsuranceSchemeDto
+            {
+                SchemeId = s.SchemeId,
+                CategoryId = s.CategoryId,
+                CategoryName = s.Category != null ? s.Category.CategoryName : null,
+                SchemeName = s.SchemeName,
+                Description = s.Description,
+                MinTerm = s.MinTerm,
+                MaxTerm = s.MaxTerm,
+                MinInvestmentAmount = s.MinInvestmentAmount,
+                MaxInvestmentAmount = s.MaxInvestmentAmount,
+                ProfitRatio = s.ProfitRatio,
+                NewLaunchDate = s.NewLaunchDate,
+                IsActive = s.IsActive,
+                PolicyCount = s.Policies.Count
+            }).ToListAsync();
+
+        return new PagedResult<InsuranceSchemeDto>
+        {
+            Items = schemes,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+    }
+
     public async Task<InsuranceSchemeDto?> GetSchemeByIdAsync(int schemeId)
     {
         var scheme = await _context.InsuranceSchemes

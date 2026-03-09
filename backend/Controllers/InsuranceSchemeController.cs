@@ -17,13 +17,23 @@ public class InsuranceSchemeController : ControllerBase
     }
 
     /// <summary>
-    /// Get all insurance schemes with optional filters
+    /// Get all insurance schemes with optional filters (Supports pagination/search)
     /// </summary>
     [HttpGet]
-    public async Task<ActionResult> GetAllSchemes([FromQuery] int? categoryId, [FromQuery] bool? isActive)
+    public async Task<ActionResult> GetAllSchemes(
+        [FromQuery] int? categoryId, 
+        [FromQuery] bool? isActive,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string search = "")
     {
-        var schemes = await _schemeService.GetAllSchemesAsync(categoryId, isActive);
-        return Ok(new { success = true, data = schemes });
+        // If it's a simple call (no pagination requested explicitly or old style), 
+        // we could keep it backward compatible, but for admin we need the paged result.
+        // Actually, let's just make it paged if search or page/pageSize are provided, 
+        // or just always return paged for this endpoint if that's the new standard.
+        
+        var result = await _schemeService.GetAdminSchemesAsync(page, pageSize, search, categoryId);
+        return Ok(new { success = true, data = result });
     }
 
     /// <summary>

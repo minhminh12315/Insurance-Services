@@ -7,12 +7,93 @@ using System;
 
 namespace InsuranceService.API.Services
 {
-    public class InsuranceCategoryService
+    public class InsuranceCategoryService : IInsuranceCategoryService
     {
         public readonly InsuranceDbContext _context;
         public InsuranceCategoryService(InsuranceDbContext context)
         {
             _context = context;
+        }
+
+        // Implementation of IInsuranceCategoryService (adapter methods)
+        public async Task<IEnumerable<InsuranceCategoryDto>> GetAllCategoriesAsync()
+        {
+            var items = await _context.InsuranceCategories
+                .Select(c => new InsuranceCategoryDto
+                {
+                    CategoryId = c.CategoryId,
+                    CategoryName = c.CategoryName,
+                    Description = c.Description,
+                    SchemeCount = _context.InsuranceSchemes.Count(s => s.CategoryId == c.CategoryId)
+                })
+                .ToListAsync();
+
+            return items;
+        }
+
+        public async Task<InsuranceCategoryDto?> GetCategoryByIdAsync(int categoryId)
+        {
+            var category = await _context.InsuranceCategories.FindAsync(categoryId);
+            if (category == null) return null;
+
+            var schemeCount = await _context.InsuranceSchemes.CountAsync(s => s.CategoryId == categoryId);
+
+            return new InsuranceCategoryDto
+            {
+                CategoryId = category.CategoryId,
+                CategoryName = category.CategoryName,
+                Description = category.Description,
+                SchemeCount = schemeCount
+            };
+        }
+
+        public async Task<InsuranceCategoryDto> CreateCategoryAsync(CreateCategoryDto dto)
+        {
+            var category = new InsuranceCategory
+            {
+                CategoryName = dto.CategoryName,
+                Description = dto.Description,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            _context.InsuranceCategories.Add(category);
+            await _context.SaveChangesAsync();
+
+            return new InsuranceCategoryDto
+            {
+                CategoryId = category.CategoryId,
+                CategoryName = category.CategoryName,
+                Description = category.Description,
+                SchemeCount = 0
+            };
+        }
+
+        public async Task<InsuranceCategoryDto?> UpdateCategoryAsync(int categoryId, UpdateCategoryDto dto)
+        {
+            var category = await _context.InsuranceCategories.FindAsync(categoryId);
+            if (category == null) return null;
+
+            category.CategoryName = dto.CategoryName;
+            category.Description = dto.Description;
+            category.UpdatedAt = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+
+            var schemeCount = await _context.InsuranceSchemes.CountAsync(s => s.CategoryId == categoryId);
+
+            return new InsuranceCategoryDto
+            {
+                CategoryId = category.CategoryId,
+                CategoryName = category.CategoryName,
+                Description = category.Description,
+                SchemeCount = schemeCount
+            };
+        }
+
+        public async Task<bool> DeleteCategoryAsync(int categoryId)
+        {
+            return await DeleteAsync(categoryId);
         }
 
 
