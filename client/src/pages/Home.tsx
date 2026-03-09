@@ -170,7 +170,7 @@ const Home = () => {
                         }}
                     >
                         <div className="max-w-[1200px] mx-auto px-5 text-white py-12 md:py-0">
-                            <h1 className="text-[32px] sm:text-[40px] md:text-[50px] lg:text-[64px] font-bold mb-4 sm:mb-5 leading-[1.2] max-w-[700px]">
+                            <h1 className="text-[32px] sm:text-[40px] md:text-[50px] lg:text-[64px] font-bold mb-4 sm:mb-5 leading-[1.2] max-w-[700px] text-white">
                                 {slide.title}
                             </h1>
                             <p className="text-base sm:text-lg mb-8 sm:mb-10 opacity-90 max-w-[600px] leading-[1.8]">

@@ -400,9 +400,8 @@ export interface ContactPayload {
 }
 
 export const interactionApi = {
-    async submitContact(payload: ContactPayload): Promise<ApiResponse<any>> {
-        const { data } = await api.post<ApiResponse<any>>('/publicinteraction/contact', payload);
+    async submitContact(payload: ContactPayload): Promise<{ success: boolean; message: string }> {
+        const { data } = await api.post('/publicinteraction/contact', payload);
         return data;
     },
 };
-

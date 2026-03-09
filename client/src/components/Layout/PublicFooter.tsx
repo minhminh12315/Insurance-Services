@@ -70,7 +70,7 @@ const PublicFooter = () => {
 
                     {/* Address */}
                     <div>
-                        <h4 className="text-xl font-semibold mb-[25px] relative pb-[15px]">
+                        <h4 className="text-xl font-semibold mb-[25px] relative pb-[15px] text-white">
                             Address
                             <span className="absolute bottom-0 left-0 w-[50px] h-[3px] bg-[#015fc9] rounded-[2px]" />
                         </h4>
@@ -84,8 +84,8 @@ const PublicFooter = () => {
                                 </div>
                                 <div>
                                     <p className="text-white/70 text-sm leading-[1.6]">
-                                        285 Doi Can Street, Ba Dinh District<br />
-                                        Hanoi, Vietnam
+                                        123 Street, District 1<br />
+                                        Ho Chi Minh City, Vietnam
                                     </p>
                                 </div>
                             </div>
@@ -115,7 +115,7 @@ const PublicFooter = () => {
 
                     {/* Quick Links */}
                     <div>
-                        <h4 className="text-xl font-semibold mb-[25px] relative pb-[15px]">
+                        <h4 className="text-xl font-semibold mb-[25px] relative pb-[15px] text-white">
                             Quick Links
                             <span className="absolute bottom-0 left-0 w-[50px] h-[3px] bg-[#015fc9] rounded-[2px]" />
                         </h4>
@@ -138,7 +138,7 @@ const PublicFooter = () => {
 
                     {/* Services */}
                     <div>
-                        <h4 className="text-xl font-semibold mb-[25px] relative pb-[15px]">
+                        <h4 className="text-xl font-semibold mb-[25px] relative pb-[15px] text-white">
                             Our Services
                             <span className="absolute bottom-0 left-0 w-[50px] h-[3px] bg-[#015fc9] rounded-[2px]" />
                         </h4>
@@ -163,7 +163,7 @@ const PublicFooter = () => {
                 {/* Newsletter */}
                 <div className="border-t border-b border-white/10 py-10 flex flex-wrap justify-between items-center gap-5">
                     <div>
-                        <h4 className="text-xl font-semibold mb-2">
+                        <h4 className="text-xl font-semibold mb-2 text-white">
                             Subscribe to Our Newsletter
                         </h4>
                         <p className="text-white/70 text-sm">
