@@ -90,9 +90,28 @@ export interface CreatePolicyPayload {
     termYears: number;
     paymentFrequency: PremiumFrequency;
     sumAssured: number;
-    lifeDetails: {
+    lifeDetails?: {
         nomineeName: string;
         nomineeRelation: string;
+    };
+    medicalDetails?: {
+        preExistingDiseases?: string;
+        hospitalNetworkTier?: string;
+        isFamilyFloater?: boolean;
+    };
+    motorDetails?: {
+        vehicleRegNumber: string;
+        vehicleModel: string;
+        vehicleType?: string;
+        engineNumber?: string;
+        chassisNumber?: string;
+        manufacturingYear?: number;
+    };
+    homeDetails?: {
+        propertyAddress: string;
+        propertyValue?: number;
+        structureType?: string;
+        builtYear?: number;
     };
 }
 

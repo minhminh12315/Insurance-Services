@@ -212,7 +212,7 @@ public class NotificationService : INotificationService
             NotificationType = "ClaimUpdate",
             RelatedEntityId = claimId,
             RelatedEntityType = "Claim",
-            SendEmail = true
+            SendEmail = false
         };
 
         await CreateNotificationAsync(dto);

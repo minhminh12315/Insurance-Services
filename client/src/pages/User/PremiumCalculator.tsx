@@ -100,6 +100,30 @@ const parseCurrencyInput = (raw: string): number => {
 const getErrorMessage = (error: unknown): string =>
     error instanceof Error ? error.message : 'Something went wrong. Please try again.';
 
+const isLifeCategory = (categoryName?: string | null): boolean => {
+    if (!categoryName) return false;
+    const normalized = categoryName.toLowerCase();
+    return normalized.includes('life') || normalized.includes('nhân thọ') || normalized.includes('nhan tho');
+};
+
+const isMedicalCategory = (categoryName?: string | null): boolean => {
+    if (!categoryName) return false;
+    const normalized = categoryName.toLowerCase();
+    return normalized.includes('medical') || normalized.includes('y tế') || normalized.includes('y te');
+};
+
+const isMotorCategory = (categoryName?: string | null): boolean => {
+    if (!categoryName) return false;
+    const normalized = categoryName.toLowerCase();
+    return normalized.includes('motor') || normalized.includes('xe');
+};
+
+const isHomeCategory = (categoryName?: string | null): boolean => {
+    if (!categoryName) return false;
+    const normalized = categoryName.toLowerCase();
+    return normalized.includes('home') || normalized.includes('nhà') || normalized.includes('nha');
+};
+
 const buildTermOptions = (scheme: InsuranceSchemeModel | undefined, selectedTerm: number): number[] => {
     const minTerm = Math.max(1, readAmount(scheme?.minTerm, FALLBACK_MIN_TERM));
     const maxTerm = Math.max(minTerm, readAmount(scheme?.maxTerm, FALLBACK_MAX_TERM));
@@ -252,16 +276,50 @@ const PremiumCalculator = () => {
         setConfirmationMessage('');
 
         try {
-            const policy = await policyApi.createPolicy({
+            const categoryName = selectedScheme.categoryName ?? '';
+            const policyPayload = {
                 schemeId: selectedScheme.schemeId,
                 termYears,
                 paymentFrequency,
                 sumAssured,
-                lifeDetails: {
-                    nomineeName: user.full_name,
-                    nomineeRelation: 'Self',
-                },
-            });
+                ...(isLifeCategory(categoryName)
+                    ? {
+                        lifeDetails: {
+                            nomineeName: user.full_name,
+                            nomineeRelation: 'Self',
+                        },
+                    }
+                    : {}),
+                ...(isMedicalCategory(categoryName)
+                    ? {
+                        medicalDetails: {
+                            preExistingDiseases: '',
+                            hospitalNetworkTier: 'Standard',
+                            isFamilyFloater: false,
+                        },
+                    }
+                    : {}),
+                ...(isMotorCategory(categoryName)
+                    ? {
+                        motorDetails: {
+                            vehicleRegNumber: `TEMP-${Date.now().toString().slice(-6)}`,
+                            vehicleModel: 'Customer Vehicle',
+                            vehicleType: 'Private',
+                        },
+                    }
+                    : {}),
+                ...(isHomeCategory(categoryName)
+                    ? {
+                        homeDetails: {
+                            propertyAddress: user.address || user.city || 'Customer address',
+                            propertyValue: sumAssured,
+                            structureType: 'Residential',
+                        },
+                    }
+                    : {}),
+            };
+
+            const policy = await policyApi.createPolicy(policyPayload);
 
             const payment = await paymentApi.createPayment({
                 policyId: policy.policyId,
