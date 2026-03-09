@@ -13,8 +13,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
+        navigate('/home', { replace: true });
         logout();
-        navigate('/login');
         if (window.innerWidth < 1024) onClose();
     };
 
