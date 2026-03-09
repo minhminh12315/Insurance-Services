@@ -67,12 +67,12 @@ const Login = () => {
     const validate = () => {
         const errors: Partial<Record<keyof LoginForm, string>> = {};
         if (!formData.email) {
-            errors.email = 'Vui lòng điền email.';
+            errors.email = 'Please enter your email.';
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            errors.email = 'Email không hợp lệ.';
+            errors.email = 'Invalid email address.';
         }
         if (!formData.password) {
-            errors.password = 'Vui lòng điền mật khẩu.';
+            errors.password = 'Please enter your password.';
         }
         setInputErrors(errors);
         return Object.keys(errors).length === 0;

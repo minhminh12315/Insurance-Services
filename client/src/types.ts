@@ -90,14 +90,14 @@ export interface LifePolicyDetails {
 
 // 2. Health Insurance Details (Usage Tracker)
 export interface HealthPolicyDetails {
-    // Main Benefit: Inpatient (Nội trú)
+    // Main Benefit: Inpatient
     main_benefit: {
         total_limit_per_year: number;
         room_board_limit: number; // per day
         surgery_limit: number; // per case
         used_amount: number;
     };
-    // Supplementary Benefits (Ngoại trú, Nha khoa, Thai sản)
+    // Supplementary Benefits (Outpatient, Dental, Maternity)
     supplementary_benefits: {
         name: string; // e.g., "Outpatient", "Dental Care"
         type: 'Outpatient' | 'Dental' | 'Maternity' | 'Other';
@@ -112,18 +112,18 @@ export interface HealthPolicyDetails {
 
 // 3. Motor Insurance Details
 export interface MotorPolicyDetails {
-    // 1. Compulsory Civil Liability (TNDS)
+    // 1. Compulsory Civil Liability (Compulsory)
     tnds_compulsory: {
         is_active: boolean;
         limit_per_person: number; // e.g. 150,000,000
         limit_property: number; // e.g. 100,000,000
         qr_code_url: string; // "E-Certificate"
     };
-    // 2. Voluntary Material / Physical Damage (Vật chất xe)
+    // 2. Voluntary Material / Physical Damage (Material)
     voluntary_coverage?: {
         is_active: boolean;
         vehicle_value: number; // Sum assured for the car
-        deductible_amount: number; // Miễn thường e.g. 500k
+        deductible_amount: number; // Deductible e.g. 500k
         riders: ('Hydrostatic' | 'PartsTheft' | 'GenuineGarage' | 'PassengerAccident' | 'NewReplacement')[];
     };
     // 3. Vehicle Info
