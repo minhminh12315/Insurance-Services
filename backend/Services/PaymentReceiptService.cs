@@ -78,7 +78,7 @@ public class PaymentReceiptService : IPaymentReceiptService
         {
             try
             {
-                await _emailService.SendEmailAsync(new EmailMessage
+                var emailSent = await _emailService.SendEmailAsync(new EmailMessage
                 {
                     To = payment.User.Email,
                     ToName = payment.User.FullName,
@@ -87,9 +87,12 @@ public class PaymentReceiptService : IPaymentReceiptService
                     IsHtml = true
                 });
 
-                receipt.EmailSent = true;
-                receipt.EmailSentAt = DateTime.UtcNow;
-                await _context.SaveChangesAsync();
+                if (emailSent)
+                {
+                    receipt.EmailSent = true;
+                    receipt.EmailSentAt = DateTime.UtcNow;
+                    await _context.SaveChangesAsync();
+                }
             }
             catch (Exception ex)
             {
@@ -270,7 +273,7 @@ public class PaymentReceiptService : IPaymentReceiptService
 
         try
         {
-            await _emailService.SendEmailAsync(new EmailMessage
+            var emailSent = await _emailService.SendEmailAsync(new EmailMessage
             {
                 To = receipt.Payment.User.Email,
                 ToName = receipt.Payment.User.FullName,
@@ -278,6 +281,9 @@ public class PaymentReceiptService : IPaymentReceiptService
                 Body = receipt.ReceiptHtml ?? "Receipt content not available",
                 IsHtml = true
             });
+
+             if (!emailSent)
+                return false;
 
             receipt.EmailSent = true;
             receipt.EmailSentAt = DateTime.UtcNow;
