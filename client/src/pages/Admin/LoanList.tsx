@@ -79,10 +79,10 @@ const LoanList = () => {
                     </div>
                 )}
             </div>
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                 <div>
-                    <h1 className="text-[28px] font-extrabold text-slate-800 mb-2">Policy Loans</h1>
-                    <p className="text-slate-500 text-[15px]">Manage loan requests and repayments secured by active policies</p>
+                    <h1 className="text-[24px] md:text-[28px] font-extrabold text-slate-800 mb-2">Policy Loans</h1>
+                    <p className="text-slate-500 text-[14px] md:text-[15px]">Manage loan requests and repayments secured by policies</p>
                 </div>
             </div>
 

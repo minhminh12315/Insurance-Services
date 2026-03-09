@@ -170,18 +170,7 @@ const PublicFooter = () => {
                             Get the latest updates and offers directly in your inbox
                         </p>
                     </div>
-                    <div className="flex gap-2.5">
-                        <input
-                            type="email"
-                            placeholder="Your email address"
-                            className="py-[15px] px-5 rounded-[50px] border-none bg-white/10 text-white text-sm min-w-[280px] outline-none placeholder:text-white/50"
-                        />
-                        <button
-                            className="bg-gradient-to-br from-[#015fc9] to-[#007bff] text-white py-[15px] px-[30px] rounded-[50px] border-none font-semibold text-sm cursor-pointer transition-all duration-300 ease hover:-translate-y-[2px] hover:shadow-[0_6px_20px_rgba(1,95,201,0.5)]"
-                        >
-                            Subscribe
-                        </button>
-                    </div>
+                
                 </div>
 
                 {/* Copyright */}

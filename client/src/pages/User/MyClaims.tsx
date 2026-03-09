@@ -13,8 +13,8 @@ const MyClaims = () => {
     };
 
     return (
-        <div className="max-w-5xl mx-auto">
-            <h1 className="text-2xl font-bold text-slate-900 mb-8 flex items-center gap-2">
+        <div className="max-w-5xl mx-auto px-4 sm:px-0">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-6 sm:mb-8 flex items-center gap-2">
                 📝 My Claims
             </h1>
 
@@ -29,30 +29,30 @@ const MyClaims = () => {
                         const policy = fakePolicies.find(p => p.policy_id === claim.policy_id);
                         const statusClass = statusColors[claim.status] || 'bg-slate-100 text-slate-600';
                         return (
-                            <div key={claim.claim_id} className="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                                <div className="flex justify-between items-start flex-wrap gap-4 mb-8">
+                            <div key={claim.claim_id} className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                                <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6 sm:mb-8">
                                     <div>
-                                        <h3 className="text-lg font-bold text-slate-900 mb-1">
+                                        <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-1">
                                             Claim #{claim.claim_id}
                                         </h3>
-                                        <p className="text-slate-500 text-sm font-medium">Policy: <span className="text-slate-700 font-mono">{policy?.policy_number || 'N/A'}</span></p>
+                                        <p className="text-slate-500 text-xs sm:text-sm font-medium">Policy: <span className="text-slate-700 font-mono">{policy?.policy_number || 'N/A'}</span></p>
                                     </div>
-                                    <span className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide ${statusClass}`}>
+                                    <span className={`px-4 py-1.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wide ${statusClass}`}>
                                         {claim.status}
                                     </span>
                                 </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-slate-100">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6 pt-6 border-t border-slate-100">
                                     <div>
-                                        <div className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-1">Claim Date</div>
-                                        <div className="font-bold text-slate-900">{claim.claim_date}</div>
+                                        <div className="text-[10px] sm:text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-0.5 sm:mb-1">Claim Date</div>
+                                        <div className="text-sm sm:text-base font-bold text-slate-900">{claim.claim_date}</div>
                                     </div>
                                     <div>
-                                        <div className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-1">Amount</div>
-                                        <div className="font-bold text-slate-900 text-lg">${claim.claim_amount.toLocaleString()}</div>
+                                        <div className="text-[10px] sm:text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-0.5 sm:mb-1">Amount</div>
+                                        <div className="text-base sm:text-lg font-bold text-slate-900">${claim.claim_amount.toLocaleString()}</div>
                                     </div>
                                     <div>
-                                        <div className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-1">Reason</div>
-                                        <div className="font-bold text-slate-900">{claim.reason}</div>
+                                        <div className="text-[10px] sm:text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-0.5 sm:mb-1">Reason</div>
+                                        <div className="text-sm sm:text-base font-bold text-slate-900">{claim.reason}</div>
                                     </div>
                                 </div>
                             </div>

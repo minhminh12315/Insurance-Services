@@ -53,9 +53,9 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ category, onSubmit, onCance
                     placeholder="Briefly describe what this category covers..."
                 />
             </div>
-            <div className="flex gap-3 justify-end">
-                <button type="button" className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors font-medium shadow-sm" onClick={onCancel}>Cancel</button>
-                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm">
+            <div className="flex flex-col sm:flex-row gap-3 justify-end pt-4">
+                <button type="button" className="w-full sm:w-auto px-4 py-2.5 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors font-medium shadow-sm order-2 sm:order-1" onClick={onCancel}>Cancel</button>
+                <button type="submit" className="w-full sm:w-auto px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm order-1 sm:order-2">
                     {category ? 'Update Category' : 'Create Category'}
                 </button>
             </div>

@@ -1,12 +1,12 @@
 import { Outlet } from 'react-router-dom';
-import PublicHeader from './PublicHeader';
+import Header from '../Header';
 
 const UserLayout = () => {
     return (
-        <div className="min-h-screen flex flex-col bg-slate-50 pt-20">
-            <PublicHeader />
+        <div className="min-h-screen flex flex-col bg-slate-50">
+            <Header />
 
-            <main className="flex-1 p-8 w-full max-w-7xl mx-auto">
+            <main className="flex-1 p-4 sm:p-6 md:p-8 w-full max-w-7xl mx-auto">
                 <Outlet />
             </main>
 

@@ -299,25 +299,25 @@ const PremiumCalculator = () => {
     return (
         <div className="min-h-screen bg-gradient-to-b from-[#f2f6fb] via-[#f5f7fb] to-[#eef2f9] text-[#111827] flex flex-col">
             <main className="w-full max-w-[1680px] mx-auto my-6 px-6 lg:my-8 lg:px-8 flex-1">
-                <section className="grid grid-cols-1 sm:grid-cols-4 gap-5 mb-6">
+                <section className="flex flex-nowrap sm:grid sm:grid-cols-4 gap-3 sm:gap-5 mb-8 overflow-x-auto pb-4 sm:pb-0 hide-scrollbar">
                     {[
                         { step: 1, label: 'Select Plan' },
-                        { step: 2, label: 'Calculate Premium' },
-                        { step: 3, label: 'Policy & Payment' },
-                        { step: 4, label: 'Confirmation' },
+                        { step: 2, label: 'Calculate' },
+                        { step: 3, label: 'Payment' },
+                        { step: 4, label: 'Done' },
                     ].map((item) => {
                         const isDone = item.step < stepIndex;
                         const isCurrent = item.step === stepIndex;
 
                         return (
-                            <div className="flex items-center gap-3 relative after:content-[''] after:h-px after:bg-[#d8dee8] after:flex-1 last:after:hidden" key={item.step}>
-                                <span className={`w-9 h-9 rounded-full border-2 inline-flex items-center justify-center text-lg shrink-0 transition-colors ${isDone ? 'border-[#0b67db] bg-[#0b67db] text-white' :
+                            <div className="flex items-center gap-2 sm:gap-3 relative after:content-[''] after:h-px after:bg-[#d8dee8] after:flex-1 last:after:hidden min-w-fit" key={item.step}>
+                                <span className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 inline-flex items-center justify-center text-sm sm:text-lg shrink-0 transition-colors ${isDone ? 'border-[#0b67db] bg-[#0b67db] text-white' :
                                     isCurrent ? 'border-[#0b67db] text-[#0b67db]' :
                                         'border-[#c1cedf] text-[#7a8798] bg-white'
                                     }`}>
                                     {isDone ? '✓' : item.step}
                                 </span>
-                                <span className={`text-base min-w-max transition-colors ${isCurrent ? 'text-[#0f172a] font-semibold' : 'text-[#64748b]'
+                                <span className={`text-xs sm:text-base min-w-max transition-colors ${isCurrent ? 'text-[#0f172a] font-semibold' : 'text-[#64748b]'
                                     }`}>{item.label}</span>
                             </div>
                         );
@@ -335,21 +335,21 @@ const PremiumCalculator = () => {
                     </p>
                 ) : null}
 
-                <div className="flex justify-between items-start gap-4 mb-6">
-                    <div>
-                        <h1 className="text-[46px] leading-[1.1] m-0 text-[#0f172a] font-bold">
+                <div className="flex flex-col lg:flex-row justify-between items-start gap-4 mb-8">
+                    <div className="max-w-3xl">
+                        <h1 className="text-3xl sm:text-[46px] leading-[1.1] m-0 text-[#0f172a] font-bold">
                             {selectedScheme?.schemeName || 'Life Protection Plan'}
                         </h1>
-                        <p className="mt-2.5 mb-0 text-[#496489] text-lg">
+                        <p className="mt-2 text-[#496489] text-base sm:text-lg">
                             {selectedScheme?.description || 'Premium Life Insurance Plan'}
                         </p>
                     </div>
-                    <div className="flex gap-2.5 flex-wrap">
-                        <span className="border border-[#bfd6ff] bg-[#eef4ff] text-[#215fca] rounded-[14px] text-sm py-1 px-3">
+                    <div className="flex gap-2 flex-wrap">
+                        <span className="border border-[#bfd6ff] bg-[#eef4ff] text-[#215fca] rounded-full text-xs sm:text-sm py-1 px-3">
                             {selectedScheme?.categoryName || 'Universal'}
                         </span>
                         {selectedScheme?.profitRatio ? (
-                            <span className="border border-[#a8e3bf] bg-[#ebfff0] text-[#167d3f] rounded-[14px] text-sm py-1 px-3">
+                            <span className="border border-[#a8e3bf] bg-[#ebfff0] text-[#167d3f] rounded-full text-xs sm:text-sm py-1 px-3">
                                 {selectedScheme.profitRatio}% Profit Ratio
                             </span>
                         ) : null}
@@ -358,17 +358,17 @@ const PremiumCalculator = () => {
 
                 <div className="flex flex-col gap-8">
                     <section className="grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-8 items-stretch">
-                        <div className="bg-white border border-[#d8e1ed] rounded-[22px] p-7 lg:p-8 shadow-[0_8px_22px_rgba(15,23,42,0.05)]">
-                            <h2 className="m-0 text-3xl lg:text-4xl font-bold text-[#0f172a]">
+                        <div className="bg-white border border-[#d8e1ed] rounded-[22px] p-5 sm:p-8 shadow-[0_8px_22px_rgba(15,23,42,0.05)]">
+                            <h2 className="m-0 text-2xl sm:text-3xl font-bold text-[#0f172a]">
                                 Configure Your Plan
                             </h2>
 
                             <div className="mt-6">
-                                <label className="block mb-2 text-[#1e293b] font-semibold text-base" htmlFor="plan-selector">
+                                <label className="block mb-2 text-[#1e293b] font-semibold text-sm sm:text-base" htmlFor="plan-selector">
                                     Policy Plan
                                 </label>
                                 <select
-                                    className="w-full border border-[#c6d3e6] rounded-lg p-3.5 text-[17px] text-[#0f172a] bg-[#fcfdff] focus:outline focus:outline-2 focus:outline-[#0b67db]/20 focus:outline-offset-1"
+                                    className="w-full border border-[#c6d3e6] rounded-lg p-3 text-base sm:text-[17px] text-[#0f172a] bg-[#fcfdff] focus:outline focus:outline-2 focus:outline-[#0b67db]/20"
                                     id="plan-selector"
                                     value={selectedSchemeId ?? ''}
                                     onChange={(event) => setSelectedSchemeId(Number(event.target.value))}
@@ -383,12 +383,12 @@ const PremiumCalculator = () => {
                             </div>
 
                             <div className="mt-6">
-                                <div className="flex items-center justify-between gap-3">
-                                    <label className="block text-[#1e293b] font-semibold text-base" htmlFor="sum-assured-input">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                    <label className="block text-[#1e293b] font-semibold text-sm sm:text-base" htmlFor="sum-assured-input">
                                         Sum Assured
                                     </label>
                                     <input
-                                        className="w-full max-w-[320px] text-right border border-[#c6d3e6] rounded-lg p-3.5 text-[17px] text-[#0f172a] bg-[#fcfdff] focus:outline focus:outline-2 focus:outline-[#0b67db]/20"
+                                        className="w-full sm:max-w-[320px] text-left sm:text-right border border-[#c6d3e6] rounded-lg p-3 text-base sm:text-[17px] text-[#0f172a] bg-[#fcfdff] focus:outline focus:outline-2 focus:outline-[#0b67db]/20"
                                         id="sum-assured-input"
                                         type="text"
                                         value={`${formatCompactCurrency(sumAssured)} USD`}
@@ -408,18 +408,18 @@ const PremiumCalculator = () => {
                                     value={sumAssured}
                                     onChange={(event) => setSumAssured(Number(event.target.value))}
                                 />
-                                <div className="mt-1 flex justify-between text-[#6f819a] text-sm">
+                                <div className="mt-1 flex justify-between text-[#6f819a] text-[10px] sm:text-sm">
                                     <span>{formatCompactCurrency(minSumAssured)}</span>
                                     <span>{formatCompactCurrency(maxSumAssured)}</span>
                                 </div>
                             </div>
 
                             <div className="mt-6">
-                                <label className="block mb-2 text-[#1e293b] font-semibold text-base" htmlFor="term-select">
+                                <label className="block mb-2 text-[#1e293b] font-semibold text-sm sm:text-base" htmlFor="term-select">
                                     Policy Term (Years)
                                 </label>
                                 <select
-                                    className="w-full border border-[#c6d3e6] rounded-lg p-3.5 text-[17px] text-[#0f172a] bg-[#fcfdff] focus:outline focus:outline-2 focus:outline-[#0b67db]/20"
+                                    className="w-full border border-[#c6d3e6] rounded-lg p-3 text-base sm:text-[17px] text-[#0f172a] bg-[#fcfdff] focus:outline focus:outline-2 focus:outline-[#0b67db]/20"
                                     id="term-select"
                                     value={termYears}
                                     onChange={(event) => setTermYears(Number(event.target.value))}
@@ -430,13 +430,13 @@ const PremiumCalculator = () => {
                                         </option>
                                     ))}
                                 </select>
-                                <p className="mt-2 text-[#6c7f9a] text-sm leading-relaxed">
+                                <p className="mt-2 text-[#6c7f9a] text-xs sm:text-sm leading-relaxed">
                                     Choosing a longer term may reduce annual premium but extends the payment period.
                                 </p>
                             </div>
 
                             <div className="mt-6">
-                                <label className="block mb-2 text-[#1e293b] font-semibold text-base">
+                                <label className="block mb-2 text-[#1e293b] font-semibold text-sm sm:text-base">
                                     Payment Frequency
                                 </label>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -444,7 +444,7 @@ const PremiumCalculator = () => {
                                         <button
                                             type="button"
                                             key={option.value}
-                                            className={`border rounded-xl p-3 cursor-pointer min-h-[88px] flex flex-col items-center justify-center text-[15px] transition-all ${paymentFrequency === option.value
+                                            className={`border rounded-xl p-2 sm:p-3 cursor-pointer min-h-[70px] sm:min-h-[88px] flex flex-col items-center justify-center text-xs sm:text-[15px] transition-all ${paymentFrequency === option.value
                                                 ? 'border-[#1a71de] bg-[#eef4ff] text-[#145bc9] ring-2 ring-[#1a71de]/10'
                                                 : 'border-[#ced7e5] bg-white text-[#0f172a] hover:border-[#b1c0d6]'
                                                 }`}
@@ -452,7 +452,7 @@ const PremiumCalculator = () => {
                                         >
                                             <span className="font-semibold">{option.label}</span>
                                             {option.savings > 0 ? (
-                                                <small className="mt-1 text-[#16a34a] font-bold text-xs uppercase tracking-wider">
+                                                <small className="mt-1 text-[#16a34a] font-bold text-[9px] sm:text-xs uppercase tracking-wider">
                                                     Save {option.savings}%
                                                 </small>
                                             ) : null}
@@ -537,71 +537,71 @@ const PremiumCalculator = () => {
                     </section>
 
                     <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="bg-white border border-[#d8e1ed] rounded-[22px] p-7 lg:p-8 shadow-[0_8px_22px_rgba(15,23,42,0.05)]">
-                            <div className="flex items-center justify-between mb-6">
-                                <h3 className="m-0 text-[28px] font-bold text-[#0f172a]">Plan Benefits & Highlights</h3>
-                                <div className="bg-[#f0fdf4] text-[#166534] border border-[#bbf7d0] px-3 py-1 rounded-[12px] text-[13px] font-semibold">
+                        <div className="bg-white border border-[#d8e1ed] rounded-[22px] p-5 sm:p-8 shadow-[0_8px_22px_rgba(15,23,42,0.05)]">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                                <h3 className="m-0 text-xl sm:text-[28px] font-bold text-[#0f172a]">Plan Benefits & Highlights</h3>
+                                <div className="bg-[#f0fdf4] text-[#166534] border border-[#bbf7d0] px-3 py-1 rounded-full text-[13px] font-semibold w-fit">
                                     Official Plan
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-8">
                                 <div className="flex items-center gap-4 p-4 bg-[#f8fbff] border border-[#eef2f9] rounded-2xl transition-all duration-200 hover:-translate-y-0.5 hover:border-[#d1e3ff] group">
-                                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-2xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] group-hover:scale-110 transition-transform">📈</div>
+                                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-xl flex items-center justify-center text-xl sm:text-2xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] group-hover:scale-110 transition-transform">📈</div>
                                     <div>
-                                        <h4 className="m-0 text-sm text-[#64748b] uppercase tracking-wider text-[11px] font-bold">Profit Ratio</h4>
-                                        <p className="mt-0.5 text-lg font-bold text-[#0f172a]">
+                                        <h4 className="m-0 text-slate-400 uppercase tracking-wider text-[10px] font-bold">Profit Ratio</h4>
+                                        <p className="mt-0.5 text-base sm:text-lg font-bold text-[#0f172a]">
                                             {selectedScheme?.profitRatio ? `${selectedScheme.profitRatio}% Expected` : 'Market Linked'}
                                         </p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4 p-4 bg-[#f8fbff] border border-[#eef2f9] rounded-2xl transition-all duration-200 hover:-translate-y-0.5 hover:border-[#d1e3ff] group">
-                                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-2xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] group-hover:scale-110 transition-transform">🛡️</div>
+                                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-xl flex items-center justify-center text-xl sm:text-2xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] group-hover:scale-110 transition-transform">🛡️</div>
                                     <div>
-                                        <h4 className="m-0 text-sm text-[#64748b] uppercase tracking-wider text-[11px] font-bold">Term Flexibility</h4>
-                                        <p className="mt-0.5 text-lg font-bold text-[#0f172a]">{minTerm} to {maxTerm} Years</p>
+                                        <h4 className="m-0 text-slate-400 uppercase tracking-wider text-[10px] font-bold">Term Flexibility</h4>
+                                        <p className="mt-0.5 text-base sm:text-lg font-bold text-[#0f172a]">{minTerm} to {maxTerm} Years</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4 p-4 bg-[#f8fbff] border border-[#eef2f9] rounded-2xl transition-all duration-200 hover:-translate-y-0.5 hover:border-[#d1e3ff] group">
-                                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-2xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] group-hover:scale-110 transition-transform">💰</div>
+                                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-xl flex items-center justify-center text-xl sm:text-2xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] group-hover:scale-110 transition-transform">💰</div>
                                     <div>
-                                        <h4 className="m-0 text-sm text-[#64748b] uppercase tracking-wider text-[11px] font-bold">Investment</h4>
-                                        <p className="mt-0.5 text-lg font-bold text-[#0f172a] truncate w-full">
+                                        <h4 className="m-0 text-slate-400 uppercase tracking-wider text-[10px] font-bold">Investment</h4>
+                                        <p className="mt-0.5 text-base sm:text-lg font-bold text-[#0f172a] truncate w-full">
                                             {formatCompactCurrency(minSumAssured)}+
                                         </p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4 p-4 bg-[#f8fbff] border border-[#eef2f9] rounded-2xl transition-all duration-200 hover:-translate-y-0.5 hover:border-[#d1e3ff] group">
-                                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-2xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] group-hover:scale-110 transition-transform">✨</div>
+                                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-xl flex items-center justify-center text-xl sm:text-2xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] group-hover:scale-110 transition-transform">✨</div>
                                     <div>
-                                        <h4 className="m-0 text-sm text-[#64748b] uppercase tracking-wider text-[11px] font-bold">Category</h4>
-                                        <p className="mt-0.5 text-lg font-bold text-[#0f172a]">{selectedScheme?.categoryName || 'Protection'}</p>
+                                        <h4 className="m-0 text-slate-400 uppercase tracking-wider text-[10px] font-bold">Category</h4>
+                                        <p className="mt-0.5 text-base sm:text-lg font-bold text-[#0f172a]">{selectedScheme?.categoryName || 'Protection'}</p>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="border-t border-dashed border-[#d8dee8] pt-6">
-                                <h4 className="mt-0 mb-3 text-base text-[#0f172a] font-bold">Detailed Description</h4>
-                                <p className="m-0 text-[#475569] leading-relaxed text-[15px]">
+                                <h4 className="mt-0 mb-3 text-sm sm:text-base text-[#0f172a] font-bold">Detailed Description</h4>
+                                <p className="m-0 text-[#475569] leading-relaxed text-sm sm:text-[15px]">
                                     {selectedScheme?.description || 'This insurance scheme provides comprehensive coverage and financial security for you and your family.'}
                                 </p>
                             </div>
                         </div>
 
-                        <div className="bg-white border border-[#d8e1ed] rounded-[22px] p-7 lg:p-8 shadow-[0_8px_22px_rgba(15,23,42,0.05)]">
-                            <div className="flex items-center justify-between mb-1">
-                                <h3 className="m-0 text-[28px] font-bold text-[#0f172a]">Riders & Add-ons</h3>
-                                <div className="bg-[#f0fdf4] text-[#166534] border border-[#bbf7d0] px-3 py-1 rounded-[12px] text-[13px] font-semibold transition-all">
+                        <div className="bg-white border border-[#d8e1ed] rounded-[22px] p-5 sm:p-8 shadow-[0_8px_22px_rgba(15,23,42,0.05)]">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-4">
+                                <h3 className="m-0 text-xl sm:text-[28px] font-bold text-[#0f172a]">Riders & Add-ons</h3>
+                                <div className="bg-[#f0fdf4] text-[#166534] border border-[#bbf7d0] px-3 py-1 rounded-full text-[11px] font-semibold transition-all w-fit">
                                     {selectedRiderIds.length} Selected
                                 </div>
                             </div>
-                            <p className="mt-0 text-[#6c7f9a] text-sm mb-6">Customize your protection with optional benefit riders.</p>
+                            <p className="mt-0 text-[#6c7f9a] text-xs sm:text-sm mb-6">Customize your protection with optional benefit riders.</p>
 
                             <div className="flex flex-col gap-3">
                                 {AVAILABLE_RIDERS.map((rider) => (
                                     <div
                                         key={rider.id}
-                                        className={`flex items-center gap-4 p-4 rounded-xl cursor-pointer transition-all duration-200 border group ${selectedRiderIds.includes(rider.id)
+                                        className={`flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl cursor-pointer transition-all duration-200 border group ${selectedRiderIds.includes(rider.id)
                                             ? 'border-[#0b67db] bg-[#f0f7ff] border-2 shadow-sm'
                                             : 'border-[#dce5f1] bg-white hover:border-[#0b67db] hover:bg-[#f8fbff]'
                                             }`}
@@ -613,18 +613,18 @@ const PremiumCalculator = () => {
                                             );
                                         }}
                                     >
-                                        <div className={`w-6 h-6 border-2 rounded-md flex items-center justify-center text-sm transition-all duration-200 ${selectedRiderIds.includes(rider.id)
+                                        <div className={`w-5 h-5 sm:w-6 sm:h-6 border-2 rounded-md flex items-center justify-center text-[10px] sm:text-sm transition-all duration-200 ${selectedRiderIds.includes(rider.id)
                                             ? 'bg-[#0b67db] border-[#0b67db] text-white'
                                             : 'bg-white border-[#cbd5e1] text-transparent'
                                             }`}>
                                             {selectedRiderIds.includes(rider.id) ? '✓' : ''}
                                         </div>
-                                        <div className="text-2xl filter group-hover:scale-110 transition-transform">{rider.icon}</div>
+                                        <div className="text-xl sm:text-2xl filter group-hover:scale-110 transition-transform">{rider.icon}</div>
                                         <div className="flex-1">
-                                            <h4 className="m-0 text-base font-semibold text-[#0f172a]">{rider.name}</h4>
-                                            <p className="mt-0.5 text-xs text-[#64748b] leading-tight">{rider.description}</p>
+                                            <h4 className="m-0 text-sm sm:text-base font-semibold text-[#0f172a]">{rider.name}</h4>
+                                            <p className="mt-0.5 text-[10px] sm:text-xs text-[#64748b] leading-tight">{rider.description}</p>
                                         </div>
-                                        <div className="font-bold text-[#10b981] text-[15px] whitespace-nowrap">
+                                        <div className="font-bold text-[#10b981] text-xs sm:text-[15px] whitespace-nowrap">
                                             +${rider.price.toFixed(2)}
                                         </div>
                                     </div>

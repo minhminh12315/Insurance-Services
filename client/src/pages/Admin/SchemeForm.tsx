@@ -47,8 +47,8 @@ const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, o
 
     return (
         <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-2 gap-5 mb-8">
-                <div className="col-span-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 mb-8">
+                <div className="sm:col-span-2">
                     <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Scheme Name *</label>
                     <input
                         type="text"
@@ -138,7 +138,7 @@ const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, o
                         onChange={handleChange}
                     />
                 </div>
-                <div className="col-span-2">
+                <div className="sm:col-span-2">
                     <label className="block mb-2 text-[13px] font-semibold text-slate-500 text-left">Description</label>
                     <textarea
                         name="description"
@@ -149,9 +149,9 @@ const SchemeForm: React.FC<SchemeFormProps> = ({ scheme, categories, onSubmit, o
                     />
                 </div>
             </div>
-            <div className="flex gap-3 justify-end">
-                <button type="button" className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors font-medium shadow-sm" onClick={onCancel}>Cancel</button>
-                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm">
+            <div className="flex flex-col sm:flex-row gap-3 justify-end pt-4 border-t border-slate-100">
+                <button type="button" className="w-full sm:w-auto px-4 py-2.5 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors font-medium shadow-sm order-2 sm:order-1" onClick={onCancel}>Cancel</button>
+                <button type="submit" className="w-full sm:w-auto px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm order-1 sm:order-2">
                     {scheme ? 'Update Scheme' : 'Create Scheme'}
                 </button>
             </div>

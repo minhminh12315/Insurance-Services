@@ -118,36 +118,36 @@ const Dashboard = () => {
     return (
         <div className="max-w-7xl mx-auto">
             {/* Page Header */}
-            <div className="mb-10">
-                <h1 className="text-3xl font-extrabold text-slate-900 mb-2">
+            <div className="mb-6 md:mb-10">
+                <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 mb-2">
                     Dashboard Overview
                 </h1>
-                <p className="text-slate-500 text-base font-medium">
-                    Welcome back, Thanh! Here's what's happening with your insurance portfolio today.
+                <p className="text-slate-500 text-sm md:text-base font-medium">
+                    Welcome back, Thanh! Here's what's happening today.
                 </p>
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-10">
                 {cards.map((stat, index) => (
                     <div
                         key={index}
-                        className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
+                        className="bg-white rounded-2xl p-5 md:p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
                     >
                         <div className="flex justify-between items-start">
                             <div className="flex-1">
-                                <p className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-2">
+                                <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-wider mb-2">
                                     {stat.label}
                                 </p>
-                                <h2 className="text-3xl font-bold text-slate-900">{stat.value}</h2>
+                                <h2 className="text-2xl md:text-3xl font-bold text-slate-900">{stat.value}</h2>
                                 {stat.change !== undefined && (
-                                    <p className={`text-xs font-bold mt-3 flex items-center gap-1.5 ${stat.change > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                                    <p className={`text-[10px] md:text-xs font-bold mt-2 md:mt-3 flex items-center gap-1.5 ${stat.change > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
                                         {stat.change > 0 ? '↑' : '↓'} {Math.abs(stat.change)}% <span className="font-medium text-slate-400">vs last month</span>
                                     </p>
                                 )}
                             </div>
                             <div
-                                className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ml-4 shadow-sm"
+                                className="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center shrink-0 ml-4 shadow-sm"
                                 style={{
                                     background: `${stat.color}15`,
                                     color: stat.color,
@@ -163,16 +163,16 @@ const Dashboard = () => {
             {/* Charts and Activity Row */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                 {/* Chart Box */}
-                <div className="lg:col-span-2 bg-white rounded-2xl p-8 border border-slate-200 shadow-sm">
-                    <div className="flex justify-between items-center mb-10">
-                        <h3 className="text-xl font-bold text-slate-900">
+                <div className="lg:col-span-2 bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm overflow-hidden">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 md:mb-10">
+                        <h3 className="text-lg md:text-xl font-bold text-slate-900">
                             New Policies Issued
                         </h3>
-                        <div className="flex bg-slate-100 p-1 rounded-lg">
+                        <div className="flex bg-slate-100 p-1 rounded-lg self-stretch sm:self-auto">
                             {['Week', 'Month', 'Year'].map(t => (
                                 <button
                                     key={t}
-                                    className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${t === 'Week' ? 'bg-white text-[#015fc9] shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                                    className={`flex-1 sm:flex-none px-3 md:px-4 py-1.5 rounded-md text-[10px] md:text-xs font-bold transition-all ${t === 'Week' ? 'bg-white text-[#015fc9] shadow-sm' : 'text-slate-500 hover:text-slate-700'
                                         }`}
                                 >
                                     {t}
@@ -180,15 +180,15 @@ const Dashboard = () => {
                             ))}
                         </div>
                     </div>
-                    <div className="flex items-end justify-between h-60 px-4">
+                    <div className="flex items-end justify-between h-[180px] sm:h-48 md:h-60 px-1 md:px-4">
                         {chartData.map((value, index) => (
-                            <div key={index} className="flex flex-col items-center gap-4 flex-1">
+                            <div key={index} className="flex flex-col items-center gap-2 md:gap-4 flex-1">
                                 <div
-                                    className={`w-full max-w-[40px] rounded-t-lg transition-all duration-500 hover:opacity-80 cursor-pointer ${index === 4 ? 'bg-gradient-to-t from-[#015fc9] to-[#3b82f6] shadow-lg shadow-blue-200' : 'bg-slate-100'
+                                    className={`w-full max-w-[18px] sm:max-w-[24px] md:max-w-[40px] rounded-t-lg transition-all duration-500 hover:opacity-80 cursor-pointer ${index === 4 ? 'bg-gradient-to-t from-[#015fc9] to-[#3b82f6] shadow-lg shadow-blue-200' : 'bg-slate-100'
                                         }`}
-                                    style={{ height: `${value * 2.5}px` }}
+                                    style={{ height: `${value * (window.innerWidth < 640 ? 1.4 : window.innerWidth < 768 ? 1.8 : 2.5)}px` }}
                                 />
-                                <span className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">{days[index]}</span>
+                                <span className="text-slate-400 text-[8px] sm:text-[9px] md:text-[11px] font-bold uppercase tracking-wider">{days[index]}</span>
                             </div>
                         ))}
                     </div>
