@@ -62,29 +62,29 @@ const Register = () => {
         const errors: Partial<Record<keyof AuthForm, string>> = {};
 
         if (!formData.fullName.trim()) {
-            errors.fullName = 'Vui lòng điền họ và tên.';
+            errors.fullName = 'Please enter your full name.';
         }
 
         if (!formData.email) {
-            errors.email = 'Vui lòng điền email.';
+            errors.email = 'Please enter your email.';
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            errors.email = 'Email không hợp lệ.';
+            errors.email = 'Invalid email address.';
         }
 
         if (!formData.dateOfBirth) {
-            errors.dateOfBirth = 'Vui lòng chọn ngày sinh.';
+            errors.dateOfBirth = 'Please select your date of birth.';
         }
 
         if (!formData.password) {
-            errors.password = 'Vui lòng điền mật khẩu.';
+            errors.password = 'Please enter your password.';
         } else if (formData.password.length < 6) {
-            errors.password = 'Mật khẩu phải có ít nhất 6 ký tự.';
+            errors.password = 'Password must be at least 6 characters long.';
         }
 
         if (!formData.confirmPassword) {
-            errors.confirmPassword = 'Vui lòng xác nhận mật khẩu.';
+            errors.confirmPassword = 'Please confirm your password.';
         } else if (formData.password !== formData.confirmPassword) {
-            errors.confirmPassword = 'Mật khẩu xác nhận không khớp.';
+            errors.confirmPassword = 'Passwords do not match.';
         }
 
         setInputErrors(errors);

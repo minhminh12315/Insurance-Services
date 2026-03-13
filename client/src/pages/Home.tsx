@@ -18,23 +18,23 @@ const Home = () => {
     const fallbackCategories: InsuranceCategoryModel[] = [
         {
             categoryId: 1,
-            categoryName: 'Bảo hiểm nhân thọ',
-            description: 'Bảo vệ tài chính cho gia đình bạn với các gói bảo hiểm nhân thọ linh hoạt và quyền lợi cao.',
+            categoryName: 'Life Insurance',
+            description: 'Financial protection for your family with flexible life insurance plans and high benefits.',
         },
         {
             categoryId: 2,
-            categoryName: 'Bảo hiểm y tế',
-            description: 'Chi trả chi phí khám chữa bệnh, phẫu thuật và nằm viện với mạng lưới bệnh viện rộng khắp.',
+            categoryName: 'Health Insurance',
+            description: 'Covers medical, surgical, and hospital expenses with a wide network of hospitals.',
         },
         {
             categoryId: 3,
-            categoryName: 'Bảo hiểm xe cơ giới',
-            description: 'Bảo vệ phương tiện của bạn trước mọi rủi ro về tai nạn, mất cắp và hư hỏng.',
+            categoryName: 'Motor Insurance',
+            description: 'Protects your vehicle against all risks of accident, theft, and damage.',
         },
         {
             categoryId: 4,
-            categoryName: 'Bảo hiểm nhà ở',
-            description: 'Bảo vệ ngôi nhà và tài sản của bạn trước thiên tai, hỏa hoạn và các rủi ro khác.',
+            categoryName: 'Home Insurance',
+            description: 'Protects your home and assets against natural disasters, fire, and other risks.',
         },
     ];
 
