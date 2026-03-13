@@ -161,6 +161,34 @@ export interface PaymentModel {
     status?: string | null;
 }
 
+export interface CreateClaimPayload {
+    policyId: number;
+    claimAmount: number;
+    reason: string;
+}
+
+export interface ClaimModel {
+    claimId: number;
+    policyId: number;
+    policyNumber: string;
+    userId: number;
+    userName: string;
+    claimDate: string;
+    claimAmount: number;
+    reason: string;
+    status: string;
+    adminComment?: string | null;
+    documentPath?: string | null;
+    documentUrl?: string | null;
+    createdAt?: string | null;
+    updatedAt?: string | null;
+}
+
+export interface UpdateClaimStatusPayload {
+    status: 'Submitted' | 'UnderReview' | 'Approved' | 'Rejected' | 'Paid';
+    adminComment?: string;
+}
+
 export interface VNPayRequestPayload {
     orderID: number;
     amount: number;
@@ -306,6 +334,47 @@ export const paymentApi = {
 
     async getPaymentByOrderCode(orderCode: string): Promise<PaymentModel> {
         const { data } = await api.get<ApiResponse<PaymentModel>>(`/premiumpayment/by-order/${orderCode}`);
+        return data.data;
+    },
+};
+
+export const claimApi = {
+    async getAllClaims(status?: string): Promise<ClaimModel[]> {
+        const { data } = await api.get<ApiResponse<ClaimModel[]>>('/claim', {
+            params: { status },
+        });
+        return data.data;
+    },
+
+    async getMyClaims(): Promise<ClaimModel[]> {
+        const { data } = await api.get<ApiResponse<ClaimModel[]>>('/claim/my-claims');
+        return data.data;
+    },
+
+    async createClaim(payload: CreateClaimPayload): Promise<ClaimModel> {
+        const { data } = await api.post<ApiResponse<ClaimModel>>('/claim', payload);
+        return data.data;
+    },
+
+    async uploadClaimDocument(claimId: number, file: File): Promise<{ documentPath: string; documentUrl: string }> {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const { data } = await api.post<ApiResponse<{ documentPath: string; documentUrl: string }>>(
+            `/claim/${claimId}/upload-document`,
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }
+        );
+
+        return data.data;
+    },
+
+    async updateClaimStatus(claimId: number, payload: UpdateClaimStatusPayload): Promise<ClaimModel> {
+        const { data } = await api.patch<ApiResponse<ClaimModel>>(`/claim/${claimId}/status`, payload);
         return data.data;
     },
 };

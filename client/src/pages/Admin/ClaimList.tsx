@@ -1,67 +1,69 @@
-import { useState } from 'react';
-import { fakeClaims, fakePolicies, fakeUsers } from '../../data/fakeData';
-// import api from '../../services/api';
-import type { Claim, ClaimStatus, Policy, User } from '../../types';
+import { useEffect, useMemo, useState } from 'react';
+import { claimApi, type ClaimModel, type UpdateClaimStatusPayload } from '../../services/insuranceApi';
 import DeleteConfirm from '../../components/DeleteConfirm';
 
 const ClaimList = () => {
-    const [claims, setClaims] = useState<Claim[]>(fakeClaims);
-    const [policies] = useState<Policy[]>(fakePolicies);
-    const [users] = useState<User[]>(fakeUsers);
+    const [claims, setClaims] = useState<ClaimModel[]>([]);
     const [statusFilter, setStatusFilter] = useState<string>('');
-    const [loading] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
-    // Feedback States
     const [successMessage, setSuccessMessage] = useState<string>('');
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const [claimsRes, policiesRes, usersRes] = await Promise.all([
-    //                 api.get('/claims'),
-    //                 api.get('/policies'),
-    //                 api.get('/users')
-    //             ]);
-    //             setClaims(claimsRes.data);
-    //             setPolicies(policiesRes.data);
-    //             setUsers(usersRes.data);
-    //         } catch (error) {
-    //             console.error('Failed to fetch data:', error);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-    //     fetchData();
-    // }, []);
-
-    const filteredClaims = claims.filter(c => !statusFilter || c.status === statusFilter);
-
-
-    const confirmDelete = (id: number) => {
-        setClaims(claims.filter(c => c.claim_id !== id));
-        setSuccessMessage('Claim removed successfully');
-        setTimeout(() => setSuccessMessage(''), 3000);
+    const normalizeFilterStatus = (status: string): string => {
+        if (status === 'Under Review') return 'UnderReview';
+        return status;
     };
 
-    const confirmStatus = (id: number, status: ClaimStatus) => {
-        setClaims(claims.map(c => c.claim_id === id ? { ...c, status } : c));
-        setSuccessMessage(`Claim marked as ${status}`);
-        setTimeout(() => setSuccessMessage(''), 3000);
+    const formatStatusLabel = (status: string): string => {
+        if (status === 'UnderReview') return 'Under Review';
+        return status;
     };
 
-    const getStatusBadge = (status: ClaimStatus) => {
-        const baseClass = "px-2.5 py-0.5 rounded-full text-xs font-semibold";
-        switch (status) {
-            case 'Approved': return <span className={`${baseClass} bg-emerald-100 text-emerald-600`}>Approved</span>;
-            case 'Under Review': return <span className={`${baseClass} bg-amber-100 text-amber-600`}>Reviewing</span>;
-            case 'Rejected': return <span className={`${baseClass} bg-red-100 text-red-600`}>Rejected</span>;
-            case 'Submitted': return <span className={`${baseClass} bg-blue-100 text-blue-600`}>Submitted</span>;
-            default: return <span className={`${baseClass} bg-slate-100 text-slate-600`}>{status}</span>;
+    const fetchClaims = async (status?: string) => {
+        setLoading(true);
+        setErrorMessage('');
+        try {
+            const result = await claimApi.getAllClaims(status);
+            setClaims(result);
+        } catch (error) {
+            setErrorMessage(error instanceof Error ? error.message : 'Failed to load claims.');
+        } finally {
+            setLoading(false);
         }
     };
 
-    const getUserName = (id: number) => users.find(u => u.user_id === id)?.full_name || 'Unknown';
-    const getPolicyNum = (id: number) => policies.find(p => p.policy_id === id)?.policy_number || 'Unknown';
+    useEffect(() => {
+        void fetchClaims(statusFilter ? normalizeFilterStatus(statusFilter) : undefined);
+    }, [statusFilter]);
+
+    const sortedClaims = useMemo(
+        () => [...claims].sort((first, second) => second.claimId - first.claimId),
+        [claims]
+    );
+
+    const confirmStatus = async (id: number, status: UpdateClaimStatusPayload['status']) => {
+        try {
+            await claimApi.updateClaimStatus(id, { status });
+            setSuccessMessage(`Claim marked as ${formatStatusLabel(status)}`);
+            setTimeout(() => setSuccessMessage(''), 3000);
+            await fetchClaims(statusFilter ? normalizeFilterStatus(statusFilter) : undefined);
+        } catch (error) {
+            setErrorMessage(error instanceof Error ? error.message : 'Failed to update claim status.');
+        }
+    };
+
+    const getStatusBadge = (status: string) => {
+        const baseClass = "px-2.5 py-0.5 rounded-full text-xs font-semibold";
+        switch (status) {
+            case 'Approved': return <span className={`${baseClass} bg-emerald-100 text-emerald-600`}>Approved</span>;
+            case 'UnderReview': return <span className={`${baseClass} bg-amber-100 text-amber-600`}>Reviewing</span>;
+            case 'Rejected': return <span className={`${baseClass} bg-red-100 text-red-600`}>Rejected</span>;
+            case 'Submitted': return <span className={`${baseClass} bg-blue-100 text-blue-600`}>Submitted</span>;
+            case 'Paid': return <span className={`${baseClass} bg-violet-100 text-violet-600`}>Paid</span>;
+            default: return <span className={`${baseClass} bg-slate-100 text-slate-600`}>{status}</span>;
+        }
+    };
 
     if (loading) {
         return <div className="p-5 text-center">Loading claims...</div>;
@@ -89,6 +91,10 @@ const ClaimList = () => {
                 </div>
             </div>
 
+            {errorMessage ? (
+                <div className="mb-6 rounded-xl border border-red-100 bg-red-50 p-4 text-sm text-red-600">{errorMessage}</div>
+            ) : null}
+
             <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 md:p-5 mb-6">
                 <select className="w-full sm:w-[200px] px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
                     <option value="">All Statuses</option>
@@ -96,6 +102,7 @@ const ClaimList = () => {
                     <option value="Under Review">Under Review</option>
                     <option value="Approved">Approved</option>
                     <option value="Rejected">Rejected</option>
+                    <option value="Paid">Paid</option>
                 </select>
             </div>
 
@@ -114,43 +121,46 @@ const ClaimList = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredClaims.map((c) => (
-                            <tr key={c.claim_id}>
-                                <td className="p-4 border-b border-slate-50"><span className="font-semibold text-slate-600">#CLM-{c.claim_id.toString().padStart(4, '0')}</span></td>
-                                <td className="p-4 border-b border-slate-50"><span className="font-bold text-blue-600">{getPolicyNum(c.policy_id)}</span></td>
-                                <td className="p-4 border-b border-slate-50">{getUserName(c.user_id)}</td>
-                                <td className="p-4 border-b border-slate-50 font-bold text-slate-800">${c.claim_amount.toLocaleString()}</td>
+                        {sortedClaims.map((c) => (
+                            <tr key={c.claimId}>
+                                <td className="p-4 border-b border-slate-50"><span className="font-semibold text-slate-600">#CLM-{c.claimId.toString().padStart(4, '0')}</span></td>
+                                <td className="p-4 border-b border-slate-50"><span className="font-bold text-blue-600">{c.policyNumber}</span></td>
+                                <td className="p-4 border-b border-slate-50">{c.userName}</td>
+                                <td className="p-4 border-b border-slate-50 font-bold text-slate-800">${c.claimAmount.toLocaleString()}</td>
                                 <td className="p-4 border-b border-slate-50 text-[13px] max-w-[200px] truncate">{c.reason}</td>
-                                <td className="p-4 border-b border-slate-50">{new Date(c.claim_date).toLocaleDateString()}</td>
+                                <td className="p-4 border-b border-slate-50">{new Date(c.claimDate).toLocaleDateString()}</td>
                                 <td className="p-4 border-b border-slate-50">{getStatusBadge(c.status)}</td>
                                 <td className="p-4 border-b border-slate-50">
                                     <div className="flex justify-end gap-2">
                                         {c.status === 'Submitted' && (
-                                            <DeleteConfirm onConfirm={() => confirmStatus(c.claim_id, 'Under Review')} title="Review Claim?" message="Mark this claim as under review?" confirmLabel="Sure">
+                                            <DeleteConfirm onConfirm={() => void confirmStatus(c.claimId, 'UnderReview')} title="Review Claim?" message="Mark this claim as under review?" confirmLabel="Sure">
                                                 <button className="px-3 py-1.5 bg-amber-100 text-amber-700 rounded-lg hover:bg-amber-200 transition-colors text-sm font-medium">Review</button>
                                             </DeleteConfirm>
                                         )}
-                                        {(c.status === 'Submitted' || c.status === 'Under Review') && (
+                                        {(c.status === 'Submitted' || c.status === 'UnderReview') && (
                                             <>
-                                                <DeleteConfirm onConfirm={() => confirmStatus(c.claim_id, 'Approved')} title="Approve Claim?" message="Are you sure you want to approve this claim?" confirmLabel="Approve">
+                                                <DeleteConfirm onConfirm={() => void confirmStatus(c.claimId, 'Approved')} title="Approve Claim?" message="Are you sure you want to approve this claim?" confirmLabel="Approve">
                                                     <button className="px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg hover:bg-emerald-200 transition-colors text-sm font-medium">Approve</button>
                                                 </DeleteConfirm>
-                                                <DeleteConfirm onConfirm={() => confirmStatus(c.claim_id, 'Rejected')} title="Reject Claim?" message="Are you sure you want to reject this claim?" confirmLabel="Reject">
+                                                <DeleteConfirm onConfirm={() => void confirmStatus(c.claimId, 'Rejected')} title="Reject Claim?" message="Are you sure you want to reject this claim?" confirmLabel="Reject">
                                                     <button className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium">Reject</button>
                                                 </DeleteConfirm>
                                             </>
                                         )}
-                                        <DeleteConfirm onConfirm={() => confirmDelete(c.claim_id)} title="Remove Claim?" message="Permanentely hide this claim from the dashboard?" confirmLabel="Remove">
-                                            <button className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors">
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
-                                            </button>
-                                        </DeleteConfirm>
+                                        {c.status === 'Approved' ? (
+                                            <DeleteConfirm onConfirm={() => void confirmStatus(c.claimId, 'Paid')} title="Mark as Paid?" message="Confirm this approved claim has been paid?" confirmLabel="Mark Paid">
+                                                <button className="px-3 py-1.5 bg-violet-100 text-violet-700 rounded-lg hover:bg-violet-200 transition-colors text-sm font-medium">Mark Paid</button>
+                                            </DeleteConfirm>
+                                        ) : null}
                                     </div>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
+                {!loading && sortedClaims.length === 0 ? (
+                    <div className="p-6 text-center text-slate-500 text-sm">No claims found for this filter.</div>
+                ) : null}
             </div>
         </div>
     );
