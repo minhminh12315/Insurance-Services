@@ -232,6 +232,16 @@ export const authApi = {
         const { data } = await api.post<LoginApiResponse>('/auth/register', payload);
         return ensureAuthSession(data);
     },
+
+    async changePassword(email: string, oldPassword: string, newPassword: string): Promise<any> {
+        const { data } = await api.post('/auth/change-password', { email, oldPassword, newPassword });
+        return data;
+    },
+
+    async forgotPassword(payload: { email: string; otpCode?: string; newPassword?: string }): Promise<any> {
+        const { data } = await api.post('/auth/forgot-password', payload);
+        return data;
+    },
 };
 
 export const schemeApi = {

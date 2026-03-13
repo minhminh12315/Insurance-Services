@@ -177,15 +177,20 @@ const Login = () => {
                                 </div>
                             ) : null}
 
-                            <label className="flex items-center gap-2 text-sm text-slate-600">
-                                <input
-                                    type="checkbox"
-                                    checked={rememberMe}
-                                    onChange={(event) => setRememberMe(event.target.checked)}
-                                    className="w-4 h-4 text-blue-600 rounded border-gray-300"
-                                />
-                                Remember me
-                            </label>
+                            <div className="flex items-center justify-between">
+                                <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={rememberMe}
+                                        onChange={(event) => setRememberMe(event.target.checked)}
+                                        className="w-4 h-4 text-blue-600 rounded border-gray-300"
+                                    />
+                                    Remember me
+                                </label>
+                                <Link to="/forgot-password" className="text-sm font-semibold text-blue-600 hover:text-blue-700 transition">
+                                    Quên mật khẩu?
+                                </Link>
+                            </div>
 
                             <button
                                 type="submit"

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
@@ -56,6 +56,8 @@ public partial class InsuranceDbContext : DbContext
     public virtual DbSet<PolicySurrender> PolicySurrenders { get; set; }
     
     public virtual DbSet<LoanRepaymentSchedule> LoanRepaymentSchedules { get; set; }
+    
+    public virtual DbSet<UserOtp> UserOtps { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=InsuranceDB;Trusted_Connection=True;TrustServerCertificate=True;");
@@ -840,6 +842,15 @@ public partial class InsuranceDbContext : DbContext
                 .HasForeignKey(d => d.LoanId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_LoanRepaymentSchedule_PolicyLoans");
+        });
+
+        modelBuilder.Entity<UserOtp>(entity =>
+        {
+            entity.HasKey(e => e.OtpId);
+            entity.Property(e => e.Email).HasMaxLength(100).IsRequired();
+            entity.Property(e => e.OtpCode).HasMaxLength(10).IsRequired();
+            entity.Property(e => e.ExpiryDate).HasColumnType("datetime");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())").HasColumnType("datetime");
         });
 
         OnModelCreatingPartial(modelBuilder);

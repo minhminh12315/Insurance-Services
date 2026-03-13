@@ -144,6 +144,45 @@ public class AuthController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("change-password")]
+    public async Task<ActionResult<AuthResponseDto>> ChangePassword([FromBody] ChangePasswordRequestDto request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new AuthResponseDto
+            {
+                Success = false,
+                Message = "Invalid input data"
+            });
+        }
+
+        var result = await _authService.ChangePasswordAsync(request);
+
+        if (!result.Success)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok(result);
+    }
+
+    [HttpPost("forgot-password")]
+    public async Task<ActionResult<AuthResponseDto>> ForgotPassword([FromBody] ForgotPasswordDto request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new AuthResponseDto { Success = false, Message = "Dữ liệu không hợp lệ" });
+        }
+
+        var result = await _authService.ForgotPasswordAsync(request);
+        if (!result.Success)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok(result);
+    }
+
     [HttpGet("me")]
     [Authorize]
     public ActionResult GetCurrentUser()

@@ -16,6 +16,7 @@ import NewsList from './pages/Admin/NewsList';
 import Profile from './pages/Admin/Profile';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
 import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
@@ -54,6 +55,7 @@ function App() {
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* Admin Routes - Protected */}
         <Route path="/admin" element={<ProtectedRoute requiredRole="Admin" />}>
