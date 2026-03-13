@@ -1,0 +1,279 @@
+Table Users {
+  user_id INT [pk]
+  address NVARCHAR(max)
+  city NVARCHAR(50)
+  created_at DATETIME [default: "getdate()"]
+  date_of_birth DATE
+  email NVARCHAR(100) [unique]
+  full_name NVARCHAR(100)
+  gender NVARCHAR(10)
+  password_hash VARCHAR(255)
+  phone_number VARCHAR(15)
+  role NVARCHAR(20) [default: 'Customer']
+  updated_at DATETIME [default: "getdate()"]
+}
+
+Table RefreshTokens {
+  RefreshTokenId INT [pk]
+  UserId INT [ref: > Users.user_id]
+  Token NVARCHAR(500) [not null]
+  ExpiresAt DATETIME [not null]
+  CreatedAt DATETIME [not null]
+  RevokedAt DATETIME
+  ReplacedByToken NVARCHAR(500)
+  ReasonRevoked NVARCHAR(255)
+  CreatedByIp NVARCHAR(100)
+  RevokedByIp NVARCHAR(100)
+}
+
+Table InsuranceCategories {
+  category_id INT [pk]
+  category_name NVARCHAR(50)
+  description NVARCHAR(max)
+}
+
+Table InsuranceSchemes {
+  scheme_id INT [pk]
+  category_id INT [ref: > InsuranceCategories.category_id]
+  description NVARCHAR(max)
+  is_active BIT [default: 1]
+  max_investment_amount DECIMAL(15,2)
+  max_term INT
+  min_investment_amount DECIMAL(15,2)
+  min_term INT
+  new_launch_date DATE
+  profit_ratio DECIMAL(5,2)
+  scheme_name NVARCHAR(100)
+}
+
+Table NewsAndAnnouncements {
+  news_id INT [pk]
+  author_id INT [ref: > Users.user_id]
+  content NVARCHAR(max)
+  published_date DATETIME [default: "getdate()"]
+  title NVARCHAR(200)
+}
+
+Table Policies {
+  policy_id INT [pk]
+  created_at DATETIME [default: "getdate()"]
+  maturity_date DATE
+  payment_frequency NVARCHAR(20)
+  policy_number VARCHAR(50) [unique]
+  policy_status NVARCHAR(20) [default: 'Pending']
+  premium_amount DECIMAL(15,2)
+  scheme_id INT [ref: > InsuranceSchemes.scheme_id]
+  start_date DATE
+  sum_assured DECIMAL(15,2)
+  term_years INT
+  user_id INT [ref: > Users.user_id]
+}
+
+Table PolicyDetailsHome {
+  detail_id INT [pk]
+  built_year INT
+  policy_id INT [ref: - Policies.policy_id, unique]
+  property_address NVARCHAR(max)
+  property_value DECIMAL(15,2)
+  structure_type NVARCHAR(50)
+}
+
+Table PolicyDetailsLife {
+  detail_id INT [pk]
+  nominee_name NVARCHAR(100)
+  nominee_relation NVARCHAR(50)
+  policy_id INT [ref: - Policies.policy_id, unique]
+}
+
+Table PolicyDetailsMedical {
+  detail_id INT [pk]
+  hospital_network_tier NVARCHAR(50)
+  is_family_floater BIT [default: 0]
+  policy_id INT [ref: - Policies.policy_id, unique]
+  pre_existing_diseases NVARCHAR(max)
+  annual_limit DECIMAL(15,2)
+  used_amount DECIMAL(15,2) [default: 0]
+  room_and_board_limit DECIMAL(15,2)
+  surgery_limit DECIMAL(15,2)
+  outpatient_limit DECIMAL(15,2)
+  dental_limit DECIMAL(15,2)
+  maternity_limit DECIMAL(15,2)
+  has_direct_billing BIT [default: 0]
+  card_tier NVARCHAR(20)
+  waiting_period_days INT [default: 30]
+}
+
+Table PolicyDetailsMotor {
+  detail_id INT [pk]
+  chassis_number VARCHAR(50)
+  engine_number VARCHAR(50)
+  manufacturing_year INT
+  policy_id INT [ref: - Policies.policy_id, unique]
+  vehicle_model NVARCHAR(50)
+  vehicle_reg_number VARCHAR(20)
+  vehicle_type NVARCHAR(10)
+}
+
+Table Claims {
+  claim_id INT [pk]
+  admin_comment NVARCHAR(max)
+  claim_amount DECIMAL(15,2)
+  claim_date DATE
+  policy_id INT [ref: > Policies.policy_id]
+  reason NVARCHAR(max)
+  status NVARCHAR(20) [default: 'Submitted']
+  user_id INT [ref: > Users.user_id]
+  document_path NVARCHAR(500)
+  created_at DATETIME [default: "getdate()"]
+  updated_at DATETIME
+}
+
+Table ClaimApprovalHistories {
+  approval_id INT [pk]
+  claim_id INT [ref: > Claims.claim_id]
+  approved_by INT [ref: > Users.user_id]
+  action NVARCHAR(50) [not null]
+  previous_status NVARCHAR(20) [not null]
+  new_status NVARCHAR(20) [not null]
+  comments NVARCHAR(1000)
+  approved_amount DECIMAL(15,2)
+  action_date DATETIME [default: "getdate()"]
+  documents_verified NVARCHAR(500)
+  rejection_reason NVARCHAR(500)
+}
+
+Table PolicyLoans {
+  loan_id INT [pk]
+  application_date DATE
+  approval_date DATE
+  interest_rate DECIMAL(5,2)
+  loan_amount DECIMAL(15,2)
+  loan_status NVARCHAR(20) [default: 'Requested']
+  policy_id INT [ref: > Policies.policy_id]
+  user_id INT [ref: > Users.user_id]
+}
+
+Table LoanRepaymentSchedules {
+  schedule_id INT [pk]
+  loan_id INT [ref: > PolicyLoans.loan_id]
+  installment_number INT
+  due_date DATE
+  principal_amount DECIMAL(15,2)
+  interest_amount DECIMAL(15,2)
+  total_amount DECIMAL(15,2)
+  outstanding_balance DECIMAL(15,2)
+  is_paid BIT [default: 0]
+  paid_date DATETIME
+  paid_amount DECIMAL(15,2)
+  payment_reference NVARCHAR(200)
+  days_overdue INT
+  late_fee DECIMAL(15,2)
+}
+
+Table PremiumPayments {
+  payment_id INT [pk]
+  amount_paid DECIMAL(15,2)
+  payment_date DATETIME [default: "getdate()"]
+  payment_method NVARCHAR(50)
+  policy_id INT [ref: > Policies.policy_id]
+  status NVARCHAR(20) [default: 'Pending']
+  transaction_reference VARCHAR(100)
+  order_code VARCHAR(100)
+  gateway NVARCHAR(50)
+  updated_at DATETIME
+  user_id INT [ref: > Users.user_id]
+}
+
+Table PaymentReceipts {
+  receipt_id INT [pk]
+  payment_id INT [ref: > PremiumPayments.payment_id]
+  receipt_number NVARCHAR(50) [not null, unique]
+  generated_at DATETIME [default: "getdate()"]
+  receipt_pdf_path NVARCHAR(500)
+  receipt_html NTEXT
+  email_sent BIT [default: 0]
+  email_sent_at DATETIME
+}
+
+Table Notifications {
+  notification_id INT [pk]
+  user_id INT [ref: > Users.user_id]
+  title NVARCHAR(200) [not null]
+  message NVARCHAR(1000) [not null]
+  notification_type NVARCHAR(50) [not null]
+  related_entity_id INT
+  related_entity_type NVARCHAR(50)
+  is_read BIT [default: 0]
+  created_at DATETIME [default: "getdate()"]
+  read_at DATETIME
+  email_sent BIT [default: 0]
+  email_sent_at DATETIME
+}
+
+Table PolicyRiders {
+  rider_id INT [pk]
+  policy_id INT [ref: > Policies.policy_id]
+  rider_name NVARCHAR(100) [not null]
+  rider_type NVARCHAR(50) [not null]
+  description NVARCHAR(500)
+  rider_premium DECIMAL(15,2) [not null]
+  coverage_amount DECIMAL(15,2)
+  is_active BIT [default: 1]
+  created_at DATETIME [default: "getdate()"]
+}
+
+Table PolicyRenewals {
+  renewal_id INT [pk]
+  policy_id INT [ref: > Policies.policy_id]
+  user_id INT [ref: > Users.user_id]
+  renewal_date DATE
+  previous_maturity_date DATE
+  new_maturity_date DATE
+  previous_premium DECIMAL(15,2)
+  new_premium DECIMAL(15,2)
+  renewal_term_years INT
+  renewal_status NVARCHAR(20) [default: 'Pending']
+  renewal_notes NVARCHAR(1000)
+  requested_at DATETIME [default: "getdate()"]
+  processed_at DATETIME
+  processed_by INT
+}
+
+Table PolicyBeneficiaries {
+  beneficiary_id INT [pk]
+  policy_id INT [ref: > Policies.policy_id]
+  beneficiary_name NVARCHAR(100) [not null]
+  relationship NVARCHAR(50) [not null]
+  date_of_birth DATE
+  phone_number NVARCHAR(20)
+  email NVARCHAR(100)
+  address NVARCHAR(500)
+  benefit_percentage DECIMAL(5,2)
+  is_primary BIT [default: 1]
+  is_active BIT [default: 1]
+  identification_number NVARCHAR(50)
+  identification_type NVARCHAR(50)
+  created_at DATETIME [default: "getdate()"]
+  updated_at DATETIME
+}
+
+Table PolicySurrenders {
+  surrender_id INT [pk]
+  policy_id INT [ref: > Policies.policy_id]
+  user_id INT [ref: > Users.user_id]
+  request_date DATE
+  total_premium_paid DECIMAL(15,2)
+  surrender_value DECIMAL(15,2)
+  surrender_charges DECIMAL(15,2)
+  net_payable DECIMAL(15,2)
+  policy_held_years INT
+  policy_held_months INT
+  surrender_status NVARCHAR(20) [default: 'Pending']
+  surrender_reason NVARCHAR(500)
+  admin_notes NVARCHAR(1000)
+  requested_at DATETIME [default: "getdate()"]
+  processed_at DATETIME
+  processed_by INT
+  payment_method NVARCHAR(50)
+  payment_reference NVARCHAR(200)
+}

@@ -72,7 +72,7 @@ https://localhost:5001/swagger
 
 ```
 ┌─────────────────────────────────────────────────┐
-│                  Client Layer                   │
+│                  Client Layer                   │git 
 │         (Web, Mobile, Third-party Apps)         │
 └─────────────────────────────────────────────────┘
                        │
