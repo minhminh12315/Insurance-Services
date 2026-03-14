@@ -28,7 +28,7 @@ const Header = ({ onToggleSidebar }: { onToggleSidebar?: () => void }) => {
     }, [location.pathname]);
 
     const handleLogout = () => {
-        navigate('/home', { replace: true });
+        navigate('/login', { replace: true });
         logout();
     };
 
